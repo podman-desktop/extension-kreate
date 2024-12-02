@@ -1,10 +1,10 @@
 {
-  "name": "helloworld",
-  "displayName": "Hello World",
-  "description": "Hello World template for using webview",
-  "version": "1.4.0-next",
+  "name": "kreate",
+  "displayName": "Kreate",
+  "description": "Kubectl create commands",
+  "version": "0.0.1",
   "icon": "icon.png",
-  "publisher": "yourusername",
+  "publisher": "Philippe Martin",
   "private": true,
   "engines": {
     "node": ">=20.9.0",
