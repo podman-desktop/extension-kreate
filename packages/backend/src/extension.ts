@@ -2,7 +2,8 @@ import type { ExtensionContext } from '@podman-desktop/api';
 import * as extensionApi from '@podman-desktop/api';
 import fs from 'node:fs';
 import { RpcExtension } from '/@shared/src/messages/MessageProxy';
-import { helloWorldApi } from './api-impl';
+import { KreateApiImpl } from './api-impl';
+import type { KreateApi } from '/@shared/src/KreateApi';
 
 /**
  * Below is the "typical" extension.ts file that is used to activate and deactrivate the extension.
@@ -11,7 +12,7 @@ import { helloWorldApi } from './api-impl';
 
 // Initialize the activation of the extension.
 export async function activate(extensionContext: ExtensionContext): Promise<void> {
-  console.log('starting hello world extension');
+  console.log('starting kreate extension');
 
   // A web view panel is created to display the index
   // we use the 'media' folder that contains the bread-and-butter of the webview.
@@ -19,7 +20,7 @@ export async function activate(extensionContext: ExtensionContext): Promise<void
   //
   // The 'index.html' and all other files are built with the `yarn build` command within packages/frontend which can also be ran with the
   // `yarn build` command in the main directory, which will also build the backend and shared packages.
-  const panel = extensionApi.window.createWebviewPanel('helloWorld', 'Hello World', {
+  const panel = extensionApi.window.createWebviewPanel('kreate', 'Kreate', {
     localResourceRoots: [extensionApi.Uri.joinPath(extensionContext.extensionUri, 'media')],
   });
   extensionContext.subscriptions.push(panel);
@@ -63,10 +64,10 @@ export async function activate(extensionContext: ExtensionContext): Promise<void
 
   // We now register the 'api' for the webview to communicate to the backend
   const rpcExtension = new RpcExtension(panel.webview);
-  const HelloWorldApi = new helloWorldApi(extensionContext);
-  rpcExtension.registerInstance<helloWorldApi>(helloWorldApi, HelloWorldApi);
+  const kreateApi = new KreateApiImpl(extensionContext);
+  rpcExtension.registerInstance<KreateApi>(KreateApiImpl, kreateApi);
 }
 
 export async function deactivate(): Promise<void> {
-  console.log('stopping hello world extension');
+  console.log('stopping kreate extension');
 }

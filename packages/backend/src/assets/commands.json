@@ -1,0 +1,61 @@
+{
+  "commands": [
+    {
+      "name": "configmap",
+      "args": [
+        {
+          "name": "name",
+          "label": "Name",
+          "description": "Name of the configmap to create",
+          "required": true
+        }
+      ],
+      "options": [
+        {
+          "name": "--from-literal",
+          "label": "Literal values",
+          "description": "Specify a key and literal value to insert in configmap (i.e. mykey=somevalue)",
+          "type": "key-value",
+          "multiple": true
+        }
+      ]
+    },
+    {
+      "name": "deployment"
+    },
+    {
+      "name": "ingress"
+    },
+    {
+      "name": "secret",
+      "commands": [
+        {
+          "name": "docker-registry"
+        },
+        {
+          "name": "generic"
+        },
+        {
+          "name": "tls"
+        }
+      ]
+    },
+    {
+      "name": "service",
+      "commands": [
+        {
+          "name": "clusterip"
+        },
+        {
+          "name": "externalname"
+        },
+        {
+          "name": "loadbalancer"
+        },
+        {
+          "name": "nodeport"
+        }
+      ]
+    }
+  ]
+}

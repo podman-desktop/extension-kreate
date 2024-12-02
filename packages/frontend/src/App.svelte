@@ -6,7 +6,7 @@ import { router } from 'tinro';
 import Route from './lib/Route.svelte';
 import { onMount } from 'svelte';
 import { getRouterState } from './api/client';
-import HelloWorld from './HelloWorld.svelte';
+import Kreate from './Kreate.svelte';
 
 // Using our router instance, we can determine if the application has been mounted.
 router.mode.hash();
@@ -20,19 +20,11 @@ onMount(() => {
 });
 </script>
 
-<!--
-  This is the main application component. It is the root component of the application.
-  It is responsible for rendering the application layout and routing the application to the correct page.
-
-  For example, the main page of the application is the "HelloWorld" svelte component.$derived
-
-  This can be expanded more by including more Route paths which the application can navigate too, for example /about, /contact etc.
--->
-<Route path="/*" breadcrumb="Hello World" isAppMounted={isMounted} let:meta>
+<Route path="/*" breadcrumb="Kreate" isAppMounted={isMounted} let:meta>
   <main class="flex flex-col w-screen h-screen overflow-hidden bg-[var(--pd-content-bg)]">
     <div class="flex flex-row w-full h-full overflow-hidden">
-      <Route path="/" breadcrumb="Hello World Page">
-        <HelloWorld />
+      <Route path="/" breadcrumb="Kreate">
+        <Kreate />
       </Route>
     </div>
   </main>
