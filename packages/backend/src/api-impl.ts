@@ -22,14 +22,16 @@ export class KreateApiImpl implements KreateApi {
   }
 
   async getCommandDetails(command: string[]): Promise<CommandDetails> {
+    let searchCommands: CommandDetails[] = commands.commands;
     for (const name of command) {
-      const command = commands.commands.find(c => c.name === name);
-      if (!command) {
+      const cmd = searchCommands.find(c => c.name === name);
+      if (!cmd) {
         throw new Error('command not found');
       }
-      if (!command.commands) {
-        return command;
+      if (!cmd.commands) {
+        return cmd;
       }
+      searchCommands = cmd.commands;
     }
     throw new Error('command not found');
   }
@@ -43,5 +45,9 @@ export class KreateApiImpl implements KreateApi {
       const runErr = err as podmanDesktopApi.RunError;
       throw runErr.stderr;
     }
+  }
+
+  async openDialog(options?: podmanDesktopApi.OpenDialogOptions): Promise<podmanDesktopApi.Uri[] | undefined> {
+    return await podmanDesktopApi.window.showOpenDialog(options);
   }
 }

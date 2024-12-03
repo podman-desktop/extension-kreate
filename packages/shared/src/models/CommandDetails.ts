@@ -15,6 +15,8 @@ export interface CommandOption {
 }
 
 export interface CommandDetails {
+  name: string;
   args?: CommandArg[];
   options?: CommandOption[];
+  commands?: CommandDetails[];
 }

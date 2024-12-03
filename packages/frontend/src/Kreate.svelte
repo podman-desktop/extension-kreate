@@ -6,6 +6,8 @@ import MultipleKeyValueOption from './components/options/MultipleKeyValueOption.
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
 import SingleStringOption from './components/options/SingleStringOption.svelte';
 import MultipleStringOption from './components/options/MultipleStringOption.svelte';
+import SinglePasswordOption from './components/options/SinglePasswordOption.svelte';
+import SingleFileOption from './components/options/SingleFileOption.svelte';
 
 let selectedCommand: string | undefined;
 let selectedSubcommand: string | undefined;
@@ -155,6 +157,22 @@ async function createResource() {
             {/if}
             {#if option.type === 'string' && option.multiple}
               <MultipleStringOption
+                option={option}
+                onChange={val => {
+                  options[i] = val;
+                  options = options;
+                }} />
+            {/if}
+            {#if option.type === 'password' && !option.multiple}
+              <SinglePasswordOption
+                option={option}
+                onChange={val => {
+                  options[i] = val;
+                  options = options;
+                }} />
+            {/if}
+            {#if option.type === 'file' && !option.multiple}
+              <SingleFileOption
                 option={option}
                 onChange={val => {
                   options[i] = val;

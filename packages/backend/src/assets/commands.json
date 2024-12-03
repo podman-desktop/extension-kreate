@@ -14,7 +14,7 @@
         {
           "flag": "--from-literal",
           "label": "Literal values",
-          "description": "Specify a key and literal value to insert in configmap (i.e. mykey=somevalue)",
+          "description": "Specify a key and literal value to insert in configmap",
           "type": "key-value",
           "multiple": true,
           "repeatFlag": true
@@ -96,13 +96,93 @@
       "name": "secret",
       "commands": [
         {
-          "name": "docker-registry"
+          "name": "docker-registry",
+          "args": [
+            {
+              "name": "name",
+              "label": "Name",
+              "description": "Name of the Docker Registry secret to create",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "flag": "--docker-server",
+              "label": "Docker server",
+              "description": "Server location for Docker registry",
+              "type": "string",
+              "multiple": false
+            },
+            {
+              "flag": "--docker-email",
+              "label": "Docker email",
+              "description": "Email for Docker registry",
+              "type": "string",
+              "multiple": false
+            },
+            {
+              "flag": "--docker-username",
+              "label": "Docker username",
+              "description": "Username for Docker registry authentication",
+              "type": "string",
+              "multiple": false
+            },
+            {
+              "flag": "--docker-password",
+              "label": "Docker password",
+              "description": "Password for Docker registry authentication",
+              "type": "password",
+              "multiple": false
+            }
+          ]
         },
         {
-          "name": "generic"
+          "name": "generic",
+          "args": [
+            {
+              "name": "name",
+              "label": "Name",
+              "description": "Name of the Generic secret to create",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "flag": "--from-literal",
+              "label": "Literal values",
+              "description": "Specify a key and literal value to insert in secret",
+              "type": "key-value",
+              "multiple": true,
+              "repeatFlag": true
+            }    
+          ]
         },
         {
-          "name": "tls"
+          "name": "tls",
+          "args": [
+            {
+              "name": "name",
+              "label": "Name",
+              "description": "Name of the TLS secret to create",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "flag": "--cert",
+              "label": "Certificate",
+              "description": "Path to PEM encoded public key certificate",
+              "type": "file",
+              "multiple": false
+            },
+            {
+              "flag": "--key",
+              "label": "Private key",
+              "description": "Path to private key associated with given certificate",
+              "type": "file",
+              "multiple": false
+            }    
+          ]
         }
       ]
     },
