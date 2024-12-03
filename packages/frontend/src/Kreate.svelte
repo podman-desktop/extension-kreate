@@ -18,6 +18,7 @@ let args: string[];
 let options: string[][];
 
 let yamlResult: string;
+let error: string = '';
 
 onMount(async () => {
   commands = await kreateApiClient.getCommands();
@@ -63,7 +64,7 @@ async function createResource() {
   if (!selectedCommand) {
     return;
   }
-  let params = ['create', '--dry-run', '-o', 'yaml', selectedCommand];
+  let params = ['create', '--dry-run=client', '-o', 'yaml', selectedCommand];
   if (selectedSubcommand) {
     params.push(selectedSubcommand);
   }
@@ -77,10 +78,11 @@ async function createResource() {
       params = params.concat(option);
     }
   }
+  error = '';
   try {
     yamlResult = await kreateApiClient.executeCommand(params);
   } catch (err: unknown) {
-    console.error(`error executing command: ${String(err)}`);
+    error = String(err);
   }
 }
 </script>
@@ -92,43 +94,49 @@ async function createResource() {
     bind:value={yamlResult}>
   </textarea>
 
-  <div class="h-full w-full">
-    <div class="flex flex-row items-center w-full space-x-4">
-      <label for="resource">Resource to create: </label>
-      {#if commands && commands.length}
+  <div class="flex flex-row items-center w-full space-x-4">
+    <label for="resource">Resource to create: </label>
+    {#if commands && commands.length}
+      <Dropdown
+        id="resource"
+        options={commands.map(c => ({
+          label: c,
+          value: c,
+        }))}
+        onChange={onCommandChange} />
+      {#if subcommands && subcommands.length}
         <Dropdown
-          class="w-[150px]"
-          id="resource"
-          options={commands.map(c => ({
+          id="subresource"
+          options={subcommands.map(c => ({
             label: c,
             value: c,
           }))}
-          onChange={onCommandChange} />
-        {#if subcommands && subcommands.length}
-          <Dropdown
-            class="w-[150px]"
-            id="subresource"
-            options={subcommands.map(c => ({
-              label: c,
-              value: c,
-            }))}
-            onChange={onSubcommandChange} />
-        {/if}
-        <Button on:click={createResource}>Create</Button>
+          onChange={onSubcommandChange} />
       {/if}
-    </div>
+      <Button on:click={createResource}>Create</Button>
+    {/if}
+  </div>
+
+  {#if error}
+    <div class="text-red-600">{error}</div>
+  {/if}
+
+  <div class="h-full w-full overflow-y-auto">
     {#if details}
-      <div class="w-full h-full mt-8">
+      <div class="w-full mt-8">
         {#if details.args}
           {#each details.args as arg, i}
-            <div class="flex flex-row items-center w-full space-x-4">
+            <div class="flex flex-col w-full">
               <label for={`arg-${i}`}>{arg.label}</label>
-              <Input id={`arg-${i}`} bind:value={args[i]} placeholder={arg.description} />
+              <div class="text-sm opacity-50">{arg.description}</div>
+              <Input id={`arg-${i}`} bind:value={args[i]} />
             </div>
           {/each}
         {/if}
         {#if details.options}
           {#each details.options as option, i}
+            <div class="mt-4 font-medium">{option.label}</div>
+            <div class="text-sm opacity-50">{option.description}</div>
             {#if option.type === 'key-value' && option.multiple}
               <MultipleKeyValueOption
                 option={option}

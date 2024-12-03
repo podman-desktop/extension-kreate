@@ -16,5 +16,4 @@ function getValue(s: string): string[] {
 }
 </script>
 
-<div class="mt-4 font-medium">{option.label}</div>
 <Input on:input={e => onInputChange(e)} />

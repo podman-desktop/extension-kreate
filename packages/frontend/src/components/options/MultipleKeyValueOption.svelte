@@ -51,7 +51,6 @@ function getValue(kvs: KeyValue[]): string[] {
 }
 </script>
 
-<div class="mt-4 font-medium">{option.label}</div>
 <div class="flex flex-col space-y-4">
   {#each keyValues as value, i}
     <div class="flex flex-row w-full space-x-4">

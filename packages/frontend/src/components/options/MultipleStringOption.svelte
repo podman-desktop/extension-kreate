@@ -41,7 +41,6 @@ function getValue(values: string[]): string[] {
 }
 </script>
 
-<div class="mt-4 font-medium">{option.label}</div>
 {#each values as value, i}
   <div class="flex flex-row space-x-4">
     <Input value={value} on:input={e => onInputChange(e, i)} />
