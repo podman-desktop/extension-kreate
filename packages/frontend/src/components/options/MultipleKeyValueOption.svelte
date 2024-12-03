@@ -35,13 +35,19 @@ function onValueChange(event: Event, i: number) {
 }
 
 function getValue(kvs: KeyValue[]): string[] {
-  return kvs
-    .filter(kv => kv.key !== '')
-    .reduce((acc, kv) => {
-      acc.push(option.name);
-      acc.push(`${kv.key}=${kv.value}`);
-      return acc;
-    }, [] as string[]);
+  if (!kvs.length) {
+    return [];
+  }
+  if (option.repeatFlag) {
+    return kvs
+      .filter(kv => kv.key !== '')
+      .reduce((acc, kv) => {
+        acc.push(option.flag);
+        acc.push(`${kv.key}=${kv.value}`);
+        return acc;
+      }, [] as string[]);
+  }
+  return [option.flag, ...kvs.filter(kv => kv.key !== '').map(kv => `${kv.key}=${kv.value}`)];
 }
 </script>
 

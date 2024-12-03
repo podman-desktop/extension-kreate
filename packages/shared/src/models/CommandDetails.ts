@@ -6,11 +6,12 @@ export interface CommandArg {
 }
 
 export interface CommandOption {
-  name: string;
+  flag: string;
   label: string;
   description: string;
   type: string;
   multiple: boolean;
+  repeatFlag?: boolean;
 }
 
 export interface CommandDetails {

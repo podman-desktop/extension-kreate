@@ -35,7 +35,13 @@ export class KreateApiImpl implements KreateApi {
   }
 
   async executeCommand(args: string[]): Promise<string> {
-    const result = await podmanDesktopApi.process.exec('kubectl', args.concat(['--dry-run', '-o', 'yaml']));
-    return result.stdout;
+    let result: podmanDesktopApi.RunResult;
+    try {
+      result = await podmanDesktopApi.process.exec('kubectl', args);
+      return result.stdout;
+    } catch (err: unknown) {
+      const runErr = err as podmanDesktopApi.RunError;
+      throw runErr.stderr;
+    }
   }
 }

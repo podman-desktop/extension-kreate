@@ -4,6 +4,8 @@ import { kreateApiClient } from './api/client';
 import { onMount } from 'svelte';
 import MultipleKeyValueOption from './components/options/MultipleKeyValueOption.svelte';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
+import SingleStringOption from './components/options/SingleStringOption.svelte';
+import MultipleStringOption from './components/options/MultipleStringOption.svelte';
 
 let selectedCommand: string | undefined;
 let selectedSubcommand: string | undefined;
@@ -61,7 +63,7 @@ async function createResource() {
   if (!selectedCommand) {
     return;
   }
-  let params = ['create', selectedCommand];
+  let params = ['create', '--dry-run', '-o', 'yaml', selectedCommand];
   if (selectedSubcommand) {
     params.push(selectedSubcommand);
   }
@@ -75,7 +77,11 @@ async function createResource() {
       params = params.concat(option);
     }
   }
-  yamlResult = await kreateApiClient.executeCommand(params);
+  try {
+    yamlResult = await kreateApiClient.executeCommand(params);
+  } catch (err: unknown) {
+    console.error(`error executing command: ${String(err)}`);
+  }
 }
 </script>
 
@@ -128,6 +134,22 @@ async function createResource() {
                 option={option}
                 onChange={kvs => {
                   options[i] = kvs;
+                  options = options;
+                }} />
+            {/if}
+            {#if option.type === 'string' && !option.multiple}
+              <SingleStringOption
+                option={option}
+                onChange={val => {
+                  options[i] = val;
+                  options = options;
+                }} />
+            {/if}
+            {#if option.type === 'string' && option.multiple}
+              <MultipleStringOption
+                option={option}
+                onChange={val => {
+                  options[i] = val;
                   options = options;
                 }} />
             {/if}

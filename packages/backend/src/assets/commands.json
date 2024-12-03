@@ -12,16 +12,42 @@
       ],
       "options": [
         {
-          "name": "--from-literal",
+          "flag": "--from-literal",
           "label": "Literal values",
           "description": "Specify a key and literal value to insert in configmap (i.e. mykey=somevalue)",
           "type": "key-value",
-          "multiple": true
+          "multiple": true,
+          "repeatFlag": true
         }
       ]
     },
     {
-      "name": "deployment"
+      "name": "deployment",
+      "args": [
+        {
+          "name": "name",
+          "label": "Name",
+          "description": "Name of the deployment to create",
+          "required": true
+        }
+      ],
+      "options": [
+        {
+          "flag": "--image",
+          "label": "Image",
+          "description": "Image to use for container",
+          "type": "string",
+          "multiple": false
+        },
+        {
+          "flag": "--",
+          "label": "command and args",
+          "description": "Command and args of entrypoint",
+          "type": "string",
+          "multiple": true,
+          "repeatFlag": false
+        }
+      ]
     },
     {
       "name": "ingress"
