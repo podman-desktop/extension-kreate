@@ -35,14 +35,14 @@
         {
           "flag": "--image",
           "label": "Image",
-          "description": "Image to use for container",
+          "description": "Image to use for the container",
           "type": "string",
           "multiple": false
         },
         {
           "flag": "--",
-          "label": "command and args",
-          "description": "Command and args of entrypoint",
+          "label": "Command and args",
+          "description": "Command and args for the container",
           "type": "string",
           "multiple": true,
           "repeatFlag": false
@@ -50,7 +50,47 @@
       ]
     },
     {
-      "name": "ingress"
+      "name": "ingress",
+      "args": [
+        {
+          "name": "name",
+          "label": "Name",
+          "description": "Name of the ingress to create",
+          "required": true
+        }
+      ],
+      "options": [
+        {
+          "flag": "--annotation",
+          "label": "Annotations",
+          "description": "Annotation to insert in the ingress object",
+          "type": "key-value",
+          "multiple": true,
+          "repeatFlag": true
+        },
+        {
+          "flag": "--default-backend",
+          "label": "Default backend",
+          "description": "Default service for backend, in format of svcname:port",
+          "type": "string",
+          "multiple": false
+        },
+        {
+          "flag": "--class",
+          "label": "Class",
+          "description": "Ingress Class to be used",
+          "type": "string",
+          "multiple": false
+        },
+        {
+          "flag": "--rule",
+          "label": "Rules",
+          "description": "Rule in format host/path=service:port[,tls=secretname]. Paths containing the leading character '*' are considered pathType=Prefix. tls argument is optional",
+          "type": "string",
+          "multiple": true,
+          "repeatFlag": true
+        }
+      ]
     },
     {
       "name": "secret",
