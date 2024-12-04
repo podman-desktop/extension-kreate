@@ -11,7 +11,7 @@ import SingleFileOption from './components/options/SingleFileOption.svelte';
 import MultipleFileOption from './components/options/MultipleFileOption.svelte';
 import MultipleKeyFileOption from './components/options/MultipleKeyFileOption.svelte';
 
-let selectedCommand: string | undefined;
+let selectedCommand: string | undefined = '';
 let selectedSubcommand: string | undefined;
 let details: CommandDetails;
 
@@ -35,6 +35,7 @@ async function onCommandChange(command: unknown) {
   if (typeof command !== 'string') {
     return;
   }
+  selectedSubcommand = undefined;
   selectedCommand = command;
   subcommands = await getSubcommands(command);
   if (!subcommands.length) {
@@ -123,18 +124,18 @@ async function create() {
     {#if commands && commands.length}
       <Dropdown
         id="resource"
-        options={commands.map(c => ({
+        options={[{ label: '(select a resource)', value: ''}, ...commands.map(c => ({
           label: c,
           value: c,
-        }))}
+        }))]}
         onChange={onCommandChange} />
       {#if subcommands && subcommands.length}
         <Dropdown
           id="subresource"
-          options={subcommands.map(c => ({
+          options={[{ label: '(select a resource type)', value: ''}, ...subcommands.map(c => ({
             label: c,
             value: c,
-          }))}
+          }))]}
           onChange={onSubcommandChange} />
       {/if}
       <Button on:click={createResource}>View YAML</Button>
