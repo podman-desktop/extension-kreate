@@ -4,6 +4,7 @@ import FileInput from '../ui/FileInput.svelte';
 
 export let option: CommandOption;
 export let onChange = (_value: string[]) => {};
+export let selectors: ('openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles')[];
 
 function onFileChange(value: string) {
   onChange(getValue(value));
@@ -14,4 +15,4 @@ function getValue(s: string): string[] {
 }
 </script>
 
-<FileInput options={{ selectors: ['openFile'] }} onChange={onFileChange} />
+<FileInput options={{ selectors }} onChange={onFileChange} />

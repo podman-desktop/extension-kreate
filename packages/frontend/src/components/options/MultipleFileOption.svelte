@@ -2,9 +2,11 @@
 import { Button, Input } from '@podman-desktop/ui-svelte';
 import type { CommandOption } from '/@shared/src/models/CommandDetails';
 import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import FileInput from '../ui/FileInput.svelte';
 
 export let option: CommandOption;
 export let onChange = (_value: string[]) => {};
+export let selectors: ('openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles')[];
 
 let values: string[] = [''];
 
@@ -18,9 +20,8 @@ function addValue() {
   values = values;
 }
 
-function onInputChange(event: Event, i: number) {
-  const inputEvent = event as Event & { target: HTMLInputElement };
-  values[i] = inputEvent.target.value;
+function onFileChange(value: string, i: number) {
+  values[i] = value;
   onChange(getValue(values));
 }
 
@@ -44,7 +45,7 @@ function getValue(values: string[]): string[] {
 <div class="flex flex-col space-y-2">
   {#each values as value, i}
     <div class="flex flex-row space-x-4">
-      <Input value={value} on:input={e => onInputChange(e, i)} />
+      <FileInput value={value} options={{ selectors }} onChange={s => onFileChange(s, i)} />
       <Button type="link" hidden={i === values.length - 1} on:click={() => deleteValue(i)} icon={faMinusCircle} />
       <Button type="link" hidden={i < values.length - 1} on:click={addValue} icon={faPlusCircle} />
     </div>

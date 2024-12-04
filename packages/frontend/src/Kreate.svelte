@@ -8,6 +8,8 @@ import SingleStringOption from './components/options/SingleStringOption.svelte';
 import MultipleStringOption from './components/options/MultipleStringOption.svelte';
 import SinglePasswordOption from './components/options/SinglePasswordOption.svelte';
 import SingleFileOption from './components/options/SingleFileOption.svelte';
+import MultipleFileOption from './components/options/MultipleFileOption.svelte';
+import MultipleKeyFileOption from './components/options/MultipleKeyFileOption.svelte';
 
 let selectedCommand: string | undefined;
 let selectedSubcommand: string | undefined;
@@ -173,6 +175,25 @@ async function createResource() {
             {/if}
             {#if option.type === 'file' && !option.multiple}
               <SingleFileOption
+                selectors={['openFile']}
+                option={option}
+                onChange={val => {
+                  options[i] = val;
+                  options = options;
+                }} />
+            {/if}
+            {#if option.type === 'file' && option.multiple}
+              <MultipleFileOption
+                selectors={['openFile']}
+                option={option}
+                onChange={val => {
+                  options[i] = val;
+                  options = options;
+                }} />
+            {/if}
+            {#if option.type === 'key-fileOrDirectory' && option.multiple}
+              <MultipleKeyFileOption
+                selectors={['openFile', 'openDirectory']}
                 option={option}
                 onChange={val => {
                   options[i] = val;
