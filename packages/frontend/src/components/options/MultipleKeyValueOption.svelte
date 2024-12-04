@@ -4,15 +4,13 @@ import { Button, Input } from '@podman-desktop/ui-svelte';
 import type { CommandOption } from '/@shared/src/models/CommandDetails';
 import type { KeyValue } from '/@shared/src/models/KeyValue';
 export let option: CommandOption;
-export let value: string[] = [];
 export let onChange = (_value: string[]) => {};
 
 let keyValues: KeyValue[] = [{ key: '', value: '' }];
 
 function deleteEnvVariable(index: number) {
   keyValues = keyValues.filter((_, i) => i !== index);
-  value = getValue(keyValues);
-  onChange(value);
+  onChange(getValue(keyValues));
 }
 
 function addEnvVariable() {
@@ -23,15 +21,13 @@ function addEnvVariable() {
 function onKeyChange(event: Event, i: number) {
   const inputEvent = event as Event & { target: HTMLInputElement };
   keyValues[i].key = inputEvent.target.value;
-  value = getValue(keyValues);
-  onChange(value);
+  onChange(getValue(keyValues));
 }
 
 function onValueChange(event: Event, i: number) {
   const inputEvent = event as Event & { target: HTMLInputElement };
   keyValues[i].value = inputEvent.target.value;
-  value = getValue(keyValues);
-  onChange(value);
+  onChange(getValue(keyValues));
 }
 
 function getValue(kvs: KeyValue[]): string[] {
@@ -54,8 +50,8 @@ function getValue(kvs: KeyValue[]): string[] {
 <div class="flex flex-col space-y-4">
   {#each keyValues as value, i}
     <div class="flex flex-row w-full space-x-4">
-      <Input placeholder="key" bind:value={keyValues[i].key} on:input={e => onKeyChange(e, i)} />
-      <Input placeholder="value" bind:value={keyValues[i].value} on:input={e => onValueChange(e, i)} />
+      <Input placeholder="key" bind:value={value.key} on:input={e => onKeyChange(e, i)} />
+      <Input placeholder="value" bind:value={value.value} on:input={e => onValueChange(e, i)} />
 
       <Button
         type="link"
