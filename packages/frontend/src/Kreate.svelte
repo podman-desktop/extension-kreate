@@ -72,10 +72,7 @@ async function createResource() {
   if (!selectedCommand) {
     return;
   }
-  let params = ['create', '--dry-run=client', '-o', 'yaml', selectedCommand];
-  if (selectedSubcommand) {
-    params.push(selectedSubcommand);
-  }
+  let params: string[] = [...details.cli ?? []];
   for (const arg of args) {
     if (arg.length) {
       params.push(arg);

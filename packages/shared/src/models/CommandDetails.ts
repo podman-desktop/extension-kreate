@@ -19,4 +19,5 @@ export interface CommandDetails {
   args?: CommandArg[];
   options?: CommandOption[];
   commands?: CommandDetails[];
+  cli?: string[];
 }

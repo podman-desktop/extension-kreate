@@ -35,6 +35,14 @@
           "multiple": true,
           "repeatFlag": true
         }
+      ],
+      "cli": [
+        "kubectl",
+        "create",
+        "configmap",
+        "--dry-run=client",
+        "-o",
+        "yaml"
       ]
     },
     {
@@ -63,6 +71,14 @@
           "multiple": true,
           "repeatFlag": false
         }
+      ],
+      "cli": [
+        "kubectl",
+        "create",
+        "deployment",
+        "--dry-run=client",
+        "-o",
+        "yaml"
       ]
     },
     {
@@ -106,6 +122,14 @@
           "multiple": true,
           "repeatFlag": true
         }
+      ],
+      "cli": [
+        "kubectl",
+        "create",
+        "ingress",
+        "--dry-run=client",
+        "-o",
+        "yaml"
       ]
     },
     {
@@ -150,6 +174,15 @@
               "type": "password",
               "multiple": false
             }
+          ],
+          "cli": [
+            "kubectl",
+            "create",
+            "secret",
+            "docker-registry",
+            "--dry-run=client",
+            "-o",
+            "yaml"
           ]
         },
         {
@@ -171,6 +204,15 @@
               "multiple": true,
               "repeatFlag": true
             }    
+          ],
+          "cli": [
+            "kubectl",
+            "create",
+            "secret",
+            "generic",
+            "--dry-run=client",
+            "-o",
+            "yaml"
           ]
         },
         {
@@ -198,6 +240,15 @@
               "type": "file",
               "multiple": false
             }    
+          ],
+          "cli": [
+            "kubectl",
+            "create",
+            "secret",
+            "tls",
+            "--dry-run=client",
+            "-o",
+            "yaml"
           ]
         }
       ]
