@@ -1,5 +1,7 @@
 # Kreate: Podman Desktop Extension
 
+![Demo](./kreate-demo.gif)
+
 Kreate provides forms to create various Kubernetes resources. The user fills the form
 for a specific resource type, and the YAML manifest to create the resource is displayed. The user
 can then update the YAML manifest is necessary, before to apply this YAML manifest to the current Kubernetes context.
