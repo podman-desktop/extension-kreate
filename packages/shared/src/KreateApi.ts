@@ -7,4 +7,6 @@ export abstract class KreateApi {
   abstract executeCommand(args: string[]): Promise<string>;
 
   abstract openDialog(options?: podmanDesktopApi.OpenDialogOptions): Promise<podmanDesktopApi.Uri[] | undefined>;
+
+  abstract create(s: string): Promise<void>;
 }

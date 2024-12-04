@@ -24,6 +24,9 @@ let options: string[][];
 let yamlResult: string;
 let error: string = '';
 
+let createError: string = '';
+let createdYaml = '';
+
 onMount(async () => {
   commands = await kreateApiClient.getCommands();
 });
@@ -89,14 +92,31 @@ async function createResource() {
     error = String(err);
   }
 }
+
+async function create() {
+  createError = '';
+  try {
+    await kreateApiClient.create(yamlResult);
+    createdYaml = yamlResult;
+  } catch (err: unknown) {
+    createError = String(err);    
+  }
+}
 </script>
 
 <div class="p-4 flex flex-col space-y-4 h-full w-full bg-[var(--pd-content-card-bg)]">
-  <textarea
-    class="w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
-    rows="20"
-    bind:value={yamlResult}>
-  </textarea>
+  <div class="flex flex-row items-start w-full space-x-4">
+    <textarea
+      class="w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
+      rows="20"
+      bind:value={yamlResult}>
+    </textarea>
+    <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Create</Button>
+  </div>
+
+  {#if createError}
+    <div class="text-red-600">{createError}</div>
+  {/if}
 
   <div class="flex flex-row items-center w-full space-x-4">
     <label for="resource">Resource to create: </label>
@@ -117,7 +137,7 @@ async function createResource() {
           }))}
           onChange={onSubcommandChange} />
       {/if}
-      <Button on:click={createResource}>Create</Button>
+      <Button on:click={createResource}>View YAML</Button>
     {/if}
   </div>
 

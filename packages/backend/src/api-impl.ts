@@ -2,6 +2,9 @@ import * as podmanDesktopApi from '@podman-desktop/api';
 import type { KreateApi } from '../../shared/src/KreateApi';
 import commands from './assets/commands.json';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
+import { KubeConfig, KubernetesObject } from '@kubernetes/client-node';
+import { parseAllDocuments } from 'yaml';
+
 /**
  * HelloWorldApi is an interface that defines the abstracted class for the HelloWorldApi, it is a requirement to match this interface to your API implementation.
  *
@@ -49,5 +52,39 @@ export class KreateApiImpl implements KreateApi {
 
   async openDialog(options?: podmanDesktopApi.OpenDialogOptions): Promise<podmanDesktopApi.Uri[] | undefined> {
     return await podmanDesktopApi.window.showOpenDialog(options);
+  }
+
+  async create(s: string): Promise<void> {
+    const file = podmanDesktopApi.kubernetes.getKubeconfig();
+    const kubeConfig = new KubeConfig();
+    kubeConfig.loadFromFile(file.path);
+    const context = kubeConfig.currentContext;
+    
+    const manifests = await this.loadManifestsFromFile(s);
+    if (manifests.filter(s => s?.kind).length === 0) {
+      throw new Error('No valid Kubernetes resources found in content');
+    }
+    await podmanDesktopApi.kubernetes.createResources(context, manifests);
+  }
+
+  private async loadManifestsFromFile(content: string): Promise<KubernetesObject[]> {
+    const manifests = parseAllDocuments(content, { customTags: this.getTags });
+    // filter out null manifests
+    return manifests.map(manifest => manifest.toJSON()).filter(manifest => !!manifest);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private getTags(tags: any[]): any[] {
+    for (const tag of tags) {
+      if (tag.tag === 'tag:yaml.org,2002:int') {
+        const newTag = { ...tag };
+        newTag.test = /^(0[0-7][0-7][0-7])$/;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        newTag.resolve = (str: any): number => parseInt(str, 8);
+        tags.unshift(newTag);
+        break;
+      }
+    }
+    return tags;
   }
 }
