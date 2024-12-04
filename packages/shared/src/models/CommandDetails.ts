@@ -14,6 +14,15 @@ export interface CommandOption {
   repeatFlag?: boolean;
 }
 
+export interface CommandOptionBoolean extends CommandOption {
+  type: 'boolean';
+  default: boolean;
+}
+
+export function isCommandOptionBoolean(co: CommandOption): co is CommandOptionBoolean {
+  return co.type === 'boolean';
+}
+
 export interface CommandDetails {
   name: string;
   args?: CommandArg[];

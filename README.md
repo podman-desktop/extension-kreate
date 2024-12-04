@@ -53,6 +53,7 @@ The `options` are the flags provided by the command. They can be of different ty
 
 - `string`: a string value (single or multiple)
 - `password`: a string value, which will be hidden in the UI
+- `boolean`: a boolean value, with a default value (set `default=true` when CLI accepts an `--option=false` with `--option=true` by default)
 - `file`: a file path, the UI providing a dialog to select a file (single or multiple)
 - `key-value`: a key/value pair (multiple)
 - `key-fileOrDirectory`: a key and a file or directory (used by `kubectl create configmap --from-file`) (multiple)
