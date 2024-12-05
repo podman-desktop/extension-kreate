@@ -381,16 +381,146 @@
       "name": "service",
       "commands": [
         {
-          "name": "clusterip"
+          "name": "clusterip",
+          "args": [
+            {
+              "name": "name",
+              "label": "Name",
+              "description": "Name of the ClusterIP service to create",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "flag": "--tcp",
+              "label": "Port",
+              "description": "Port pairs can be specified as '<port>:<targetPort>'",
+              "type": "string",
+              "multiple": true,
+              "repeatFlag": true
+            },
+            {
+              "flag": "--clusterip",
+              "label": "ClusterIP",
+              "description": "Assign your own ClusterIP or set to 'None' for a 'headless' service (no loadbalancing)",
+              "type": "string",
+              "multiple": false
+            }
+          ],
+          "cli": [
+            "kubectl",
+            "create",
+            "service",
+            "clusterip",
+            "--dry-run=client",
+            "-o",
+            "yaml"
+          ]
         },
         {
-          "name": "externalname"
+          "name": "externalname",
+          "args": [
+            {
+              "name": "name",
+              "label": "Name",
+              "description": "Name of the ExternalName service to create",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "flag": "--external-name",
+              "label": "External name",
+              "description": "External name of service",
+              "type": "string",
+              "multiple": false
+            },
+            {
+              "flag": "--tcp",
+              "label": "Port",
+              "description": "Port pairs can be specified as '<port>:<targetPort>'",
+              "type": "string",
+              "multiple": true,
+              "repeatFlag": true
+            }
+            
+          ],
+          "cli": [
+            "kubectl",
+            "create",
+            "service",
+            "externalname",
+            "--dry-run=client",
+            "-o",
+            "yaml"
+          ]
         },
         {
-          "name": "loadbalancer"
+          "name": "loadbalancer",
+          "args": [
+            {
+              "name": "name",
+              "label": "Name",
+              "description": "Name of the LoadBalancer service to create",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "flag": "--tcp",
+              "label": "Port",
+              "description": "Port pairs can be specified as '<port>:<targetPort>'",
+              "type": "string",
+              "multiple": true,
+              "repeatFlag": true
+            }
+          ],
+          "cli": [
+            "kubectl",
+            "create",
+            "service",
+            "loadbalancer",
+            "--dry-run=client",
+            "-o",
+            "yaml"
+          ]
         },
         {
-          "name": "nodeport"
+          "name": "nodeport",
+          "args": [
+            {
+              "name": "name",
+              "label": "Name",
+              "description": "Name of the NodePort service to create",
+              "required": true
+            }
+          ],
+          "options": [
+            {
+              "flag": "--tcp",
+              "label": "Port",
+              "description": "Port pairs can be specified as '<port>:<targetPort>'",
+              "type": "string",
+              "multiple": true,
+              "repeatFlag": true
+            },
+            {
+              "flag": "--node-port",
+              "label": "Node Port",
+              "description": "Port used to expose the service on each node in a cluster",
+              "type": "number",
+              "default": 0
+            }
+          ],
+          "cli": [
+            "kubectl",
+            "create",
+            "service",
+            "nodeport",
+            "--dry-run=client",
+            "-o",
+            "yaml"
+          ]
         }
       ]
     }
