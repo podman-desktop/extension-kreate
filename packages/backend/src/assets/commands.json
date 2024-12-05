@@ -70,6 +70,20 @@
           "type": "string",
           "multiple": true,
           "repeatFlag": false
+        },
+        {
+          "flag": "--port",
+          "label": "Port",
+          "description": "The containerPort that this deployment exposes",
+          "type": "number",
+          "default": -1
+        },
+        {
+          "flag": "--replicas",
+          "label": "Replicas",
+          "description": "Number of replicas to create",
+          "type": "number",
+          "default": 1
         }
       ],
       "cli": [
