@@ -40,6 +40,9 @@
     "vitest": "^2.0.2"
   },
   "dependencies": {
-    "semver": "^7.6.3"
+    "@kubernetes/client-node": "1.0.0-rc7",
+    "js-yaml": "^4.1.0",
+    "semver": "^7.6.3",
+    "yaml": "^2.6.1"
   }
 }

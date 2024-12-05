@@ -74,7 +74,7 @@ async function createResource() {
   if (!selectedCommand) {
     return;
   }
-  let params: string[] = [...details.cli ?? []];
+  let params: string[] = [...(details.cli ?? [])];
   for (const arg of args) {
     if (arg.length) {
       params.push(arg);
@@ -99,7 +99,7 @@ async function create() {
     await kreateApiClient.create(yamlResult);
     createdYaml = yamlResult;
   } catch (err: unknown) {
-    createError = String(err);    
+    createError = String(err);
   }
 }
 </script>
@@ -123,18 +123,24 @@ async function create() {
     {#if commands && commands.length}
       <Dropdown
         id="resource"
-        options={[{ label: '(select a resource)', value: ''}, ...commands.map(c => ({
-          label: c,
-          value: c,
-        }))]}
+        options={[
+          { label: '(select a resource)', value: '' },
+          ...commands.map(c => ({
+            label: c,
+            value: c,
+          })),
+        ]}
         onChange={onCommandChange} />
       {#if subcommands && subcommands.length}
         <Dropdown
           id="subresource"
-          options={[{ label: '(select a resource type)', value: ''}, ...subcommands.map(c => ({
-            label: c,
-            value: c,
-          }))]}
+          options={[
+            { label: '(select a resource type)', value: '' },
+            ...subcommands.map(c => ({
+              label: c,
+              value: c,
+            })),
+          ]}
           onChange={onSubcommandChange} />
       {/if}
       <Button on:click={createResource}>View YAML</Button>

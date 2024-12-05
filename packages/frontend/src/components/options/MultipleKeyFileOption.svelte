@@ -38,16 +38,15 @@ function getValue(kvs: KeyValue[]): string[] {
     return [];
   }
   if (option.repeatFlag) {
-    return kvs
-      .reduce((acc, kv) => {
-        acc.push(option.flag);
-        if (kv.key) {
-          acc.push(`${kv.key}=${kv.value}`);
-        } else {
-          acc.push(kv.value);
-        }
-        return acc;
-      }, [] as string[]);
+    return kvs.reduce((acc, kv) => {
+      acc.push(option.flag);
+      if (kv.key) {
+        acc.push(`${kv.key}=${kv.value}`);
+      } else {
+        acc.push(kv.value);
+      }
+      return acc;
+    }, [] as string[]);
   }
   return [option.flag, ...kvs.filter(kv => kv.key !== '').map(kv => `${kv.key}=${kv.value}`)];
 }
@@ -59,7 +58,7 @@ function getValue(kvs: KeyValue[]): string[] {
       <Input placeholder="key" bind:value={value.key} on:input={e => onKeyChange(e, i)} />
       <FileInput value={value.value} options={{ selectors }} onChange={s => onFileChange(s, i)} />
 
-       <Button
+      <Button
         type="link"
         hidden={i === keyValues.length - 1}
         on:click={() => deleteEnvVariable(i)}
@@ -68,4 +67,3 @@ function getValue(kvs: KeyValue[]): string[] {
     </div>
   {/each}
 </div>
-  

@@ -2,7 +2,8 @@ import * as podmanDesktopApi from '@podman-desktop/api';
 import type { KreateApi } from '../../shared/src/KreateApi';
 import commands from './assets/commands.json';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
-import { KubeConfig, KubernetesObject } from '@kubernetes/client-node';
+import type { KubernetesObject } from '@kubernetes/client-node';
+import { KubeConfig } from '@kubernetes/client-node';
 import { parseAllDocuments } from 'yaml';
 
 /**
@@ -59,7 +60,7 @@ export class KreateApiImpl implements KreateApi {
     const kubeConfig = new KubeConfig();
     kubeConfig.loadFromFile(file.path);
     const context = kubeConfig.currentContext;
-    
+
     const manifests = await this.loadManifestsFromFile(s);
     if (manifests.filter(s => s?.kind).length === 0) {
       throw new Error('No valid Kubernetes resources found in content');
