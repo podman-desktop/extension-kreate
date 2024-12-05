@@ -5,18 +5,16 @@ import NumberInput from '../ui/NumberInput.svelte';
 export let option: CommandOptionNumber;
 export let onChange = (_value: string[]) => {};
 
-function onInputChange(event: Event) {
-  const inputEvent = event as Event & { target: HTMLInputElement };
-  const value = inputEvent.target.value;
-  onChange(getValue(value));
+function onInputChange(n: number) {
+  onChange(getValue(n));
 }
 
-function getValue(s: string): string[] {
-  if (s === String(option.default)) {
+function getValue(n: number): string[] {
+  if (n === option.default) {
     return [];
   }
-  return [option.flag, s];
+  return [option.flag, String(n)];
 }
 </script>
 
-<NumberInput type="integer" value={option.default} on:input={e => onInputChange(e)} />
+<NumberInput type="integer" value={option.default} onValidation={n => onInputChange(n)} />
