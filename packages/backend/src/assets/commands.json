@@ -194,6 +194,20 @@
           "description": "If true, run the container in privileged mode",
           "type": "boolean",
           "default": false
+        },
+        {
+          "flag": "--expose",
+          "label": "Expose",
+          "description": "If true, create a ClusterIP service associated with the pod.  Requires `port`",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "flag": "--port",
+          "label": "Port",
+          "description": "The port that this container exposes",
+          "type": "number",
+          "default": 0
         }
       ],
       "cli": [

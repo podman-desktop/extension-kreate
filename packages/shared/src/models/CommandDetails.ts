@@ -23,6 +23,15 @@ export function isCommandOptionBoolean(co: CommandOption): co is CommandOptionBo
   return co.type === 'boolean';
 }
 
+export interface CommandOptionNumber extends CommandOption {
+  type: 'number';
+  default: number;
+}
+
+export function isCommandOptionNumber(co: CommandOption): co is CommandOptionNumber {
+  return co.type === 'number';
+}
+
 export interface CommandDetails {
   name: string;
   args?: CommandArg[];
