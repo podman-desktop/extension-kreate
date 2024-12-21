@@ -12,6 +12,8 @@ import MultipleFileOption from './components/options/MultipleFileOption.svelte';
 import MultipleKeyFileOption from './components/options/MultipleKeyFileOption.svelte';
 import SingleBooleanOption from './components/options/SingleBooleanOption.svelte';
 import SingleNumberOption from './components/options/SingleNumberOption.svelte';
+import type { OpenAPIV3 } from 'openapi-types';
+import Spec from './components/spec/Spec.svelte';
 
 let selectedCommand: string | undefined = '';
 let selectedSubcommand: string | undefined;
@@ -28,6 +30,16 @@ let error: string = '';
 
 let createError: string = '';
 let createdYaml = '';
+
+let spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject | undefined;
+let cursorPosition: number = 0;
+let pathInSpec: string[] = [];
+$: updateSpec(yamlResult, cursorPosition);
+
+async function updateSpec(yamlResult: string, cursorPosition: number) {
+  spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult);
+  pathInSpec = await kreateApiClient.getPathAtPosition(yamlResult, cursorPosition);
+}
 
 onMount(async () => {
   commands = await kreateApiClient.getCommands();
@@ -102,18 +114,28 @@ async function create() {
     createError = String(err);
   }
 }
+
+async function onCursorChange(position: number) {
+  cursorPosition = position;
+}
 </script>
 
 <div class="p-4 flex flex-col space-y-4 h-full w-full bg-[var(--pd-content-card-bg)]">
-  <div class="flex flex-row items-start w-full space-x-4">
+  <div class="flex flex-row items-start w-full h-full space-x-4 basis-1/2 max-h-64">
     <textarea
-      class="w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
-      rows="20"
+      class="font-mono max-h-64 basis-1/2 w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
+      rows="10"
+      on:selectionchange={(e) => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
       bind:value={yamlResult}>
     </textarea>
-    <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Create</Button>
+    <div class="flex flex-col basis-1/2 h-full space-y-2">
+      <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Create</Button>
+      <div class="w-full h-full overflow-y-auto">
+        {#if spec}<Spec begin={pathInSpec} maxDepth={2} spec={spec} />{/if}
+      </div>
+    </div>
   </div>
-
+    
   {#if createError}
     <div class="text-red-600">{createError}</div>
   {/if}
