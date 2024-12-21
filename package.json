@@ -60,7 +60,7 @@
     ]
   },
   "dependencies": {
-    "@kubernetes/client-node": "1.0.0-rc7",
+    "@kubernetes/client-node": "1.0.0",
     "js-yaml": "^4.1.0"
   }
 }
