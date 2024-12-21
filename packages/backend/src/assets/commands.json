@@ -76,6 +76,7 @@
           "label": "Port",
           "description": "The containerPort that this deployment exposes",
           "type": "number",
+          "multiple": false,
           "default": -1
         },
         {
@@ -83,6 +84,7 @@
           "label": "Replicas",
           "description": "Number of replicas to create",
           "type": "number",
+          "multiple": false,
           "default": 1
         }
       ],
@@ -184,6 +186,7 @@
           "label": "First extra argument is Command",
           "description": "If true and extra arguments are present, use them as the 'command' field in the container, rather than the 'args' field which is the default",
           "type": "boolean",
+          "multiple": false,
           "default": false
         },
         {
@@ -207,6 +210,7 @@
           "label": "Privileged",
           "description": "If true, run the container in privileged mode",
           "type": "boolean",
+          "multiple": false,
           "default": false
         },
         {
@@ -214,6 +218,7 @@
           "label": "Expose",
           "description": "If true, create a ClusterIP service associated with the pod.  Requires `port`",
           "type": "boolean",
+          "multiple": false,
           "default": false
         },
         {
@@ -221,6 +226,7 @@
           "label": "Port",
           "description": "The port that this container exposes",
           "type": "number",
+          "multiple": false,
           "default": 0
         }
       ],
@@ -509,6 +515,7 @@
               "label": "Node Port",
               "description": "Port used to expose the service on each node in a cluster",
               "type": "number",
+              "multiple": false,
               "default": 0
             }
           ],
