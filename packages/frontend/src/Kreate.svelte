@@ -115,8 +115,8 @@ async function create() {
   }
 }
 
-async function onCursorChange(position: number) {
-  cursorPosition = position;
+async function onCursorChange(position: number) {  
+  cursorPosition = yamlResult.substring(0, position).split(/\r\n|\r|\n/).length - 1;
 }
 </script>
 

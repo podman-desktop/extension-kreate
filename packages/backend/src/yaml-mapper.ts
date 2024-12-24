@@ -165,7 +165,7 @@ export class SourceMap {
               path: fragment.path.slice(pathName.length + 1),
             });
 
-            newFragment.line = fragment.line;
+            newFragment.line = fragment.line - 1;
             newFragment.position = fragment.position;
             newFragment.lineStart = fragment.lineStart;
           }
@@ -271,7 +271,7 @@ export class SourceMap {
 
   public getAtPos(searchedPosition: number) {
     const sortedMap = Array.from(this._map.entries()).map(([ path, positions ]) => {
-      return [path, positions.lineStart];
+      return [path, positions.line];
     }).sort(( a, b) => {
       return a[1] > b[1] ? -1 : 1;
     });
