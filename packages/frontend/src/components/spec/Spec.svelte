@@ -6,8 +6,6 @@ export let prefix: string  = '';
 export let maxDepth: number;
 export let begin: string[] = [];
 
-$: console.log('==> spec', spec);
-
 function isReferenceObject(spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject): spec is OpenAPIV3.ReferenceObject {
   return typeof spec === 'object' && '$ref' in spec;
 }

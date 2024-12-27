@@ -32,13 +32,19 @@ let createError: string = '';
 let createdYaml = '';
 
 let spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject | undefined;
-let cursorPosition: number = 0;
+let cursorLine: number = 0;
+let cursorLineIsEmpty = false;
+let emptyLineIndentation = 0;
 let pathInSpec: string[] = [];
-$: updateSpec(yamlResult, cursorPosition);
+$: updateSpec(yamlResult, cursorLine);
 
-async function updateSpec(yamlResult: string, cursorPosition: number) {
+async function updateSpec(yamlResult: string, cursorLine: number) {
   spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult);
-  pathInSpec = await kreateApiClient.getPathAtPosition(yamlResult, cursorPosition);
+  let path = await kreateApiClient.getPathAtPosition(yamlResult, cursorLine);
+  if (cursorLineIsEmpty) {
+    path = path.slice(0, emptyLineIndentation + 1);
+  }
+  pathInSpec = path;
 }
 
 onMount(async () => {
@@ -115,8 +121,15 @@ async function create() {
   }
 }
 
-async function onCursorChange(position: number) {  
-  cursorPosition = yamlResult.substring(0, position).split(/\r\n|\r|\n/).length - 1;
+// TODO call when content changes
+async function onCursorChange(position: number) {
+  const lines = yamlResult.substring(0, position).split(/\r\n|\r|\n/);
+  const currentLine = yamlResult.split(/\r\n|\r|\n/)[lines.length-1];
+  cursorLineIsEmpty = (currentLine.trim() === '');
+  if (cursorLineIsEmpty) {
+    emptyLineIndentation = Math.floor(currentLine.length / 2);
+  }
+  cursorLine = lines.length - 1;
 }
 </script>
 
