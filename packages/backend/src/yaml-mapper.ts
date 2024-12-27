@@ -129,7 +129,7 @@ export class SourceMap {
             lineStart,
           });
         }
-      } else if (kind === "mapping") {
+      } else if (kind === "mapping" || kind === null) {
         const newFragment: Fragment = {
           path: pathName,
           children: [],
@@ -275,6 +275,10 @@ export class SourceMap {
     }).sort(( a, b) => {
       return a[1] > b[1] ? -1 : 1;
     });
-    return sortedMap.find(([_path, pos]) => (pos as number) <= searchedPosition)?.[0];
+    console.log('==> line', searchedPosition);
+    console.log('==> sortedMap', sortedMap);
+    const result = sortedMap.find(([_path, pos]) => (pos as number) <= searchedPosition)?.[0];
+    console.log('==> result', result);
+    return result;
   }
 }
