@@ -1,10 +1,29 @@
 <script lang="ts">
 import type { OpenAPIV3 } from "openapi-types";
+import { tick } from "svelte";
+import { TOP } from "./Spec";
+
+const INITIAL_MAX_DEPTH = 1;
 
 export let spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
 export let prefix: string  = '';
-export let maxDepth: number;
+export let maxDepth: number = INITIAL_MAX_DEPTH;
 export let begin: string[] = [];
+export let scrollTo: string | undefined = undefined;
+
+$: scroll(scrollTo);
+async function scroll(to: string | undefined): Promise<void> {
+  if (to === undefined) {
+    return;
+  }
+  if (to === '' || isNumeric(to)) {
+    await tick();
+    document.getElementById(TOP)?.scrollIntoView();
+    return;
+  }
+  await tick();
+  document.getElementById(to)?.scrollIntoView();
+}
 
 function isReferenceObject(spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject): spec is OpenAPIV3.ReferenceObject {
   return typeof spec === 'object' && '$ref' in spec;
@@ -53,6 +72,7 @@ function isNumeric(value: string) {
     return /^\d+$/.test(value);
 }
 </script>
+<span id={TOP}></span>
 {#if begin.length > 1 && !isReferenceObject(spec)}
   <span class="font-mono">.{begin[0]}</span>
   {#if isNumeric(begin[0])}
@@ -75,7 +95,7 @@ function isNumeric(value: string) {
           <ul class="ml-4">
           {#each Object.entries(spec.properties) as [property, subSpec]}
             {#if !isReferenceObject(subSpec)}
-              <li><b>{prefix}{property}{getType(subSpec)}</b><svelte:self maxDepth={maxDepth-1} prefix='{prefix}{property}.' spec={subSpec} /></li>
+              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}><b>{prefix}{property}{getType(subSpec)}</b><svelte:self maxDepth={maxDepth-1} prefix='{prefix}{property}.' spec={subSpec} /></li>
             {/if}
           {/each}
           </ul>
@@ -84,7 +104,7 @@ function isNumeric(value: string) {
           <ul class="ml-4">
           {#each Object.entries(spec.items) as [property, subSpec]}
             {#if !isReferenceObject(subSpec)}
-              <li><b>{prefix}{property}{getType(subSpec)}</b><svelte:self maxDepth={maxDepth-1} prefix='{prefix}{property}.' spec={subSpec} /></li>
+              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}><b>{prefix}{property}{getType(subSpec)}</b><svelte:self maxDepth={maxDepth-1} prefix='{prefix}{property}.' spec={subSpec} /></li>
             {/if}
           {/each}
           </ul>

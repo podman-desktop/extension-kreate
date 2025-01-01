@@ -14,6 +14,7 @@ import SingleBooleanOption from './components/options/SingleBooleanOption.svelte
 import SingleNumberOption from './components/options/SingleNumberOption.svelte';
 import type { OpenAPIV3 } from 'openapi-types';
 import Spec from './components/spec/Spec.svelte';
+import { TOP } from './components/spec/Spec';
 
 let selectedCommand: string | undefined = '';
 let selectedSubcommand: string | undefined;
@@ -36,13 +37,13 @@ let cursorLine: number = 0;
 let cursorLineIsEmpty = false;
 let emptyLineIndentation = 0;
 let pathInSpec: string[] = [];
-$: updateSpec(yamlResult, cursorLine);
+$: updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
 
-async function updateSpec(yamlResult: string, cursorLine: number) {
+async function updateSpec(yamlResult: string, cursorLine: number, cursorLineIsEmpty: boolean, emptyLineIndentation: number) {
   spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult);
   let path = await kreateApiClient.getPathAtPosition(yamlResult, cursorLine);
   if (cursorLineIsEmpty) {
-    path = path.slice(0, emptyLineIndentation + 1);
+    path = path.filter(p => !isNumeric(p)).slice(0, emptyLineIndentation);
   }
   pathInSpec = path;
 }
@@ -121,7 +122,12 @@ async function create() {
   }
 }
 
-// TODO call when content changes
+async function onValueChange(event: Event) {
+  const textareaEvent = event as Event & { target: HTMLTextAreaElement };
+  yamlResult = textareaEvent.target.value;
+  onCursorChange(textareaEvent.target.selectionStart);
+}
+
 async function onCursorChange(position: number) {
   const lines = yamlResult.substring(0, position).split(/\r\n|\r|\n/);
   const currentLine = yamlResult.split(/\r\n|\r|\n/)[lines.length-1];
@@ -131,6 +137,18 @@ async function onCursorChange(position: number) {
   }
   cursorLine = lines.length - 1;
 }
+
+function getScrollTo(paths: string[]): string {
+  if (!paths.length) {
+    return TOP;
+  }
+  return paths.slice(-1)[0];
+}
+
+function isNumeric(value: string) {
+    return /^\d+$/.test(value);
+}
+
 </script>
 
 <div class="p-4 flex flex-col space-y-4 h-full w-full bg-[var(--pd-content-card-bg)]">
@@ -139,12 +157,12 @@ async function onCursorChange(position: number) {
       class="font-mono max-h-64 basis-1/2 w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
       rows="10"
       on:selectionchange={(e) => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
-      bind:value={yamlResult}>
-    </textarea>
+      on:input={onValueChange}
+      value={yamlResult}></textarea>
     <div class="flex flex-col basis-1/2 h-full space-y-2">
       <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Create</Button>
       <div class="w-full h-full overflow-y-auto">
-        {#if spec}<Spec begin={pathInSpec} maxDepth={2} spec={spec} />{/if}
+        {#if spec}<Spec begin={pathInSpec} spec={spec} scrollTo={getScrollTo(pathInSpec)} />{/if}
       </div>
     </div>
   </div>
