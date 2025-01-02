@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Button, Dropdown, Input } from '@podman-desktop/ui-svelte';
 import { kreateApiClient } from './api/client';
-import { onMount } from 'svelte';
+import { onMount, tick } from 'svelte';
 import MultipleKeyValueOption from './components/options/MultipleKeyValueOption.svelte';
 import { isCommandOptionBoolean, isCommandOptionNumber, type CommandDetails } from '/@shared/src/models/CommandDetails';
 import SingleStringOption from './components/options/SingleStringOption.svelte';
@@ -37,15 +37,20 @@ let cursorLine: number = 0;
 let cursorLineIsEmpty = false;
 let emptyLineIndentation = 0;
 let pathInSpec: string[] = [];
+
+let yamlEditor: HTMLTextAreaElement;
+
 $: updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
 
 async function updateSpec(yamlResult: string, cursorLine: number, cursorLineIsEmpty: boolean, emptyLineIndentation: number) {
-  spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult);
-  let path = await kreateApiClient.getPathAtPosition(yamlResult, cursorLine);
-  if (cursorLineIsEmpty) {
-    path = path.filter(p => !isNumeric(p)).slice(0, emptyLineIndentation);
-  }
-  pathInSpec = path;
+  try {
+    spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult);
+    let path = await kreateApiClient.getPathAtPosition(yamlResult, cursorLine);
+    if (cursorLineIsEmpty) {
+      path = path.filter(p => !isNumeric(p)).slice(0, emptyLineIndentation);
+    }
+    pathInSpec = path;
+  } catch {}
 }
 
 onMount(async () => {
@@ -107,8 +112,12 @@ async function createResource() {
   error = '';
   try {
     yamlResult = await kreateApiClient.executeCommand(params);
+    await tick();
+    yamlEditor.focus();
+    yamlEditor.setSelectionRange(0, 0);
+    yamlEditor.scrollTo({ top: 0 });
   } catch (err: unknown) {
-    error = String(err);
+    error = String(`execute command error: ${err}`);
   }
 }
 
@@ -129,6 +138,9 @@ async function onValueChange(event: Event) {
 }
 
 async function onCursorChange(position: number) {
+  if (!yamlResult) {
+    return;
+  }
   const lines = yamlResult.substring(0, position).split(/\r\n|\r|\n/);
   const currentLine = yamlResult.split(/\r\n|\r|\n/)[lines.length-1];
   cursorLineIsEmpty = (currentLine.trim() === '');
@@ -154,6 +166,7 @@ function isNumeric(value: string) {
 <div class="p-4 flex flex-col space-y-4 h-full w-full bg-[var(--pd-content-card-bg)]">
   <div class="flex flex-row items-start w-full h-full space-x-4 basis-1/2 max-h-64">
     <textarea
+      bind:this={yamlEditor}
       class="font-mono max-h-64 basis-1/2 w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
       rows="10"
       on:selectionchange={(e) => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
