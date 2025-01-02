@@ -5,6 +5,8 @@ import type { CommandDetails } from '/@shared/src/models/CommandDetails';
 import type { KubernetesObject } from '@kubernetes/client-node';
 import { KubeConfig } from '@kubernetes/client-node';
 import { parseAllDocuments } from 'yaml';
+import { SpecReader } from './spec-reader';
+import { OpenAPIV3 } from 'openapi-types';
 
 /**
  * HelloWorldApi is an interface that defines the abstracted class for the HelloWorldApi, it is a requirement to match this interface to your API implementation.
@@ -12,7 +14,14 @@ import { parseAllDocuments } from 'yaml';
  * The below code can be used with the podmanDesktopApi to showcase the usage of the API, as well as any other "backend" code that you may want to run.
  */
 export class KreateApiImpl implements KreateApi {
-  constructor(private readonly extensionContext: podmanDesktopApi.ExtensionContext) {}
+  #specReader: SpecReader;
+
+  constructor(private readonly extensionContext: podmanDesktopApi.ExtensionContext) {
+    const file = podmanDesktopApi.kubernetes.getKubeconfig();
+    const kubeConfig = new KubeConfig();
+    kubeConfig.loadFromFile(file.path);
+    this.#specReader = new SpecReader(kubeConfig);
+  }
 
   async getCommands(parent?: string): Promise<string[]> {
     if (!parent) {
@@ -68,6 +77,14 @@ export class KreateApiImpl implements KreateApi {
     await podmanDesktopApi.kubernetes.createResources(context, manifests);
   }
 
+  public async getSpecFromYamlManifest(content: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
+    return this.#specReader.getSpecFromYamlManifest(content);
+  }
+  
+  public async getPathAtPosition(content: string, position: number): Promise<string[]> {
+    return this.#specReader.getPathAtPosition(content, position);
+  }
+
   private async loadManifestsFromFile(content: string): Promise<KubernetesObject[]> {
     const manifests = parseAllDocuments(content, { customTags: this.getTags });
     // filter out null manifests
@@ -87,5 +104,5 @@ export class KreateApiImpl implements KreateApi {
       }
     }
     return tags;
-  }
+  }  
 }
