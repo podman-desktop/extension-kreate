@@ -59,3 +59,9 @@ The `options` are the flags provided by the command. They can be of different ty
 - `key-fileOrDirectory`: a key and a file or directory (used by `kubectl create configmap --from-file`) (multiple)
 
 The `repeatFlag` attribute for an option indicates if the flag must be repeated in the command line, for example `cli --flag1 value1 --flag1 value2`.
+
+## Install
+
+You can install the extension by providing the following OCI image in the **Install Custom Extension** form (accessible from `Podman Desktop > Extensions > Install Custom...`):
+
+OCI Image: `quay.io/phmartin/kreate:v0.0.6`
