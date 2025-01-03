@@ -1,12 +1,32 @@
 # Kreate: Podman Desktop Extension
 
-![Demo](./kreate-demo.gif)
+The Kreate extension for Podman Desktop provides utilities to help developers create manifests for Kubernetes resources.
 
-Kreate provides forms to create various Kubernetes resources. The user fills the form
+## Forms
+
+The user can use forms to create various Kubernetes resources. The user fills the form
 for a specific resource type, and the YAML manifest to create the resource is displayed. The user
 can then update the YAML manifest is necessary, before to apply this YAML manifest to the current Kubernetes context.
 
 The standard forms provided by Kreate are based on the commands `kubectl create ...`.
+
+![Create a Pod with a Form](./kreate-02-create-pod.gif)
+
+## Explain
+
+When the user is editing the Kubernetes manifest for a resource (the manifest being created either with a form or manually), the documentation
+for the resource being edited is displayed, focusing on the part of the manifest being edited.
+
+Demo after using a Deployment form:
+
+![Explain Deployment](./kreate-03-explain.gif)
+
+Demo creating a NetworkPolicy manually:
+
+![Explain NetworkPolicy](./kreate-03-explain-any.gif)
+
+
+## Extending forms
 
 Kreate is extensible and you can provide your own commands with their own arguments
 and flags.
@@ -61,6 +81,8 @@ The `options` are the flags provided by the command. They can be of different ty
 The `repeatFlag` attribute for an option indicates if the flag must be repeated in the command line, for example `cli --flag1 value1 --flag1 value2`.
 
 ## Install
+
+![Install Kreate extension](./kreate-01-install.gif)
 
 You can install the extension by providing the following OCI image in the **Install Custom Extension** form (accessible from `Podman Desktop > Extensions > Install Custom...`):
 
