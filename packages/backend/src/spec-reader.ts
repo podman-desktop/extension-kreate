@@ -39,10 +39,7 @@ export class SpecReader {
     if (!manifest.kind) {
       throw new Error('kind not defined in the manifest');
     }
-    return this.getGroupVersionSpec(
-      this.getGroupVersionFromApiVersion(manifest.apiVersion), 
-      `${this.getSchemaPrefixFromApiVersion(manifest.apiVersion)}.${manifest.kind}`,
-    );
+    return this.getGroupVersionSpec(manifest.apiVersion, manifest.kind);
   }
   
   public async getPathAtPosition(content: string, position: number): Promise<string[]> {
@@ -76,7 +73,8 @@ export class SpecReader {
     return this.#index;
   }
 
-  private async getGroupVersionSpec(groupVersion: string, resource: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
+  private async getGroupVersionSpec(apiVersion: string, kind: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
+    const groupVersion = this.getGroupVersionFromApiVersion(apiVersion);
     const index = await this.getIndex();
     const path = index.paths[groupVersion].serverRelativeURL;
     const cluster = this.#kubeconfig.getCurrentCluster();
@@ -93,10 +91,46 @@ export class SpecReader {
       throw new Error(`invalid spec for ${groupVersion}`);
     }
     const document: OpenAPIV3.Document = result.schema;
-    if (!document.components?.schemas?.[resource]) {
-      throw new Error(`schema not found for ${resource} in ${groupVersion}`);
+    if (!document.components?.schemas) {
+      throw new Error('no schemas found in spec');
     }
+    const resource = this.getSchemedResource(document.components.schemas, apiVersion, kind);
     return document.components.schemas[resource];
+  }
+
+  private getSchemedResource(
+    schemas: {
+      [key: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
+    },
+    apiVersion: string,
+    kind: string,
+  ): string {
+    const [group, version] = this.getGroupAndVersion(apiVersion);
+    for (const [k, v] of Object.entries(schemas)) {
+      if (
+          'x-kubernetes-group-version-kind' in v &&
+          Array.isArray(v['x-kubernetes-group-version-kind']) &&
+          v['x-kubernetes-group-version-kind'].length > 0) {
+        const gvk = v['x-kubernetes-group-version-kind'][0];
+        if (this.isGroupVersionKind(gvk)) {
+          if (gvk.group === group && gvk.version === version && gvk.kind === kind) {
+            return k;
+          }
+        }
+      }
+    }
+    throw new Error(`no resource found for apiVersion ${apiVersion} and kind ${kind}`);
+  }
+
+  private getGroupAndVersion(apiVersion: string): string[] {
+    if (apiVersion.includes('/')) {
+      return apiVersion.split('/');
+    }
+    return ['', apiVersion];
+  }
+
+  private isGroupVersionKind(v: any): v is { group: string, version: string, kind: string} {
+    return 'group' in v && 'version' in v && 'kind' in v;
   }
 
   private getGroupVersionFromApiVersion(apiVersion: string): string {
@@ -105,15 +139,6 @@ export class SpecReader {
         return 'api/v1';
       default:
         return `apis/${apiVersion}`;
-    }
-  }
-
-  private getSchemaPrefixFromApiVersion(apiVersion: string): string {
-    switch (apiVersion) {
-      case 'v1':
-        return 'io.k8s.api.core.v1';
-      default:
-        return `io.k8s.api.${apiVersion.replace('.k8s.io', '').replace('/', '.')}`;
     }
   }
 
