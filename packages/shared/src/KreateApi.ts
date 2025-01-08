@@ -1,6 +1,6 @@
 import type { CommandDetails } from './models/CommandDetails';
 import type * as podmanDesktopApi from '@podman-desktop/api';
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 
 export abstract class KreateApi {
   abstract getCommands(parent?: string): Promise<string[]>;

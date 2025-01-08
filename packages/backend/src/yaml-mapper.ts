@@ -7,7 +7,7 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // from https://github.com/tctree333/js-yaml-source-map
-import { State } from 'js-yaml';
+import type { State } from 'js-yaml';
 
 // maps path in object to position information
 interface Path {
@@ -140,13 +140,12 @@ export class SourceMap {
         this.iterFragments(pathName, fragment => {
           index++;
           // always keep non-primitive fragments
-          if (!fragment.children || fragment.children.length === 0) {
+          if ((!fragment.children || fragment.children.length === 0) && (index % 2 === 1)) {
             // some fragments might be values, not keys.
             // keys will have an even index since we loop backwards, start at 0, and increment before checking.
-            if (index % 2 === 1) {
-              // discard odd indices, they're values
-              return;
-            }
+
+            // discard odd indices, they're values
+            return;
           }
 
           if (this._path.length === 1) {
@@ -185,6 +184,7 @@ export class SourceMap {
         // the document in order, we can find the order.
         //
         // we're actually looping backwards, so we count down from the end
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let index = (result as any[]).length;
         this.iterFragments(pathName, fragment => {
           if (seen.has(fragment.position)) {

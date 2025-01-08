@@ -1,7 +1,7 @@
-import { KubeConfig, KubernetesObject } from '@kubernetes/client-node';
+import type { KubeConfig, KubernetesObject } from '@kubernetes/client-node';
 import { validate } from '@scalar/openapi-parser';
 import fetch from 'node-fetch';
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { parseAllDocuments } from 'yaml';
 import { SourceMap } from './yaml-mapper';
 import yaml from 'js-yaml';
@@ -117,10 +117,8 @@ export class SpecReader {
         v['x-kubernetes-group-version-kind'].length > 0
       ) {
         const gvk = v['x-kubernetes-group-version-kind'][0];
-        if (this.isGroupVersionKind(gvk)) {
-          if (gvk.group === group && gvk.version === version && gvk.kind === kind) {
-            return k;
-          }
+        if (this.isGroupVersionKind(gvk) && gvk.group === group && gvk.version === version && gvk.kind === kind) {
+          return k;
         }
       }
     }
@@ -134,8 +132,8 @@ export class SpecReader {
     return ['', apiVersion];
   }
 
-  private isGroupVersionKind(v: any): v is { group: string; version: string; kind: string } {
-    return 'group' in v && 'version' in v && 'kind' in v;
+  private isGroupVersionKind(v: unknown): v is { group: string; version: string; kind: string } {
+    return !!v && typeof v === 'object' && 'group' in v && 'version' in v && 'kind' in v;
   }
 
   private getGroupVersionFromApiVersion(apiVersion: string): string {
@@ -147,6 +145,7 @@ export class SpecReader {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getTags(tags: any[]): any[] {
     for (const tag of tags) {
       if (tag.tag === 'tag:yaml.org,2002:int') {

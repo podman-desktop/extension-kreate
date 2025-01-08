@@ -6,7 +6,7 @@ import type { KubernetesObject } from '@kubernetes/client-node';
 import { KubeConfig } from '@kubernetes/client-node';
 import { parseAllDocuments } from 'yaml';
 import { SpecReader } from './spec-reader';
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 
 /**
  * HelloWorldApi is an interface that defines the abstracted class for the HelloWorldApi, it is a requirement to match this interface to your API implementation.
