@@ -2,12 +2,12 @@
 // Copyright 2024 Philippe Martin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // from https://github.com/tctree333/js-yaml-source-map
-import { State } from "js-yaml";
+import { State } from 'js-yaml';
 
 // maps path in object to position information
 interface Path {
@@ -40,7 +40,7 @@ export class SourceMap {
   constructor() {
     this._map = new Map();
     this._path = [];
-    this._lastScalar = "";
+    this._lastScalar = '';
     this._fragments = [];
     this._count = 0;
   }
@@ -52,8 +52,8 @@ export class SourceMap {
   // recursively pushes information to the path map
   private resolveNode(fragment: Fragment, path: string): void {
     // if fragment is already at the root, don't prepend stuff
-    if (fragment.path === ".") {
-      path = ".";
+    if (fragment.path === '.') {
+      path = '.';
     }
     // if the path is already in the map, we don't override it
     if (!this._map.get(path)) {
@@ -62,23 +62,17 @@ export class SourceMap {
     }
     // if there are children, we recursively resolve them
     if (fragment.children && fragment.children.length > 0) {
-      fragment.children.forEach((child) => {
-        this.resolveNode(child, (path === "." ? "" : path) + "." + child.path);
+      fragment.children.forEach(child => {
+        this.resolveNode(child, (path === '.' ? '' : path) + '.' + child.path);
       });
     }
   }
 
   // loops through fragments and removes children of the path
-  private iterFragments(
-    pathName: string,
-    callback: (fragment: Fragment) => void
-  ): void {
+  private iterFragments(pathName: string, callback: (fragment: Fragment) => void): void {
     for (let i = this._fragments.length - 1; i >= 0; i--) {
       // skip the parent and fragments not in the path
-      if (
-        !this._fragments[i].path.startsWith(pathName) ||
-        this._fragments[i].path === pathName
-      ) {
+      if (!this._fragments[i].path.startsWith(pathName) || this._fragments[i].path === pathName) {
         continue;
       }
       const fragment = this._fragments.pop() as Fragment;
@@ -86,7 +80,7 @@ export class SourceMap {
     }
   }
 
-  private handleState(event: "open" | "close", state: State): void {
+  private handleState(event: 'open' | 'close', state: State): void {
     // the listener function emits an "open" and "close" event for each "node".
     // "open" events tell us that we are going one level deeper, while "close"
     // events actually give us the correct data about the node. we receive each
@@ -99,13 +93,13 @@ export class SourceMap {
     // edit past fragments to the correct path when constructed objects are finally
     // emitted.
 
-    if (event === "close") {
+    if (event === 'close') {
       const result = state.result as unknown;
       const kind = state.kind;
-      const pathName = this._path.join(".");
+      const pathName = this._path.join('.');
 
       // scalar typse are primitives (non maps/arrays)
-      if (kind === "scalar") {
+      if (kind === 'scalar') {
         // we need to pop the path before computing things for scalars
         this._path.pop();
 
@@ -115,7 +109,7 @@ export class SourceMap {
         const { line, position, lineStart } = state;
         if (this._path.length === 0) {
           // a path of length 0 is the root, store this to the path map
-          this._map.set("." + (result as string), {
+          this._map.set('.' + (result as string), {
             line,
             position,
             lineStart,
@@ -123,13 +117,13 @@ export class SourceMap {
         } else {
           // a path of length > 1 is a child of the root, store this as a fragment
           this._fragments.push({
-            path: this._path.join(".") + "." + (result as string),
+            path: this._path.join('.') + '.' + (result as string),
             line,
             position,
             lineStart,
           });
         }
-      } else if (kind === "mapping" || kind === null) {
+      } else if (kind === 'mapping' || kind === null) {
         const newFragment: Fragment = {
           path: pathName,
           children: [],
@@ -143,7 +137,7 @@ export class SourceMap {
         // we're just counting, so the index doesn't correspond to anything
         // and we can count up, even though we're looping backwards.
         let index = 0;
-        this.iterFragments(pathName, (fragment) => {
+        this.iterFragments(pathName, fragment => {
           index++;
           // always keep non-primitive fragments
           if (!fragment.children || fragment.children.length === 0) {
@@ -173,7 +167,7 @@ export class SourceMap {
         this._fragments.push(newFragment);
 
         this._path.pop();
-      } else if (kind === "sequence") {
+      } else if (kind === 'sequence') {
         // fragment paths are junk for sequences so we don't use them.
 
         const newFragment: Fragment = {
@@ -192,7 +186,7 @@ export class SourceMap {
         //
         // we're actually looping backwards, so we count down from the end
         let index = (result as any[]).length;
-        this.iterFragments(pathName, (fragment) => {
+        this.iterFragments(pathName, fragment => {
           if (seen.has(fragment.position)) {
             return;
           }
@@ -223,11 +217,11 @@ export class SourceMap {
       }
     }
 
-    if (event === "open") {
+    if (event === 'open') {
       if (this._count === 0) {
         // save the root document
         const { line, position, lineStart } = state;
-        this._map.set(".", { line, position, lineStart });
+        this._map.set('.', { line, position, lineStart });
       }
 
       // open events might have junk data, so we push the last found scalar
@@ -244,18 +238,17 @@ export class SourceMap {
   }
 
   public lookup(path: string | string[]): SourceLocation | undefined {
-    let pathName =
-      path instanceof Array ? path.map((f) => `${f}`).join(".") : `${path}`;
-    if (!pathName.startsWith(".")) {
+    let pathName = path instanceof Array ? path.map(f => `${f}`).join('.') : `${path}`;
+    if (!pathName.startsWith('.')) {
       // add leading dot if not present
-      pathName = "." + pathName;
+      pathName = '.' + pathName;
     }
-    if (pathName.startsWith("..")) {
+    if (pathName.startsWith('..')) {
       // fix double leading dots if present
       pathName = pathName.slice(1);
     }
     // convert bracket notation to dot notation
-    pathName = pathName.replace(/\[/g, ".").replace(/\]/g, "");
+    pathName = pathName.replace(/\[/g, '.').replace(/\]/g, '');
 
     const pathInfo = this._map.get(pathName);
     if (!pathInfo) {
@@ -270,11 +263,13 @@ export class SourceMap {
   }
 
   public getAtPos(searchedPosition: number) {
-    const sortedMap = Array.from(this._map.entries()).map(([ path, positions ]) => {
-      return [path, positions.line];
-    }).sort(( a, b) => {
-      return a[1] > b[1] ? -1 : 1;
-    });
+    const sortedMap = Array.from(this._map.entries())
+      .map(([path, positions]) => {
+        return [path, positions.line];
+      })
+      .sort((a, b) => {
+        return a[1] > b[1] ? -1 : 1;
+      });
     return sortedMap.find(([_path, pos]) => (pos as number) <= searchedPosition)?.[0];
   }
 }

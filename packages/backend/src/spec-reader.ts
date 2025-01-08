@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { OpenAPIV3 } from 'openapi-types';
 import { parseAllDocuments } from 'yaml';
 import { SourceMap } from './yaml-mapper';
-import yaml from "js-yaml";
+import yaml from 'js-yaml';
 
 export interface Index {
   paths: IndexPaths;
@@ -26,9 +26,10 @@ export class SpecReader {
     this.#kubeconfig = kubeconfig;
   }
 
-
   public async getSpecFromYamlManifest(content: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
-    const manifests = parseAllDocuments(content, { customTags: this.getTags }).map(manifest => manifest.toJSON()).filter(manifest => !!manifest);
+    const manifests = parseAllDocuments(content, { customTags: this.getTags })
+      .map(manifest => manifest.toJSON())
+      .filter(manifest => !!manifest);
     if (manifests.length < 1) {
       throw new Error('no manifest found');
     }
@@ -41,7 +42,7 @@ export class SpecReader {
     }
     return this.getGroupVersionSpec(manifest.apiVersion, manifest.kind);
   }
-  
+
   public async getPathAtPosition(content: string, position: number): Promise<string[]> {
     const map = new SourceMap();
     yaml.load(content, { listener: map.listen() });
@@ -73,7 +74,10 @@ export class SpecReader {
     return this.#index;
   }
 
-  private async getGroupVersionSpec(apiVersion: string, kind: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
+  private async getGroupVersionSpec(
+    apiVersion: string,
+    kind: string,
+  ): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
     const groupVersion = this.getGroupVersionFromApiVersion(apiVersion);
     const index = await this.getIndex();
     const path = index.paths[groupVersion].serverRelativeURL;
@@ -108,9 +112,10 @@ export class SpecReader {
     const [group, version] = this.getGroupAndVersion(apiVersion);
     for (const [k, v] of Object.entries(schemas)) {
       if (
-          'x-kubernetes-group-version-kind' in v &&
-          Array.isArray(v['x-kubernetes-group-version-kind']) &&
-          v['x-kubernetes-group-version-kind'].length > 0) {
+        'x-kubernetes-group-version-kind' in v &&
+        Array.isArray(v['x-kubernetes-group-version-kind']) &&
+        v['x-kubernetes-group-version-kind'].length > 0
+      ) {
         const gvk = v['x-kubernetes-group-version-kind'][0];
         if (this.isGroupVersionKind(gvk)) {
           if (gvk.group === group && gvk.version === version && gvk.kind === kind) {
@@ -129,7 +134,7 @@ export class SpecReader {
     return ['', apiVersion];
   }
 
-  private isGroupVersionKind(v: any): v is { group: string, version: string, kind: string} {
+  private isGroupVersionKind(v: any): v is { group: string; version: string; kind: string } {
     return 'group' in v && 'version' in v && 'kind' in v;
   }
 
@@ -154,5 +159,5 @@ export class SpecReader {
       }
     }
     return tags;
-  }  
+  }
 }

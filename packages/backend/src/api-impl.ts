@@ -80,7 +80,7 @@ export class KreateApiImpl implements KreateApi {
   public async getSpecFromYamlManifest(content: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
     return this.#specReader.getSpecFromYamlManifest(content);
   }
-  
+
   public async getPathAtPosition(content: string, position: number): Promise<string[]> {
     return this.#specReader.getPathAtPosition(content, position);
   }
@@ -104,5 +104,5 @@ export class KreateApiImpl implements KreateApi {
       }
     }
     return tags;
-  }  
+  }
 }

@@ -1,12 +1,12 @@
 <script lang="ts">
-import type { OpenAPIV3 } from "openapi-types";
-import { tick } from "svelte";
-import { TOP } from "./Spec";
+import type { OpenAPIV3 } from 'openapi-types';
+import { tick } from 'svelte';
+import { TOP } from './Spec';
 
 const INITIAL_MAX_DEPTH = 1;
 
 export let spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
-export let prefix: string  = '';
+export let prefix: string = '';
 export let maxDepth: number = INITIAL_MAX_DEPTH;
 export let begin: string[] = [];
 export let scrollTo: string | undefined = undefined;
@@ -25,12 +25,21 @@ async function scroll(to: string | undefined): Promise<void> {
   document.getElementById(to)?.scrollIntoView();
 }
 
-function isReferenceObject(spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject): spec is OpenAPIV3.ReferenceObject {
+function isReferenceObject(
+  spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
+): spec is OpenAPIV3.ReferenceObject {
   return typeof spec === 'object' && '$ref' in spec;
 }
 
-function isSchemaObject(additionalProperties: undefined | boolean | OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject): additionalProperties is OpenAPIV3.SchemaObject {
-  return typeof spec === 'object' && !!additionalProperties && typeof additionalProperties !== 'boolean' && 'type' in additionalProperties;
+function isSchemaObject(
+  additionalProperties: undefined | boolean | OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
+): additionalProperties is OpenAPIV3.SchemaObject {
+  return (
+    typeof spec === 'object' &&
+    !!additionalProperties &&
+    typeof additionalProperties !== 'boolean' &&
+    'type' in additionalProperties
+  );
 }
 
 function isArraySchemaObject(spec: OpenAPIV3.SchemaObject): spec is OpenAPIV3.ArraySchemaObject {
@@ -69,57 +78,72 @@ function getSpecAtPath(spec: OpenAPIV3.SchemaObject, path: string): OpenAPIV3.Sc
 }
 
 function isNumeric(value: string) {
-    return /^\d+$/.test(value);
+  return /^\d+$/.test(value);
 }
 </script>
+
 <span id={TOP}></span>
 {#if begin.length > 1 && !isReferenceObject(spec)}
   <span class="font-mono">.{begin[0]}</span>
   {#if isNumeric(begin[0])}
     <svelte:self begin={begin.slice(1)} maxDepth={maxDepth} prefix={prefix} spec={spec} />
+  {:else if !!spec.allOf && !isReferenceObject(spec.allOf[0])}
+    <svelte:self
+      begin={begin.slice(1)}
+      maxDepth={maxDepth}
+      prefix={prefix}
+      spec={getSpecAtPath(spec.allOf[0], begin[0])} />
+  {:else if isArraySchemaObject(spec) && !isReferenceObject(spec.items) && !!spec.items.allOf && !isReferenceObject(spec.items.allOf[0])}
+    <svelte:self
+      begin={begin.slice(1)}
+      maxDepth={maxDepth}
+      prefix={prefix}
+      spec={getSpecAtPath(spec.items.allOf[0], begin[0])} />
   {:else}
-    {#if !!spec.allOf && !isReferenceObject(spec.allOf[0])}
-      <svelte:self begin={begin.slice(1)} maxDepth={maxDepth} prefix={prefix} spec={getSpecAtPath(spec.allOf[0], begin[0])} />
-    {:else if isArraySchemaObject(spec) && !isReferenceObject(spec.items) && !!spec.items.allOf && !isReferenceObject(spec.items.allOf[0])}
-      <svelte:self begin={begin.slice(1)} maxDepth={maxDepth} prefix={prefix} spec={getSpecAtPath(spec.items.allOf[0], begin[0])} />
-    {:else}
-      <svelte:self begin={begin.slice(1)} maxDepth={maxDepth} prefix={prefix} spec={getSpecAtPath(spec, begin[0])} />
-    {/if}
+    <svelte:self begin={begin.slice(1)} maxDepth={maxDepth} prefix={prefix} spec={getSpecAtPath(spec, begin[0])} />
   {/if}
-{:else}
-  {#if maxDepth >= 0}
-    {#if spec && !isReferenceObject(spec)}
-      <div>
-        <h1>{spec.description}</h1>
-        {#if (spec.type === 'object') && !!spec.properties}
-          <ul class="ml-4">
+{:else if maxDepth >= 0}
+  {#if spec && !isReferenceObject(spec)}
+    <div>
+      <h1>{spec.description}</h1>
+      {#if spec.type === 'object' && !!spec.properties}
+        <ul class="ml-4">
           {#each Object.entries(spec.properties) as [property, subSpec]}
             {#if !isReferenceObject(subSpec)}
-              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}><b>{prefix}{property}{getType(subSpec)}</b><svelte:self maxDepth={maxDepth-1} prefix='{prefix}{property}.' spec={subSpec} /></li>
+              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}>
+                <b>{prefix}{property}{getType(subSpec)}</b><svelte:self
+                  maxDepth={maxDepth - 1}
+                  prefix="{prefix}{property}."
+                  spec={subSpec} />
+              </li>
             {/if}
           {/each}
-          </ul>
-        {/if}
-        {#if (spec.type === 'array') && !!spec.items && !isReferenceObject(spec.items) && isArraySchemaObject(spec.items)}
-          <ul class="ml-4">
+        </ul>
+      {/if}
+      {#if spec.type === 'array' && !!spec.items && !isReferenceObject(spec.items) && isArraySchemaObject(spec.items)}
+        <ul class="ml-4">
           {#each Object.entries(spec.items) as [property, subSpec]}
             {#if !isReferenceObject(subSpec)}
-              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}><b>{prefix}{property}{getType(subSpec)}</b><svelte:self maxDepth={maxDepth-1} prefix='{prefix}{property}.' spec={subSpec} /></li>
+              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}>
+                <b>{prefix}{property}{getType(subSpec)}</b><svelte:self
+                  maxDepth={maxDepth - 1}
+                  prefix="{prefix}{property}."
+                  spec={subSpec} />
+              </li>
             {/if}
           {/each}
-          </ul>
-        {/if}
-        {#if !!spec.allOf}
-          {#each spec.allOf as allOf}
-            <svelte:self maxDepth={maxDepth} prefix={prefix} spec={allOf} />
-          {/each}
-        {/if}
-        {#if isArraySchemaObject(spec) && !isReferenceObject(spec.items) && !!spec.items.allOf}
-          {#each spec.items.allOf as allOf}
-            <svelte:self maxDepth={maxDepth} prefix={prefix} spec={allOf} />
-          {/each}
-        {/if}
-      </div>
-    {/if}
+        </ul>
+      {/if}
+      {#if !!spec.allOf}
+        {#each spec.allOf as allOf}
+          <svelte:self maxDepth={maxDepth} prefix={prefix} spec={allOf} />
+        {/each}
+      {/if}
+      {#if isArraySchemaObject(spec) && !isReferenceObject(spec.items) && !!spec.items.allOf}
+        {#each spec.items.allOf as allOf}
+          <svelte:self maxDepth={maxDepth} prefix={prefix} spec={allOf} />
+        {/each}
+      {/if}
+    </div>
   {/if}
 {/if}

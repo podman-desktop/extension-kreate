@@ -42,7 +42,12 @@ let yamlEditor: HTMLTextAreaElement;
 
 $: updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
 
-async function updateSpec(yamlResult: string, cursorLine: number, cursorLineIsEmpty: boolean, emptyLineIndentation: number) {
+async function updateSpec(
+  yamlResult: string,
+  cursorLine: number,
+  cursorLineIsEmpty: boolean,
+  emptyLineIndentation: number,
+) {
   try {
     spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult);
     let path = await kreateApiClient.getPathAtPosition(yamlResult, cursorLine);
@@ -142,8 +147,8 @@ async function onCursorChange(position: number) {
     return;
   }
   const lines = yamlResult.substring(0, position).split(/\r\n|\r|\n/);
-  const currentLine = yamlResult.split(/\r\n|\r|\n/)[lines.length-1];
-  cursorLineIsEmpty = (currentLine.trim() === '');
+  const currentLine = yamlResult.split(/\r\n|\r|\n/)[lines.length - 1];
+  cursorLineIsEmpty = currentLine.trim() === '';
   if (cursorLineIsEmpty) {
     emptyLineIndentation = Math.floor(currentLine.length / 2);
   }
@@ -158,9 +163,8 @@ function getScrollTo(paths: string[]): string {
 }
 
 function isNumeric(value: string) {
-    return /^\d+$/.test(value);
+  return /^\d+$/.test(value);
 }
-
 </script>
 
 <div class="p-4 flex flex-col space-y-4 h-full w-full bg-[var(--pd-content-card-bg)]">
@@ -169,7 +173,7 @@ function isNumeric(value: string) {
       bind:this={yamlEditor}
       class="font-mono max-h-64 basis-1/2 w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
       rows="10"
-      on:selectionchange={(e) => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
+      on:selectionchange={e => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
       on:input={onValueChange}
       value={yamlResult}></textarea>
     <div class="flex flex-col basis-1/2 h-full space-y-2">
@@ -179,7 +183,7 @@ function isNumeric(value: string) {
       </div>
     </div>
   </div>
-    
+
   {#if createError}
     <div class="text-red-600">{createError}</div>
   {/if}
