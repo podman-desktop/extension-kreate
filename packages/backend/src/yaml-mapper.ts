@@ -123,6 +123,7 @@ export class SourceMap {
             lineStart,
           });
         }
+      // eslint-disable-next-line no-null/no-null
       } else if (kind === 'mapping' || kind === null) {
         const newFragment: Fragment = {
           path: pathName,

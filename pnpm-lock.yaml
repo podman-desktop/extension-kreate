@@ -91,6 +91,12 @@ importers:
       '@kubernetes/client-node':
         specifier: 1.0.0
         version: 1.0.0
+      '@scalar/openapi-parser':
+        specifier: ^0.10.2
+        version: 0.10.2
+      '@types/node-fetch':
+        specifier: ^2.6.12
+        version: 2.6.12
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
