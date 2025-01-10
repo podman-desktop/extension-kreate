@@ -16,5 +16,5 @@ test('constructor', () => {
     path: '/path/to/kube/config',
   } as podmanDesktopApi.Uri);
   const context = {} as ExtensionContext;
-  new KreateApiImpl(context);  
+  new KreateApiImpl(context);
 });
