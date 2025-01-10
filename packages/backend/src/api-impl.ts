@@ -29,7 +29,7 @@ export class KreateApiImpl implements KreateApi {
     }
     const parentCommand = commands.commands.find(c => c.name === parent);
     if (!parentCommand) {
-      throw new Error(`parent command ${parent[0]} not found`);
+      throw new Error(`parent command ${parent} not found`);
     }
     return parentCommand.commands?.map(c => c.name) ?? [];
   }
