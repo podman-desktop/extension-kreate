@@ -53,7 +53,7 @@ export class SpecReader {
     return [];
   }
 
-  private async getIndex(): Promise<Index> {
+  protected async getIndex(): Promise<Index> {
     if (this.#index) {
       return this.#index;
     }
@@ -74,7 +74,7 @@ export class SpecReader {
     return this.#index;
   }
 
-  private async getGroupVersionSpec(
+  protected async getGroupVersionSpec(
     apiVersion: string,
     kind: string,
   ): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
@@ -102,7 +102,7 @@ export class SpecReader {
     return document.components.schemas[resource];
   }
 
-  private getSchemedResource(
+  protected getSchemedResource(
     schemas: {
       [key: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
     },
@@ -125,18 +125,18 @@ export class SpecReader {
     throw new Error(`no resource found for apiVersion ${apiVersion} and kind ${kind}`);
   }
 
-  private getGroupAndVersion(apiVersion: string): string[] {
+  protected getGroupAndVersion(apiVersion: string): string[] {
     if (apiVersion.includes('/')) {
       return apiVersion.split('/');
     }
     return ['', apiVersion];
   }
 
-  private isGroupVersionKind(v: unknown): v is { group: string; version: string; kind: string } {
+  protected isGroupVersionKind(v: unknown): v is { group: string; version: string; kind: string } {
     return !!v && typeof v === 'object' && 'group' in v && 'version' in v && 'kind' in v;
   }
 
-  private getGroupVersionFromApiVersion(apiVersion: string): string {
+  protected getGroupVersionFromApiVersion(apiVersion: string): string {
     switch (apiVersion) {
       case 'v1':
         return 'api/v1';
@@ -146,7 +146,7 @@ export class SpecReader {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private getTags(tags: any[]): any[] {
+  protected getTags(tags: any[]): any[] {
     for (const tag of tags) {
       if (tag.tag === 'tag:yaml.org,2002:int') {
         const newTag = { ...tag };
