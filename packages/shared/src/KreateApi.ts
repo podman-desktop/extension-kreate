@@ -13,4 +13,5 @@ export abstract class KreateApi {
 
   abstract getSpecFromYamlManifest(content: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject>;
   abstract getPathAtPosition(content: string, position: number): Promise<string[]>;
+  abstract getState(): Promise<{ content: string; position: number }>;
 }
