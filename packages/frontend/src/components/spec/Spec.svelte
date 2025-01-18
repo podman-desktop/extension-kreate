@@ -3,7 +3,7 @@ import type { OpenAPIV3 } from 'openapi-types';
 import { tick } from 'svelte';
 import { TOP } from './Spec';
 
-const INITIAL_MAX_DEPTH = 1;
+const INITIAL_MAX_DEPTH = 2;
 
 export let spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
 export let prefix: string = '';
@@ -110,7 +110,7 @@ function isNumeric(value: string) {
         <ul class="ml-4">
           {#each Object.entries(spec.properties) as [property, subSpec]}
             {#if !isReferenceObject(subSpec)}
-              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}>
+              <li class="pt-2" id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}>
                 <b>{prefix}{property}{getType(subSpec)}</b><svelte:self
                   maxDepth={maxDepth - 1}
                   prefix="{prefix}{property}."
@@ -124,7 +124,7 @@ function isNumeric(value: string) {
         <ul class="ml-4">
           {#each Object.entries(spec.items) as [property, subSpec]}
             {#if !isReferenceObject(subSpec)}
-              <li id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}>
+              <li class="pt-2" id={maxDepth === INITIAL_MAX_DEPTH ? property : undefined}>
                 <b>{prefix}{property}{getType(subSpec)}</b><svelte:self
                   maxDepth={maxDepth - 1}
                   prefix="{prefix}{property}."
