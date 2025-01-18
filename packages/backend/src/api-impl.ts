@@ -85,6 +85,10 @@ export class KreateApiImpl implements KreateApi {
     return this.#specReader.getPathAtPosition(content, position);
   }
 
+  public async getState(): Promise<{ content: string; position: number }> {
+    return this.#specReader.getState();
+  }
+
   private async loadManifestsFromFile(content: string): Promise<KubernetesObject[]> {
     const manifests = parseAllDocuments(content, { customTags: this.getTags });
     // filter out null manifests

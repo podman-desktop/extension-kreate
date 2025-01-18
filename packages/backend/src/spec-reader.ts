@@ -18,12 +18,19 @@ export interface IndexApi {
   serverRelativeURL: string;
 }
 
+interface State {
+  content: string;
+  position: number;
+}
+
 export class SpecReader {
   #kubeconfig: KubeConfig;
   #index: Index | undefined;
+  #state: State;
 
   constructor(kubeconfig: KubeConfig) {
     this.#kubeconfig = kubeconfig;
+    this.#state = { content: '', position: 0 };
   }
 
   public async getSpecFromYamlManifest(content: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
@@ -44,6 +51,7 @@ export class SpecReader {
   }
 
   public async getPathAtPosition(content: string, position: number): Promise<string[]> {
+    this.#state = { content, position };
     const map = new SourceMap();
     yaml.load(content, { listener: map.listen() });
     const path = map.getAtPos(position);
@@ -51,6 +59,10 @@ export class SpecReader {
       return (path as string).split('.').slice(1);
     }
     return [];
+  }
+
+  public async getState(): Promise<{ content: string; position: number }> {
+    return this.#state;
   }
 
   protected async getIndex(): Promise<Index> {

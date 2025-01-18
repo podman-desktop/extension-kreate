@@ -59,6 +59,8 @@ async function updateSpec(
 }
 
 onMount(async () => {
+  const state = await kreateApiClient.getState();
+  yamlResult = state.content;
   commands = await kreateApiClient.getCommands();
 });
 
