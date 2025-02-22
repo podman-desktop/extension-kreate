@@ -45,8 +45,13 @@ function getValue(values: string[]): string[] {
   {#each values as value, i}
     <div class="flex flex-row space-x-4">
       <Input value={value} on:input={e => onInputChange(e, i)} />
-      <Button type="link" hidden={i === values.length - 1} on:click={() => deleteValue(i)} icon={faMinusCircle} />
-      <Button type="link" hidden={i < values.length - 1} on:click={addValue} icon={faPlusCircle} />
+      <Button
+        aria-label="delete-btn"
+        type="link"
+        hidden={i === values.length - 1}
+        on:click={() => deleteValue(i)}
+        icon={faMinusCircle} />
+      <Button aria-label="add-btn" type="link" hidden={i < values.length - 1} on:click={addValue} icon={faPlusCircle} />
     </div>
   {/each}
 </div>

@@ -54,11 +54,17 @@ function getValue(kvs: KeyValue[]): string[] {
       <Input placeholder="value" bind:value={value.value} on:input={e => onValueChange(e, i)} />
 
       <Button
+        aria-label="delete-btn"
         type="link"
         hidden={i === keyValues.length - 1}
         on:click={() => deleteEnvVariable(i)}
         icon={faMinusCircle} />
-      <Button type="link" hidden={i < keyValues.length - 1} on:click={addEnvVariable} icon={faPlusCircle} />
+      <Button
+        aria-label="add-btn"
+        type="link"
+        hidden={i < keyValues.length - 1}
+        on:click={addEnvVariable}
+        icon={faPlusCircle} />
     </div>
   {/each}
 </div>

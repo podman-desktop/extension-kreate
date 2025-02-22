@@ -56,14 +56,24 @@ function getValue(kvs: KeyValue[]): string[] {
   {#each keyValues as value, i}
     <div class="flex flex-row w-full space-x-4">
       <Input placeholder="key" bind:value={value.key} on:input={e => onKeyChange(e, i)} />
-      <FileInput value={value.value} options={{ selectors }} onChange={s => onFileChange(s, i)} />
+      <FileInput
+        aria-label="file-select"
+        value={value.value}
+        options={{ selectors }}
+        onChange={s => onFileChange(s, i)} />
 
       <Button
+        aria-label="delete-btn"
         type="link"
         hidden={i === keyValues.length - 1}
         on:click={() => deleteEnvVariable(i)}
         icon={faMinusCircle} />
-      <Button type="link" hidden={i < keyValues.length - 1} on:click={addEnvVariable} icon={faPlusCircle} />
+      <Button
+        aria-label="add-btn"
+        type="link"
+        hidden={i < keyValues.length - 1}
+        on:click={addEnvVariable}
+        icon={faPlusCircle} />
     </div>
   {/each}
 </div>
