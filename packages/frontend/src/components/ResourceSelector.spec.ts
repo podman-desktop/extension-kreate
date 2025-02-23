@@ -12,7 +12,7 @@ vi.mock('/@/api/client', () => ({
   },
 }));
 
-test('todo', async () => {
+test('ResourceSelector', async () => {
   const onselectedMock = vi.fn();
   const oncreateMock = vi.fn();
 
