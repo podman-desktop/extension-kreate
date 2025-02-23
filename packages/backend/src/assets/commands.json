@@ -64,14 +64,6 @@
           "multiple": false
         },
         {
-          "flag": "--",
-          "label": "Command and args",
-          "description": "Command and args for the container",
-          "type": "string",
-          "multiple": true,
-          "repeatFlag": false
-        },
-        {
           "flag": "--port",
           "label": "Port",
           "description": "The containerPort that this deployment exposes",
@@ -86,6 +78,14 @@
           "type": "number",
           "multiple": false,
           "default": 1
+        },
+        {
+          "flag": "--",
+          "label": "Command and args",
+          "description": "Command and args for the container",
+          "type": "string",
+          "multiple": true,
+          "repeatFlag": false
         }
       ],
       "cli": [
