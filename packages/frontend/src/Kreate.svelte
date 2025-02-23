@@ -15,13 +15,11 @@ import SingleNumberOption from './components/options/SingleNumberOption.svelte';
 import type { OpenAPIV3 } from 'openapi-types';
 import Spec from './components/spec/Spec.svelte';
 import { TOP } from './components/spec/Spec';
+import ResourceSelector from './components/ResourceSelector.svelte';
 
-let selectedCommand: string | undefined = '';
-let selectedSubcommand: string | undefined;
 let details: CommandDetails;
 
 let commands: string[] = [];
-let subcommands: string[] = [];
 
 let args: string[];
 let options: string[][];
@@ -64,45 +62,14 @@ onMount(async () => {
   commands = await kreateApiClient.getCommands();
 });
 
-async function onCommandChange(command: unknown) {
-  if (typeof command !== 'string') {
-    return;
-  }
-  selectedSubcommand = undefined;
-  selectedCommand = command;
-  subcommands = await getSubcommands(command);
-  if (!subcommands.length) {
-    details = await kreateApiClient.getCommandDetails([command]);
-    initFormValues(details);
-  }
-}
-
-async function onSubcommandChange(subcommand: unknown) {
-  if (!selectedCommand) {
-    throw new Error('command should be defined');
-  }
-  if (typeof subcommand !== 'string') {
-    return;
-  }
-  selectedSubcommand = subcommand;
-  details = await kreateApiClient.getCommandDetails([selectedCommand, selectedSubcommand]);
-  initFormValues(details);
-}
-
-async function getSubcommands(c: string | undefined): Promise<string[]> {
-  if (!c) {
-    return [];
-  }
-  return await kreateApiClient.getCommands(c);
-}
-
-function initFormValues(details: CommandDetails) {
+function onResourceSelected(commandDetails: CommandDetails): void {
+  details = commandDetails;
   args = details.args?.map(_a => '') ?? [];
   options = details.options?.map(_o => []) ?? [];
 }
 
-async function createResource() {
-  if (!selectedCommand) {
+async function onResourceCreate() {
+  if (!details) {
     return;
   }
   let params: string[] = [...(details.cli ?? [])];
@@ -190,34 +157,7 @@ function isNumeric(value: string) {
     <div class="text-red-600">{createError}</div>
   {/if}
 
-  <div class="flex flex-row items-center w-full space-x-4">
-    <label for="resource">Resource to create: </label>
-    {#if commands && commands.length}
-      <Dropdown
-        id="resource"
-        options={[
-          { label: '(select a resource)', value: '' },
-          ...commands.map(c => ({
-            label: c,
-            value: c,
-          })),
-        ]}
-        onChange={onCommandChange} />
-      {#if subcommands && subcommands.length}
-        <Dropdown
-          id="subresource"
-          options={[
-            { label: '(select a resource type)', value: '' },
-            ...subcommands.map(c => ({
-              label: c,
-              value: c,
-            })),
-          ]}
-          onChange={onSubcommandChange} />
-      {/if}
-      <Button on:click={createResource}>View YAML</Button>
-    {/if}
-  </div>
+  <ResourceSelector onselected={onResourceSelected} oncreate={onResourceCreate}></ResourceSelector>
 
   {#if error}
     <div class="text-red-600">{error}</div>
