@@ -1,21 +1,13 @@
 <script lang="ts">
-import { Button, Dropdown, Input } from '@podman-desktop/ui-svelte';
+import { Button } from '@podman-desktop/ui-svelte';
 import { kreateApiClient } from './api/client';
 import { onMount, tick } from 'svelte';
-import MultipleKeyValueOption from './components/options/MultipleKeyValueOption.svelte';
-import { isCommandOptionBoolean, isCommandOptionNumber, type CommandDetails } from '/@shared/src/models/CommandDetails';
-import SingleStringOption from './components/options/SingleStringOption.svelte';
-import MultipleStringOption from './components/options/MultipleStringOption.svelte';
-import SinglePasswordOption from './components/options/SinglePasswordOption.svelte';
-import SingleFileOption from './components/options/SingleFileOption.svelte';
-import MultipleFileOption from './components/options/MultipleFileOption.svelte';
-import MultipleKeyFileOption from './components/options/MultipleKeyFileOption.svelte';
-import SingleBooleanOption from './components/options/SingleBooleanOption.svelte';
-import SingleNumberOption from './components/options/SingleNumberOption.svelte';
+import { type CommandDetails } from '/@shared/src/models/CommandDetails';
 import type { OpenAPIV3 } from 'openapi-types';
 import Spec from './components/spec/Spec.svelte';
 import { TOP } from './components/spec/Spec';
 import ResourceSelector from './components/ResourceSelector.svelte';
+import Form from './components/Form.svelte';
 
 let details: CommandDetails;
 
@@ -65,7 +57,6 @@ onMount(async () => {
 function onResourceSelected(commandDetails: CommandDetails): void {
   details = commandDetails;
   args = details.args?.map(_a => '') ?? [];
-  options = details.options?.map(_o => []) ?? [];
 }
 
 async function onResourceCreate() {
@@ -78,7 +69,11 @@ async function onResourceCreate() {
       params.push(arg);
     }
   }
+  console.log('==> options', options);
   for (const option of options) {
+    if (!option) {
+      continue;
+    }
     if (option.length) {
       params = params.concat(option);
     }
@@ -134,6 +129,14 @@ function getScrollTo(paths: string[]): string {
 function isNumeric(value: string) {
   return /^\d+$/.test(value);
 }
+
+function onOptionsChange(updatedOptions: string[][]) {
+  options = updatedOptions;
+}
+
+function onArgsChange(updatedArgs: string[]) {
+  args = updatedArgs;
+}
 </script>
 
 <div class="p-4 flex flex-col space-y-4 h-full w-full bg-[var(--pd-content-card-bg)]">
@@ -163,100 +166,5 @@ function isNumeric(value: string) {
     <div class="text-red-600">{error}</div>
   {/if}
 
-  <div class="h-full w-full overflow-y-auto">
-    {#if details}
-      <div class="w-full mt-8">
-        {#if details.args}
-          {#each details.args as arg, i}
-            <div class="flex flex-col w-full">
-              <label for={`arg-${i}`}>{arg.label}</label>
-              <div class="text-sm opacity-50">{arg.description}</div>
-              <Input id={`arg-${i}`} bind:value={args[i]} />
-            </div>
-          {/each}
-        {/if}
-        {#if details.options}
-          {#each details.options as option, i}
-            <div class="mt-4 font-medium">{option.label}</div>
-            <div class="text-sm opacity-50">{option.description}</div>
-            {#if option.type === 'key-value' && option.multiple}
-              <MultipleKeyValueOption
-                option={option}
-                onChange={kvs => {
-                  options[i] = kvs;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'string' && !option.multiple}
-              <SingleStringOption
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'string' && option.multiple}
-              <MultipleStringOption
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'password' && !option.multiple}
-              <SinglePasswordOption
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'file' && !option.multiple}
-              <SingleFileOption
-                selectors={['openFile']}
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'file' && option.multiple}
-              <MultipleFileOption
-                selectors={['openFile']}
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'key-fileOrDirectory' && option.multiple}
-              <MultipleKeyFileOption
-                selectors={['openFile', 'openDirectory']}
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'boolean' && isCommandOptionBoolean(option)}
-              <SingleBooleanOption
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-            {#if option.type === 'number' && isCommandOptionNumber(option)}
-              <SingleNumberOption
-                option={option}
-                onChange={val => {
-                  options[i] = val;
-                  options = options;
-                }} />
-            {/if}
-          {/each}
-        {/if}
-      </div>
-    {/if}
-  </div>
+  <Form details={details} onArgsChange={onArgsChange} onOptionsChange={onOptionsChange}></Form>
 </div>
