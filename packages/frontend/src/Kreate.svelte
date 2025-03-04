@@ -139,7 +139,10 @@ function onArgsChange(updatedArgs: string[]) {
     <div class="flex flex-col basis-1/2 h-full space-y-2">
       <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Create</Button>
       <div class="w-full h-full overflow-y-auto">
-        {#if spec}<SpecSimple spec={spec} highlight={pathInSpec[pathInSpec.length - 1]} />{/if}
+        {#if spec}<SpecSimple
+            spec={spec}
+            complete={pathInSpec.length < 2}
+            highlight={pathInSpec[pathInSpec.length - 1]} />{/if}
       </div>
     </div>
   </div>
