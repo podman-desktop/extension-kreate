@@ -3,7 +3,6 @@ import { Button } from '@podman-desktop/ui-svelte';
 import { kreateApiClient } from './api/client';
 import { onMount, tick } from 'svelte';
 import { type CommandDetails } from '/@shared/src/models/CommandDetails';
-import { TOP } from './components/spec/Spec';
 import ResourceSelector from './components/ResourceSelector.svelte';
 import Form from './components/Form.svelte';
 import YamlEditor from './components/YamlEditor.svelte';
@@ -119,13 +118,6 @@ async function create() {
   } catch (err: unknown) {
     createError = String(err);
   }
-}
-
-function getScrollTo(paths: string[]): string {
-  if (!paths.length) {
-    return TOP;
-  }
-  return paths.slice(-1)[0];
 }
 
 function isNumeric(value: string) {
