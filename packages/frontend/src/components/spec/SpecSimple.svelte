@@ -2,20 +2,29 @@
 import type { SimplifiedSpec } from '/@shared/src/models/SimplifiedSpec';
 
 export let spec: SimplifiedSpec;
+// prefix for fields names
 export let prefix = '';
+// is it the top level SpecSimple component?
 export let topLevel: boolean = true;
+// which field to highlight?
 export let highlight: string;
+// do we want to highliht the `highlight` field?
 export let highlighted: boolean = false;
+// do we want to set the Ids for the fields at this level?
+export let setIds: boolean = false;
+// is the spec passed is a complete spec or a subspec?
+export let complete: boolean = false;
 
 function getHtmlParagraphs(s: string): string {
   return '<p>' + s.replaceAll('\n', '</p><p>') + '</p>';
 }
 
-$: childrenPrefix = (topLevel ? '' : prefix + spec.name) + (spec.isArray ? '[]' : '') + (topLevel ? '' : '.');
+$: childrenPrefix =
+  (topLevel && complete ? '' : prefix + spec.name) + (spec.isArray ? '[]' : '') + (topLevel && complete ? '' : '.');
 </script>
 
 <div class:bg-[var(--pd-content-card-selected-bg)]={highlighted}>
-  <div id={spec.name}>
+  <div id={setIds ? spec.name : undefined}>
     <span class="font-bold">{prefix}{spec.name}</span>
     {#if spec.type}({spec.type}){/if}
   </div>
@@ -30,6 +39,7 @@ $: childrenPrefix = (topLevel ? '' : prefix + spec.name) + (spec.isArray ? '[]' 
           spec={child}
           prefix={childrenPrefix}
           topLevel={false}
+          setIds={topLevel}
           highlighted={topLevel && child.name === highlight} />
       </li>
     {/each}

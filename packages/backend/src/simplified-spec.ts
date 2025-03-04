@@ -51,6 +51,10 @@ export interface SubspecOptions {
 export function getSubspec(spec: SimplifiedSpec, options: SubspecOptions): SimplifiedSpec {
   const path = [...options.pathInSpec];
   while (path.length) {
+    if (isNumeric(path[0])) {
+      path.shift();
+      continue;
+    }
     const child = spec.children.find(child => child.name === path[0]);
     path.shift();
     if (!child) {
@@ -66,6 +70,10 @@ function limitDepth(spec: SimplifiedSpec, depth: number): SimplifiedSpec {
     ...spec,
     children: !depth ? [] : spec.children.map(child => limitDepth(child, depth - 1)),
   };
+}
+
+function isNumeric(value: string) {
+  return /^\d+$/.test(value);
 }
 
 function isReferenceObject(
