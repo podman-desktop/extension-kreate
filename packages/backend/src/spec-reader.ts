@@ -33,7 +33,10 @@ export class SpecReader {
     this.#state = { content: '', position: 0 };
   }
 
-  public async getSpecFromYamlManifest(content: string): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
+  public async getSpecFromYamlManifest(content: string): Promise<{
+    kind: string;
+    spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
+  }> {
     const manifests = parseAllDocuments(content, { customTags: this.getTags })
       .map(manifest => manifest.toJSON())
       .filter(manifest => !!manifest);
@@ -47,7 +50,10 @@ export class SpecReader {
     if (!manifest.kind) {
       throw new Error('kind not defined in the manifest');
     }
-    return this.getGroupVersionSpec(manifest.apiVersion, manifest.kind);
+    return {
+      kind: manifest.kind,
+      spec: await this.getGroupVersionSpec(manifest.apiVersion, manifest.kind),
+    };
   }
 
   public async getPathAtPosition(content: string, position: number): Promise<string[]> {

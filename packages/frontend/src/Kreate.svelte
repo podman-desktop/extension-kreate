@@ -3,12 +3,12 @@ import { Button } from '@podman-desktop/ui-svelte';
 import { kreateApiClient } from './api/client';
 import { onMount, tick } from 'svelte';
 import { type CommandDetails } from '/@shared/src/models/CommandDetails';
-import type { OpenAPIV3 } from 'openapi-types';
-import Spec from './components/spec/Spec.svelte';
 import { TOP } from './components/spec/Spec';
 import ResourceSelector from './components/ResourceSelector.svelte';
 import Form from './components/Form.svelte';
 import YamlEditor from './components/YamlEditor.svelte';
+import SpecSimple from './components/spec/SpecSimple.svelte';
+import type { SimplifiedSpec } from '/@shared/src/models/SimplifiedSpec';
 
 let details: CommandDetails;
 
@@ -23,7 +23,7 @@ let error: string = '';
 let createError: string = '';
 let createdYaml = '';
 
-let spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject | undefined;
+let spec: SimplifiedSpec | undefined;
 let cursorLine: number = 0;
 let cursorLineIsEmpty = false;
 let emptyLineIndentation = 0;
@@ -32,6 +32,14 @@ let yamlEditor: YamlEditor;
 
 $: updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
 
+async function scrollTo(to: string | undefined): Promise<void> {
+  if (to === undefined) {
+    return;
+  }
+  await tick();
+  document.getElementById(to)?.scrollIntoView();
+}
+
 async function updateSpec(
   yamlResult: string,
   cursorLine: number,
@@ -39,13 +47,19 @@ async function updateSpec(
   emptyLineIndentation: number,
 ) {
   try {
-    spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult);
     let path = await kreateApiClient.getPathAtPosition(yamlResult, cursorLine);
     if (cursorLineIsEmpty) {
       path = path.filter(p => !isNumeric(p)).slice(0, emptyLineIndentation);
     }
+    if (path.length === 1 && path[0] === '') {
+      path = [];
+    }
     pathInSpec = path;
-  } catch {}
+    spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult, pathInSpec.slice(0, -1));
+    scrollTo(pathInSpec[pathInSpec.length - 1]);
+  } catch (err: unknown) {
+    console.error(err);
+  }
 }
 
 function onCursorUpdated(
@@ -79,7 +93,6 @@ async function onResourceCreate() {
       params.push(arg);
     }
   }
-  console.log('==> options', options);
   for (const option of options) {
     if (!option) {
       continue;
@@ -134,7 +147,7 @@ function onArgsChange(updatedArgs: string[]) {
     <div class="flex flex-col basis-1/2 h-full space-y-2">
       <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Create</Button>
       <div class="w-full h-full overflow-y-auto">
-        {#if spec}<Spec begin={pathInSpec} spec={spec} scrollTo={getScrollTo(pathInSpec)} />{/if}
+        {#if spec}<SpecSimple spec={spec} highlight={pathInSpec[pathInSpec.length - 1]} />{/if}
       </div>
     </div>
   </div>
