@@ -12,9 +12,13 @@ import SingleNumberOption from './options/SingleNumberOption.svelte';
 import SinglePasswordOption from './options/SinglePasswordOption.svelte';
 import { onMount } from 'svelte';
 
-export let details: CommandDetails;
-export let onArgsChange: (_args: string[]) => void;
-export let onOptionsChange: (_options: string[][]) => void;
+interface Props {
+  details: CommandDetails;
+  onArgsChange: (_args: string[]) => void;
+  onOptionsChange: (_options: string[][]) => void;
+}
+
+let { details, onArgsChange, onOptionsChange }: Props = $props();
 
 let options: string[][];
 let args: string[];
