@@ -1,10 +1,10 @@
 <script lang="ts">
-export let value: string;
-export let onCursorUpdated: (
-  cursorLine: number,
-  cursorLineIsEmpty: boolean,
-  emptyLineIndentation: number,
-) => void = () => {};
+interface Props {
+  value: string;
+  onCursorUpdated: (cursorLine: number, cursorLineIsEmpty: boolean, emptyLineIndentation: number) => void;
+}
+
+let { value = $bindable(), onCursorUpdated = () => {} }: Props = $props();
 
 let yamlEditor: HTMLTextAreaElement;
 
@@ -40,6 +40,6 @@ async function onCursorChange(position: number) {
   bind:this={yamlEditor}
   class="font-mono max-h-64 basis-1/2 w-full p-2 outline-none text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
   rows="10"
-  on:selectionchange={e => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
-  on:input={onValueChange}
+  onselectionchange={e => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
+  oninput={onValueChange}
   value={value}></textarea>
