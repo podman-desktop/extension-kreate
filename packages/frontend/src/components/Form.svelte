@@ -20,8 +20,8 @@ interface Props {
 
 let { details, onArgsChange, onOptionsChange }: Props = $props();
 
-let options: string[][];
-let args: string[];
+let options: string[][] = [];
+let args: string[] = [];
 
 onMount(() => {
   options = details?.options?.map(_o => []) ?? [];
