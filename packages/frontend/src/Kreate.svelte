@@ -9,27 +9,28 @@ import YamlEditor from './components/YamlEditor.svelte';
 import SpecSimple from './components/spec/SpecSimple.svelte';
 import type { SimplifiedSpec } from '/@shared/src/models/SimplifiedSpec';
 
-let details: CommandDetails;
+let details = $state<CommandDetails>();
+let yamlResult = $state<string>('');
 
-let commands: string[] = [];
+let error = $state<string>('');
+let createError = $state<string>('');
+let createdYaml = $state<string>('');
 
-let args: string[];
-let options: string[][];
+let spec = $state<SimplifiedSpec>();
+let pathInSpec = $state<string[]>([]);
 
-let yamlResult: string;
-let error: string = '';
+let args = $state<string[]>();
+let options = $state<string[][]>();
 
-let createError: string = '';
-let createdYaml = '';
+let cursorLine = $state<number>(0);
+let cursorLineIsEmpty = $state<boolean>(false);
+let emptyLineIndentation = $state<number>(0);
 
-let spec: SimplifiedSpec | undefined;
-let cursorLine: number = 0;
-let cursorLineIsEmpty = false;
-let emptyLineIndentation = 0;
-let pathInSpec: string[] = [];
 let yamlEditor: YamlEditor;
 
-$: updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
+$effect(() => {
+  updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
+});
 
 async function scrollTo(to: string | undefined): Promise<void> {
   if (to === undefined) {
@@ -74,7 +75,6 @@ function onCursorUpdated(
 onMount(async () => {
   const state = await kreateApiClient.getState();
   yamlResult = state.content;
-  commands = await kreateApiClient.getCommands();
 });
 
 function onResourceSelected(commandDetails: CommandDetails): void {
@@ -87,12 +87,12 @@ async function onResourceCreate() {
     return;
   }
   let params: string[] = [...(details.cli ?? [])];
-  for (const arg of args) {
+  for (const arg of args ?? []) {
     if (arg.length) {
       params.push(arg);
     }
   }
-  for (const option of options) {
+  for (const option of options ?? []) {
     if (!option) {
       continue;
     }
@@ -157,5 +157,7 @@ function onArgsChange(updatedArgs: string[]) {
     <div class="text-red-600">{error}</div>
   {/if}
 
-  <Form details={details} onArgsChange={onArgsChange} onOptionsChange={onOptionsChange}></Form>
+  {#if details}
+    <Form details={details} onArgsChange={onArgsChange} onOptionsChange={onOptionsChange}></Form>
+  {/if}
 </div>
