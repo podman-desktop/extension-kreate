@@ -1,26 +1,40 @@
 <script lang="ts">
 import type { SimplifiedSpec } from '/@shared/src/models/SimplifiedSpec';
+import SpecSimple from './SpecSimple.svelte';
 
-export let spec: SimplifiedSpec;
-// prefix for fields names
-export let prefix = '';
-// is it the top level SpecSimple component?
-export let topLevel: boolean = true;
-// which field to highlight?
-export let highlight: string;
-// do we want to highliht the `highlight` field?
-export let highlighted: boolean = false;
-// do we want to set the Ids for the fields at this level?
-export let setIds: boolean = false;
-// is the spec passed is a complete spec or a subspec?
-export let complete: boolean = false;
+interface Props {
+  spec: SimplifiedSpec;
+  // prefix for fields names
+  prefix?: string;
+  // is it the top level SpecSimple component?
+  topLevel?: boolean;
+  // which field to highlight?
+  highlight?: string;
+  // do we want to highliht the `highlight` field?
+  highlighted?: boolean;
+  // do we want to set the Ids for the fields at this level?
+  setIds?: boolean;
+  // is the spec passed is a complete spec or a subspec?
+  complete?: boolean;
+}
+
+let {
+  spec,
+  prefix = '',
+  topLevel = true,
+  highlight,
+  highlighted = false,
+  setIds = false,
+  complete = false,
+}: Props = $props();
 
 function getHtmlParagraphs(s: string): string {
   return '<p>' + s.replaceAll('\n', '</p><p>') + '</p>';
 }
 
-$: childrenPrefix =
-  (topLevel && complete ? '' : prefix + spec.name) + (spec.isArray ? '[]' : '') + (topLevel && complete ? '' : '.');
+const childrenPrefix = $derived(
+  (topLevel && complete ? '' : prefix + spec.name) + (spec.isArray ? '[]' : '') + (topLevel && complete ? '' : '.'),
+);
 </script>
 
 <div class:bg-[var(--pd-content-card-selected-bg)]={highlighted}>
@@ -35,7 +49,7 @@ $: childrenPrefix =
   <ul class="ml-4">
     {#each spec.children as child}
       <li class="pt-2">
-        <svelte:self
+        <SpecSimple
           spec={child}
           prefix={childrenPrefix}
           topLevel={false}
