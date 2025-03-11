@@ -4,13 +4,17 @@ import { onMount } from 'svelte';
 import { kreateApiClient } from '../api/client';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
 
-export let onselected: (details: CommandDetails) => void;
-export let oncreate: () => void;
+interface Props {
+  onselected: (details: CommandDetails) => void;
+  oncreate: () => void;
+}
 
-let commands: string[];
+let { onselected, oncreate }: Props = $props();
+
+let commands = $state<string[]>();
+let subcommands = $state<string[]>([]);
+
 let selectedCommand: string | undefined = '';
-
-let subcommands: string[] = [];
 let selectedSubcommand: string | undefined;
 
 onMount(async () => {
