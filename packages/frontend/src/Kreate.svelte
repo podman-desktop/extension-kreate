@@ -1,36 +1,27 @@
 <script lang="ts">
-import { Button } from '@podman-desktop/ui-svelte';
 import { kreateApiClient } from './api/client';
-import { onMount, tick } from 'svelte';
-import { type CommandDetails } from '/@shared/src/models/CommandDetails';
-import ResourceSelector from './components/ResourceSelector.svelte';
-import Form from './components/Form.svelte';
+import { Button, NavPage } from '@podman-desktop/ui-svelte';
 import YamlEditor from './components/YamlEditor.svelte';
 import SpecSimple from './components/spec/SpecSimple.svelte';
 import type { SimplifiedSpec } from '/@shared/src/models/SimplifiedSpec';
+import { onDestroy, onMount, tick } from 'svelte';
+import { router } from 'tinro';
+import { yamlContent } from './stores/yamlContent';
+import type { Unsubscriber } from 'svelte/store';
 
-let details = $state<CommandDetails>();
+let yamlEditor: YamlEditor;
+
 let yamlResult = $state<string>('');
-
-let error = $state<string>('');
-let createError = $state<string>('');
-let createdYaml = $state<string>('');
-
 let spec = $state<SimplifiedSpec>();
 let pathInSpec = $state<string[]>([]);
-
-let args = $state<string[]>();
-let options = $state<string[][]>();
 
 let cursorLine = $state<number>(0);
 let cursorLineIsEmpty = $state<boolean>(false);
 let emptyLineIndentation = $state<number>(0);
 
-let yamlEditor: YamlEditor;
-
-$effect(() => {
-  updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
-});
+function isNumeric(value: string) {
+  return /^\d+$/.test(value);
+}
 
 async function scrollTo(to: string | undefined): Promise<void> {
   if (to === undefined) {
@@ -72,92 +63,73 @@ function onCursorUpdated(
   emptyLineIndentation = updatedEmptyLineIndentation;
 }
 
-onMount(async () => {
-  const state = await kreateApiClient.getState();
-  yamlResult = state.content;
+$effect(() => {
+  updateSpec(yamlResult, cursorLine, cursorLineIsEmpty, emptyLineIndentation);
 });
 
-function onResourceSelected(commandDetails: CommandDetails): void {
-  details = commandDetails;
-  args = details.args?.map(_a => '') ?? [];
-}
-
-async function onResourceCreate() {
-  if (!details) {
-    return;
-  }
-  let params: string[] = [...(details.cli ?? [])];
-  for (const arg of args ?? []) {
-    if (arg.length) {
-      params.push(arg);
-    }
-  }
-  for (const option of options ?? []) {
-    if (!option) {
-      continue;
-    }
-    if (option.length) {
-      params = params.concat(option);
-    }
-  }
-  error = '';
-  try {
-    yamlResult = await kreateApiClient.executeCommand(params);
-    await tick();
-    yamlEditor.reset();
-  } catch (err: unknown) {
-    error = String(`execute command error: ${err}`);
-  }
-}
+let createdYaml = $state<string>('');
+let createError = $state<string>('');
+let createInfo = $state<string>('');
 
 async function create() {
+  createInfo = '';
   createError = '';
   try {
     await kreateApiClient.create(yamlResult);
     createdYaml = yamlResult;
+    createInfo = 'The resource has been successfully applied to the cluster';
   } catch (err: unknown) {
     createError = String(err);
+  } finally {
+    createdYaml = yamlResult;
   }
 }
 
-function isNumeric(value: string) {
-  return /^\d+$/.test(value);
+function useTemplate(): void {
+  router.goto('/template');
 }
 
-function onOptionsChange(updatedOptions: string[][]) {
-  options = updatedOptions;
-}
+let yamlContentUnsubscribe: Unsubscriber;
 
-function onArgsChange(updatedArgs: string[]) {
-  args = updatedArgs;
-}
+onMount(async () => {
+  const state = await kreateApiClient.getState();
+  yamlResult = state.content;
+
+  yamlContentUnsubscribe = yamlContent.subscribe((newContent: string) => {
+    if (newContent) {
+      yamlResult = newContent;
+    }
+  });
+});
+
+onDestroy(() => {
+  yamlContentUnsubscribe?.();
+});
 </script>
 
-<div class="p-4 flex flex-col space-y-4 h-full w-full bg-[var(--pd-content-card-bg)]">
-  <div class="flex flex-row items-start w-full h-full space-x-4 basis-1/2 max-h-64">
-    <YamlEditor bind:this={yamlEditor} bind:value={yamlResult} onCursorUpdated={onCursorUpdated} />
-    <div class="flex flex-col basis-1/2 h-full space-y-2">
-      <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Create</Button>
-      <div class="w-full h-full overflow-y-auto">
-        {#if spec}<SpecSimple
-            spec={spec}
-            complete={pathInSpec.length < 2}
-            highlight={pathInSpec[pathInSpec.length - 1]} />{/if}
+<NavPage title="Create Kubernetes resources" searchEnabled={false}>
+  <div slot="additional-actions">
+    <Button on:click={useTemplate}>Use template</Button>
+  </div>
+  <div class="flex space-x-2 min-w-full h-full p-1 overflow-y-hidden" slot="content">
+    <div class="basis-1/2">
+      <YamlEditor bind:this={yamlEditor} bind:value={yamlResult} onCursorUpdated={onCursorUpdated} />
+    </div>
+    <div class="flex flex-col basis-1/2 space-y-2">
+      <div class="w-full h-full overflow-y-auto overflow-x-hidden">
+        {#if spec}
+          <SpecSimple spec={spec} complete={pathInSpec.length < 2} highlight={pathInSpec[pathInSpec.length - 1]} />
+        {:else}
+          &nbsp;
+        {/if}
       </div>
+      {#if createError}
+        <div class="text-red-600">{createError}</div>
+      {/if}
+      {#if createInfo}
+        <div>{createInfo}</div>
+      {/if}
+      <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Apply to cluster</Button>
     </div>
   </div>
-
-  {#if createError}
-    <div class="text-red-600">{createError}</div>
-  {/if}
-
-  <ResourceSelector onselected={onResourceSelected} oncreate={onResourceCreate}></ResourceSelector>
-
-  {#if error}
-    <div class="text-red-600">{error}</div>
-  {/if}
-
-  {#if details}
-    <Form details={details} onArgsChange={onArgsChange} onOptionsChange={onOptionsChange}></Form>
-  {/if}
-</div>
+</NavPage>

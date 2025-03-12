@@ -6,6 +6,7 @@ import { router } from 'tinro';
 import Route from './lib/Route.svelte';
 import { onMount } from 'svelte';
 import { getRouterState } from './api/client';
+import UseTemplate from './components/UseTemplate.svelte';
 import Kreate from './Kreate.svelte';
 
 // Using our router instance, we can determine if the application has been mounted.
@@ -25,6 +26,9 @@ onMount(() => {
     <div class="flex flex-row w-full h-full overflow-hidden">
       <Route path="/" breadcrumb="Kreate">
         <Kreate />
+      </Route>
+      <Route path="/template" breadcrumb="Use a template">
+        <UseTemplate />
       </Route>
     </div>
   </main>
