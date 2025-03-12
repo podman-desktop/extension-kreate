@@ -3,10 +3,14 @@ import { Button, Input } from '@podman-desktop/ui-svelte';
 import type { CommandOption } from '/@shared/src/models/CommandDetails';
 import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
-export let option: CommandOption;
-export let onChange = (_value: string[]) => {};
+interface Props {
+  option: CommandOption;
+  onChange?: (_value: string[]) => void;
+}
 
-let values: string[] = [''];
+let { option, onChange = (_value: string[]) => {} }: Props = $props();
+
+let values = $state<string[]>(['']);
 
 function deleteValue(index: number) {
   values = values.filter((_, i) => i !== index);

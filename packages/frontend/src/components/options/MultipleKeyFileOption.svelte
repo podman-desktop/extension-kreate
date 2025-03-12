@@ -4,13 +4,16 @@ import { Button, Input } from '@podman-desktop/ui-svelte';
 import type { CommandOption } from '/@shared/src/models/CommandDetails';
 import type { KeyValue } from '/@shared/src/models/KeyValue';
 import FileInput from '../ui/FileInput.svelte';
-import { kreateApiClient } from '/@/api/client';
 
-export let option: CommandOption;
-export let onChange = (_value: string[]) => {};
-export let selectors: ('openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles')[];
+interface Props {
+  option: CommandOption;
+  onChange?: (_value: string[]) => void;
+  selectors: ('openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles')[];
+}
 
-let keyValues: KeyValue[] = [{ key: '', value: '' }];
+let { option, onChange = (_value: string[]) => {}, selectors }: Props = $props();
+
+let keyValues = $state<KeyValue[]>([{ key: '', value: '' }]);
 
 function deleteEnvVariable(index: number) {
   keyValues = keyValues.filter((_, i) => i !== index);
