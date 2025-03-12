@@ -57,6 +57,9 @@ export class SpecReader {
   }
 
   public async getPathAtPosition(content: string, position: number): Promise<string[]> {
+    if (!content) {
+      return [];
+    }
     this.#state = { content, position };
     const map = new SourceMap();
     yaml.load(content, { listener: map.listen() });

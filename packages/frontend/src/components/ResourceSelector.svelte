@@ -5,11 +5,10 @@ import { kreateApiClient } from '../api/client';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
 
 interface Props {
-  onselected: (details: CommandDetails) => void;
-  oncreate: () => void;
+  onselected: (details: CommandDetails | undefined) => void;
 }
 
-let { onselected, oncreate }: Props = $props();
+let { onselected }: Props = $props();
 
 let commands = $state<string[]>();
 let subcommands = $state<string[]>([]);
@@ -32,12 +31,17 @@ async function onCommandChange(command: unknown) {
   if (typeof command !== 'string') {
     return;
   }
+  if (command === '') {
+    onselected(undefined);
+  }
   selectedSubcommand = undefined;
   selectedCommand = command;
   subcommands = await getSubcommands(command);
   if (!subcommands.length) {
     const details = await kreateApiClient.getCommandDetails([command]);
     onselected(details);
+  } else {
+    onselected(undefined);
   }
 }
 
@@ -47,6 +51,9 @@ async function onSubcommandChange(subcommand: unknown) {
   }
   if (typeof subcommand !== 'string') {
     return;
+  }
+  if (subcommand === '') {
+    onselected(undefined);
   }
   selectedSubcommand = subcommand;
   const details = await kreateApiClient.getCommandDetails([selectedCommand, selectedSubcommand]);
@@ -79,6 +86,5 @@ async function onSubcommandChange(subcommand: unknown) {
         ]}
         onChange={onSubcommandChange} />
     {/if}
-    <Button aria-label="view-yaml" on:click={oncreate}>View YAML</Button>
   {/if}
 </div>

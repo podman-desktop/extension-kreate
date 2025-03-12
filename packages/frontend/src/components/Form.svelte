@@ -35,7 +35,7 @@ function onArgChange(event: Event, i: number) {
 }
 </script>
 
-<div class="h-full w-full overflow-y-auto">
+<div>
   {#if details}
     <div class="w-full mt-8">
       {#if details.args}

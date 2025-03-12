@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/svelte';
+import { render, screen } from '@testing-library/svelte';
 import { expect, test, vi } from 'vitest';
 import ResourceSelector from './ResourceSelector.svelte';
 import * as client from '../api/client';
@@ -14,7 +14,6 @@ vi.mock('/@/api/client', () => ({
 
 test('ResourceSelector', async () => {
   const onselectedMock = vi.fn();
-  const oncreateMock = vi.fn();
 
   // cmd1 has subcommands
   // cmd2 is a final command
@@ -36,7 +35,6 @@ test('ResourceSelector', async () => {
 
   render(ResourceSelector, {
     onselected: onselectedMock,
-    oncreate: oncreateMock,
   });
 
   await vi.waitFor(() => {
@@ -46,18 +44,11 @@ test('ResourceSelector', async () => {
 
   await userEvent.keyboard('[ArrowDown][Arrowdown][Enter]'); // select cmd1
 
-  expect(onselectedMock).not.toHaveBeenCalled();
+  expect(onselectedMock).toHaveBeenCalledWith(undefined);
 
   const subcommandDropdown = screen.getByRole('button', { name: '(select a resource type)' });
   subcommandDropdown.focus();
   await userEvent.keyboard('[ArrowDown][Arrowdown][Enter]'); // select cmd1sub1
 
   expect(onselectedMock).toHaveBeenCalledWith(commandDetails);
-
-  expect(oncreateMock).not.toHaveBeenCalled();
-
-  const viewButton = screen.getByRole('button', { name: 'view-yaml' });
-  await fireEvent.click(viewButton);
-
-  expect(oncreateMock).toHaveBeenCalled();
 });
