@@ -2,9 +2,15 @@
 import { Checkbox } from '@podman-desktop/ui-svelte';
 import type { CommandOptionBoolean } from '/@shared/src/models/CommandDetails';
 
-export let option: CommandOptionBoolean;
-export let onChange = (_value: string[]) => {};
-let value: boolean;
+interface Props {
+  option: CommandOptionBoolean;
+  onChange: (_value: string[]) => void;
+}
+
+let { option, onChange = (_value: string[]) => {} }: Props = $props();
+
+let value = $state<boolean>();
+
 function onClick(checked: boolean) {
   value = checked;
   onChange(getValue(value));

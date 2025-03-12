@@ -2,8 +2,12 @@
 import PasswordInput from '../ui/PasswordInput.svelte';
 import type { CommandOption } from '/@shared/src/models/CommandDetails';
 
-export let option: CommandOption;
-export let onChange = (_value: string[]) => {};
+interface Props {
+  option: CommandOption;
+  onChange?: (_value: string[]) => void;
+}
+
+let { option, onChange = (_value: string[]) => {} }: Props = $props();
 
 function onInputChange(event: Event) {
   const inputEvent = event as Event & { target: HTMLInputElement };

@@ -3,10 +3,15 @@ import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { Button, Input } from '@podman-desktop/ui-svelte';
 import type { CommandOption } from '/@shared/src/models/CommandDetails';
 import type { KeyValue } from '/@shared/src/models/KeyValue';
-export let option: CommandOption;
-export let onChange = (_value: string[]) => {};
 
-let keyValues: KeyValue[] = [{ key: '', value: '' }];
+interface Props {
+  option: CommandOption;
+  onChange?: (_value: string[]) => void;
+}
+
+let { option, onChange = (_value: string[]) => {} }: Props = $props();
+
+let keyValues = $state<KeyValue[]>([{ key: '', value: '' }]);
 
 function deleteEnvVariable(index: number) {
   keyValues = keyValues.filter((_, i) => i !== index);

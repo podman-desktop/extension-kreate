@@ -1,14 +1,18 @@
 <script lang="ts">
-import { Button, Input } from '@podman-desktop/ui-svelte';
+import { Button } from '@podman-desktop/ui-svelte';
 import type { CommandOption } from '/@shared/src/models/CommandDetails';
 import { faMinusCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import FileInput from '../ui/FileInput.svelte';
 
-export let option: CommandOption;
-export let onChange = (_value: string[]) => {};
-export let selectors: ('openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles')[];
+interface Props {
+  option: CommandOption;
+  onChange?: (_value: string[]) => void;
+  selectors: ('openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles')[];
+}
 
-let values: string[] = [''];
+let { option, onChange = (_value: string[]) => {}, selectors }: Props = $props();
+
+let values = $state<string[]>(['']);
 
 function deleteValue(index: number) {
   values = values.filter((_, i) => i !== index);

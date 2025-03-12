@@ -2,8 +2,12 @@
 import type { CommandOptionNumber } from '/@shared/src/models/CommandDetails';
 import NumberInput from '../ui/NumberInput.svelte';
 
-export let option: CommandOptionNumber;
-export let onChange = (_value: string[]) => {};
+interface Props {
+  option: CommandOptionNumber;
+  onChange?: (_value: string[]) => void;
+}
+
+let { option, onChange = (_value: string[]) => {} }: Props = $props();
 
 function onInputChange(n: number) {
   onChange(getValue(n));
