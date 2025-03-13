@@ -1,8 +1,10 @@
 {
-  "name": "frontend",
-  "displayName": "frontend UI",
-  "description": "Frontend UI for the Hello World extension",
-  "version": "1.4.0-next",
+  "name": "kreate",
+  "displayName": "Kreate",
+  "description": "Provide templates and documentation to create Kubernetes resources",
+  "version": "0.1.0",
+  "icon": "icon.png",
+  "publisher": "podman-desktop",
   "type": "module",
   "scripts": {
     "preview": "vite preview",
