@@ -1,5 +1,5 @@
 {
-  "name": "kreate",
+  "name": "kreate-monorepo",
   "displayName": "Kreate",
   "description": "Provide templates and documentation to create Kubernetes resources",
   "version": "0.1.0",
