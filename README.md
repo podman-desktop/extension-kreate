@@ -81,4 +81,4 @@ The `repeatFlag` attribute for an option indicates if the flag must be repeated 
 
 You can install the extension by providing the following OCI image in the **Install Custom Extension** form (accessible from `Podman Desktop > Extensions > Install Custom...`):
 
-OCI Image: `quay.io/phmartin/kreate:v0.1.0`
+OCI Image for nightly build: `ghcr.io/podman-desktop/extension-kreate:nightly`
