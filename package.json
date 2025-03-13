@@ -1,10 +1,10 @@
 {
-  "name": "kreate",
+  "name": "kreate-monorepo",
   "displayName": "Kreate",
-  "description": "Kubectl create commands",
-  "version": "0.0.1",
+  "description": "Provide templates and documentation to create Kubernetes resources",
+  "version": "0.1.0",
   "icon": "icon.png",
-  "publisher": "Philippe Martin",
+  "publisher": "podman-desktop",
   "private": true,
   "engines": {
     "node": ">=20.9.0",

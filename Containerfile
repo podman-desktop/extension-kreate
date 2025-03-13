@@ -9,8 +9,8 @@ COPY README.md /extension/
 FROM scratch
 
 LABEL org.opencontainers.image.title="Kreate" \
-        org.opencontainers.image.description="Kubectl create commands" \
-        org.opencontainers.image.vendor="Philippe Martin" \
-        io.podman-desktop.api.version=">= 1.12.0"
+        org.opencontainers.image.description="Provide templates and documentation to create Kubernetes resources" \
+        org.opencontainers.image.vendor="podman-desktop" \
+        io.podman-desktop.api.version=">= 1.16.0"
 
 COPY --from=builder /extension /extension

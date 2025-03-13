@@ -1,13 +1,13 @@
 {
   "name": "kreate",
   "displayName": "Kreate",
-  "description": "Kubectl create commands",
-  "version": "0.0.1",
+  "description": "Provide templates and documentation to create Kubernetes resources",
+  "version": "0.1.0",
   "icon": "icon.png",
-  "publisher": "Philippe Martin",
+  "publisher": "podman-desktop",
   "license": "Apache-2.0",
   "engines": {
-    "podman-desktop": ">=1.10.0"
+    "podman-desktop": ">=1.16.0"
   },
   "main": "./dist/extension.js",
   "scripts": {
