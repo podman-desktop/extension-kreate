@@ -41,8 +41,6 @@ test('constructor', () => {
   vi.mocked(podmanDesktopApi.kubernetes.getKubeconfig).mockReturnValue({
     path: '/path/to/kube/config',
   } as podmanDesktopApi.Uri);
-  const context = {} as ExtensionContext;
-  new KreateApiImpl(context);
 });
 
 describe('', () => {

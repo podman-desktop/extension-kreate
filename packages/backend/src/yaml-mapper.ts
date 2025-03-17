@@ -141,7 +141,7 @@ export class SourceMap {
           });
         }
         // eslint-disable-next-line no-null/no-null
-      } else if (kind === 'mapping' || kind === null) {
+      } else if (kind === 'mapping' || !kind) {
         const newFragment: Fragment = {
           path: pathName,
           children: [],
@@ -280,6 +280,7 @@ export class SourceMap {
     };
   }
 
+  // eslint-disable-next-line sonarjs/function-return-type
   public getAtPos(searchedPosition: number) {
     const sortedMap = Array.from(this._map.entries())
       .map(([path, positions]) => {
