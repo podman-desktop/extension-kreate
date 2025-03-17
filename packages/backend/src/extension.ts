@@ -54,7 +54,7 @@ export async function activate(extensionContext: ExtensionContext): Promise<void
   const scriptLink = indexHtml.match(/<script.*?src="(.*?)".*?>/g);
   if (scriptLink) {
     scriptLink.forEach(link => {
-      const src = RegExp(/src="(.*?)"/).exec(link);
+      const src = /src="(.*?)"/.exec(link);
       if (src) {
         const webviewSrc = panel.webview.asWebviewUri(
           extensionApi.Uri.joinPath(extensionContext.extensionUri, 'media', src[1]),
@@ -69,7 +69,7 @@ export async function activate(extensionContext: ExtensionContext): Promise<void
   const cssLink = indexHtml.match(/<link.*?href="(.*?)".*?>/g);
   if (cssLink) {
     cssLink.forEach(link => {
-      const href = RegExp(/href="(.*?)"/).exec(link);
+      const href = /href="(.*?)"/.exec(link);
       if (href) {
         const webviewHref = panel.webview.asWebviewUri(
           extensionApi.Uri.joinPath(extensionContext.extensionUri, 'media', href[1]),
