@@ -140,7 +140,6 @@ export class SourceMap {
             lineStart,
           });
         }
-        // eslint-disable-next-line no-null/no-null
       } else if (kind === 'mapping' || !kind) {
         const newFragment: Fragment = {
           path: pathName,
