@@ -50,11 +50,10 @@ export async function activate(extensionContext: ExtensionContext): Promise<void
 
   // TEMPORARY. This is a workaround to replace the src of the script tag in the index.html file so that links work correctly.
   // In the content <script type="module" crossorigin src="./index-RKnfBG18.js"></script> replaces src with webview.asWebviewUri
-  // eslint-disable-next-line sonarjs/slow-regex
-  const scriptLink = indexHtml.match(/<script.*?src="(.*?)".*?>/g);
+  const scriptLink = indexHtml.match(/<script[^>]+src="([^"]*)"[^>]*>/g);
   if (scriptLink) {
     scriptLink.forEach(link => {
-      const src = /src="(.*?)"/.exec(link);
+      const src = /src="([^"]*)"/.exec(link);
       if (src) {
         const webviewSrc = panel.webview.asWebviewUri(
           extensionApi.Uri.joinPath(extensionContext.extensionUri, 'media', src[1]),
@@ -65,11 +64,10 @@ export async function activate(extensionContext: ExtensionContext): Promise<void
   }
 
   // TEMPORARY. We do the same for the css link
-  // eslint-disable-next-line sonarjs/slow-regex
-  const cssLink = indexHtml.match(/<link.*?href="(.*?)".*?>/g);
+  const cssLink = indexHtml.match(/<link[^>]+href="([^"]*)"[^>]*>/g);
   if (cssLink) {
     cssLink.forEach(link => {
-      const href = /href="(.*?)"/.exec(link);
+      const href = /href="([^"]*)"/.exec(link);
       if (href) {
         const webviewHref = panel.webview.asWebviewUri(
           extensionApi.Uri.joinPath(extensionContext.extensionUri, 'media', href[1]),
