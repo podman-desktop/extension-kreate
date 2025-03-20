@@ -83,7 +83,7 @@ export class SpecReader {
     yaml.load(content, { listener: map.listen() });
     const path = map.getAtPos(position);
     if (path) {
-      return (path as string).split('.').slice(1);
+      return path.split('.').slice(1);
     }
     return [];
   }

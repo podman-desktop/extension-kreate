@@ -140,8 +140,7 @@ export class SourceMap {
             lineStart,
           });
         }
-        // eslint-disable-next-line no-null/no-null
-      } else if (kind === 'mapping' || kind === null) {
+      } else if (kind === 'mapping' || !kind) {
         const newFragment: Fragment = {
           path: pathName,
           children: [],
@@ -280,14 +279,14 @@ export class SourceMap {
     };
   }
 
-  public getAtPos(searchedPosition: number) {
+  public getAtPos(searchedPosition: number): string | undefined {
     const sortedMap = Array.from(this._map.entries())
       .map(([path, positions]) => {
-        return [path, positions.line];
+        return { path: path, line: positions.line };
       })
       .sort((a, b) => {
-        return a[1] > b[1] ? -1 : 1;
+        return a.line > b.line ? -1 : 1;
       });
-    return sortedMap.find(([_path, pos]) => (pos as number) <= searchedPosition)?.[0];
+    return sortedMap.find(({ line }) => line <= searchedPosition)?.path;
   }
 }
