@@ -280,15 +280,14 @@ export class SourceMap {
     };
   }
 
-  // eslint-disable-next-line sonarjs/function-return-type
-  public getAtPos(searchedPosition: number) {
+  public getAtPos(searchedPosition: number): string | undefined {
     const sortedMap = Array.from(this._map.entries())
       .map(([path, positions]) => {
-        return [path, positions.line];
+        return { path: path, line: positions.line };
       })
       .sort((a, b) => {
-        return a[1] > b[1] ? -1 : 1;
+        return a.line > b.line ? -1 : 1;
       });
-    return sortedMap.find(([_path, pos]) => (pos as number) <= searchedPosition)?.[0];
+    return sortedMap.find(({ line }) => line <= searchedPosition)?.path;
   }
 }
