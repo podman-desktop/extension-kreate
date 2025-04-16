@@ -63,18 +63,20 @@ function onArgsChange(updatedArgs: string[]) {
 </script>
 
 <FormPage title="Use a template" onclose={close}>
-  <div class="p-4 w-full h-full" slot="content">
-    <ResourceSelector onselected={onResourceSelected}></ResourceSelector>
-    {#if details}
-      <div class="flex flex-col space-y-4 p-2">
-        {#if error}
-          <div class="text-red-600">{error}</div>
-        {/if}
-        <Form details={details} onArgsChange={onArgsChange} onOptionsChange={onOptionsChange}></Form>
-        <div class="w-full text-right">
-          <Button aria-label="view-yaml" on:click={onResourceCreate}>Generate YAML</Button>
+  {#snippet content()}
+    <div class="p-4 w-full h-full">
+      <ResourceSelector onselected={onResourceSelected}></ResourceSelector>
+      {#if details}
+        <div class="flex flex-col space-y-4 p-2">
+          {#if error}
+            <div class="text-red-600">{error}</div>
+          {/if}
+          <Form details={details} onArgsChange={onArgsChange} onOptionsChange={onOptionsChange}></Form>
+          <div class="w-full text-right">
+            <Button aria-label="view-yaml" on:click={onResourceCreate}>Generate YAML</Button>
+          </div>
         </div>
-      </div>
-    {/if}
-  </div>
+      {/if}
+    </div>
+  {/snippet}
 </FormPage>
