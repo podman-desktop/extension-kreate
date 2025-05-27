@@ -108,28 +108,32 @@ onDestroy(() => {
 </script>
 
 <NavPage title="Create Kubernetes resources" searchEnabled={false}>
-  <div slot="additional-actions">
-    <Button on:click={useTemplate}>Use template</Button>
-  </div>
-  <div class="flex space-x-2 min-w-full h-full p-1 overflow-y-hidden" slot="content">
-    <div class="basis-1/2">
-      <YamlEditor bind:this={yamlEditor} bind:value={yamlResult} onCursorUpdated={onCursorUpdated} />
+  {#snippet additionalActions()}
+    <div>
+      <Button on:click={useTemplate}>Use template</Button>
     </div>
-    <div class="flex flex-col basis-1/2 space-y-2">
-      <div class="w-full h-full overflow-y-auto overflow-x-hidden">
-        {#if spec}
-          <SpecSimple spec={spec} complete={pathInSpec.length < 2} highlight={pathInSpec[pathInSpec.length - 1]} />
-        {:else}
-          &nbsp;
-        {/if}
+  {/snippet}
+  {#snippet content()}
+    <div class="flex space-x-2 min-w-full h-full p-1 overflow-y-hidden">
+      <div class="basis-1/2">
+        <YamlEditor bind:this={yamlEditor} bind:value={yamlResult} onCursorUpdated={onCursorUpdated} />
       </div>
-      {#if createError}
-        <div class="text-red-600">{createError}</div>
-      {/if}
-      {#if createInfo}
-        <div>{createInfo}</div>
-      {/if}
-      <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Apply to cluster</Button>
+      <div class="flex flex-col basis-1/2 space-y-2">
+        <div class="w-full h-full overflow-y-auto overflow-x-hidden">
+          {#if spec}
+            <SpecSimple spec={spec} complete={pathInSpec.length < 2} highlight={pathInSpec[pathInSpec.length - 1]} />
+          {:else}
+            &nbsp;
+          {/if}
+        </div>
+        {#if createError}
+          <div class="text-red-600">{createError}</div>
+        {/if}
+        {#if createInfo}
+          <div>{createInfo}</div>
+        {/if}
+        <Button on:click={create} disabled={!yamlResult || yamlResult === createdYaml}>Apply to cluster</Button>
+      </div>
     </div>
-  </div>
+  {/snippet}
 </NavPage>

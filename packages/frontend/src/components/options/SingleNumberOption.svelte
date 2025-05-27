@@ -1,6 +1,6 @@
 <script lang="ts">
+import { NumberInput } from '@podman-desktop/ui-svelte';
 import type { CommandOptionNumber } from '/@shared/src/models/CommandDetails';
-import NumberInput from '../ui/NumberInput.svelte';
 
 interface Props {
   option: CommandOptionNumber;
