@@ -18,8 +18,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(ws@8.18.1)
       '@scalar/openapi-parser':
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.13.0
+        version: 0.13.0
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
@@ -85,8 +85,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(ws@8.18.1)
       '@scalar/openapi-parser':
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.13.0
+        version: 0.13.0
       '@types/node-fetch':
         specifier: ^2.6.12
         version: 2.6.12
@@ -718,8 +718,8 @@ packages:
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
 
-  '@scalar/openapi-parser@0.12.0':
-    resolution: {integrity: sha512-UHGV0wyaTde7xVhnGH7jo0gcBvrJ8Zal1C/uGeN3Xq7nPh6v7RzL1cYAxiaIsXt8/QoAcmgwEV5At1Z6dtcSDw==}
+  '@scalar/openapi-parser@0.13.0':
+    resolution: {integrity: sha512-tSENPcbFP0ljxHiFfc241Ov/0OI6W8Ce1pJCfn7CDKvfcU1brU+IJgyd4w2oOi/jhFN3YnmMsUoBMFfVPubSjA==}
     engines: {node: '>=20'}
 
   '@sveltejs/acorn-typescript@1.0.5':
@@ -3582,7 +3582,7 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@scalar/openapi-parser@0.12.0':
+  '@scalar/openapi-parser@0.13.0':
     dependencies:
       ajv: 8.17.1
       ajv-draft-04: 1.0.0(ajv@8.17.1)
