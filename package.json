@@ -64,7 +64,6 @@
   },
   "pnpm": {
     "overrides": {
-      "cssstyle>@asamuzakjp/css-color": "^2.8.3-b.2",
       "@babel/runtime": "^7.26.10"
     },
     "ignoredBuiltDependencies": [
