@@ -153,9 +153,6 @@ importers:
 
   packages/frontend:
     dependencies:
-      svelte-preprocess:
-        specifier: ^6.0.2
-        version: 6.0.3(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(yaml@2.8.0))(postcss@8.5.3)(svelte@5.33.3)(typescript@5.8.3)
       tinro:
         specifier: ^0.6.12
         version: 0.6.12
@@ -241,6 +238,9 @@ importers:
       svelte-markdown:
         specifier: ^0.4.1
         version: 0.4.1(svelte@5.33.3)
+      svelte-preprocess:
+        specifier: ^6.0.2
+        version: 6.0.3(postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(yaml@2.8.0))(postcss@8.5.3)(svelte@5.33.3)(typescript@5.8.3)
       tailwindcss:
         specifier: ^4.1.7
         version: 4.1.8
