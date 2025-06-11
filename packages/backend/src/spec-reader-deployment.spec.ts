@@ -28,11 +28,7 @@ import * as podmanDesktopApi from '@podman-desktop/api';
 
 vi.mock('@kubernetes/client-node');
 vi.mock('node-fetch');
-vi.mock('@podman-desktop/api', () => ({
-  kubernetes: {
-    getKubeconfig: vi.fn(),
-  },
-}));
+vi.mock('@podman-desktop/api');
 
 let specReader: TestSpecReader;
 

@@ -21,15 +21,7 @@ import { KreateApiImpl } from './api-impl';
 import type { ExtensionContext } from '@podman-desktop/api';
 import * as podmanDesktopApi from '@podman-desktop/api';
 
-vi.mock('@podman-desktop/api', () => ({
-  kubernetes: {
-    getKubeconfig: vi.fn(),
-    createResources: vi.fn(),
-  },
-  process: {
-    exec: vi.fn(),
-  },
-}));
+vi.mock('@podman-desktop/api');
 
 vi.mock('@kubernetes/client-node');
 
