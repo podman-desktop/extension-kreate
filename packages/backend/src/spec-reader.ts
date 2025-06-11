@@ -16,13 +16,14 @@
  * SPDX-License-Identifier: Apache-2.0
  ***********************************************************************/
 
-import type { KubeConfig, KubernetesObject } from '@kubernetes/client-node';
+import { KubeConfig, type KubernetesObject } from '@kubernetes/client-node';
 import { validate } from '@scalar/openapi-parser';
 import fetch from 'node-fetch';
 import type { OpenAPIV3 } from 'openapi-types';
 import { parseAllDocuments } from 'yaml';
 import { SourceMap } from './yaml-mapper';
 import yaml from 'js-yaml';
+import * as podmanDesktopApi from '@podman-desktop/api';
 
 export interface Index {
   paths: IndexPaths;
@@ -42,12 +43,10 @@ interface State {
 }
 
 export class SpecReader {
-  #kubeconfig: KubeConfig;
   #index: Index | undefined;
   #state: State;
 
-  constructor(kubeconfig: KubeConfig) {
-    this.#kubeconfig = kubeconfig;
+  constructor() {
     this.#state = { content: '', position: 0 };
   }
 
@@ -92,18 +91,18 @@ export class SpecReader {
     return this.#state;
   }
 
-  protected async getIndex(): Promise<Index> {
+  protected async getIndex(kubeconfig: KubeConfig): Promise<Index> {
     if (this.#index) {
       return this.#index;
     }
 
     const path = '/openapi/v3';
-    const cluster = this.#kubeconfig.getCurrentCluster();
+    const cluster = kubeconfig.getCurrentCluster();
     if (!cluster) {
       throw new Error('No currently active cluster');
     }
     const requestURL = new URL(cluster.server + path);
-    const requestInit = await this.#kubeconfig.applyToFetchOptions({});
+    const requestInit = await kubeconfig.applyToFetchOptions({});
     requestInit.method = 'GET';
     const response = await fetch(requestURL.toString(), requestInit);
     this.#index = await response.json();
@@ -117,15 +116,16 @@ export class SpecReader {
     apiVersion: string,
     kind: string,
   ): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
+    const kubeconfig = this.getKubeConfig();
     const groupVersion = this.getGroupVersionFromApiVersion(apiVersion);
-    const index = await this.getIndex();
+    const index = await this.getIndex(kubeconfig);
     const path = index.paths[groupVersion].serverRelativeURL;
-    const cluster = this.#kubeconfig.getCurrentCluster();
+    const cluster = kubeconfig.getCurrentCluster();
     if (!cluster) {
       throw new Error('No currently active cluster');
     }
     const requestURL = new URL(cluster.server + path);
-    const requestInit = await this.#kubeconfig.applyToFetchOptions({});
+    const requestInit = await kubeconfig.applyToFetchOptions({});
     requestInit.method = 'GET';
     const response = await fetch(requestURL.toString(), requestInit);
     const spec = await response.json();
@@ -197,5 +197,12 @@ export class SpecReader {
       }
     }
     return tags;
+  }
+
+  protected getKubeConfig(): KubeConfig {
+    const file = podmanDesktopApi.kubernetes.getKubeconfig();
+    const kubeConfig = new KubeConfig();
+    kubeConfig.loadFromFile(file.path);
+    return kubeConfig;
   }
 }
