@@ -18,21 +18,27 @@
 
 import { beforeEach, expect, test, vi } from 'vitest';
 import { type Index, SpecReader } from './spec-reader';
-import type { KubeConfig } from '@kubernetes/client-node';
+import { KubeConfig } from '@kubernetes/client-node';
 import index from '../tests/openapi-dump/index.json';
 import appsv1 from '../tests/openapi-dump/openapi/v3/apis/apps/v1.json';
 
 import { type OpenAPIV3 } from 'openapi-types';
 import fetch, { type Response } from 'node-fetch';
+import * as podmanDesktopApi from '@podman-desktop/api';
 
 vi.mock('@kubernetes/client-node');
 vi.mock('node-fetch');
+vi.mock('@podman-desktop/api', () => ({
+  kubernetes: {
+    getKubeconfig: vi.fn(),
+  },
+}));
 
 let specReader: TestSpecReader;
 
 class TestSpecReader extends SpecReader {
-  public async getIndex(): Promise<Index> {
-    return super.getIndex();
+  public async getIndex(kubeconfig: KubeConfig): Promise<Index> {
+    return super.getIndex(kubeconfig);
   }
 
   public async getGroupVersionSpec(
@@ -44,18 +50,20 @@ class TestSpecReader extends SpecReader {
 }
 
 beforeEach(() => {
-  const kubeconfig = {
-    getCurrentCluster: vi.fn(),
-    applyToFetchOptions: vi.fn(),
-  } as unknown as KubeConfig;
-  vi.mocked(kubeconfig.getCurrentCluster).mockReturnValue({
+  KubeConfig.prototype.getCurrentCluster = vi.fn();
+  KubeConfig.prototype.applyToFetchOptions = vi.fn();
+  vi.mocked(KubeConfig.prototype.getCurrentCluster).mockReturnValue({
     name: 'mycluster',
     server: 'https://localhost:10001',
     skipTLSVerify: false,
   });
-  vi.mocked(kubeconfig.applyToFetchOptions).mockResolvedValue({});
-  specReader = new TestSpecReader(kubeconfig);
+
+  vi.mocked(KubeConfig.prototype.applyToFetchOptions).mockResolvedValue({});
+  specReader = new TestSpecReader();
   vi.spyOn(specReader, 'getIndex').mockResolvedValue(index);
+  vi.mocked(podmanDesktopApi.kubernetes.getKubeconfig).mockReturnValue({
+    path: '/path/to/kube/config',
+  } as podmanDesktopApi.Uri);
 });
 
 test('getGroupVersionSpec', async () => {

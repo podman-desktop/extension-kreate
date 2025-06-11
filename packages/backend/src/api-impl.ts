@@ -36,10 +36,7 @@ export class KreateApiImpl implements KreateApi {
   #specReader: SpecReader;
 
   constructor(private readonly extensionContext: podmanDesktopApi.ExtensionContext) {
-    const file = podmanDesktopApi.kubernetes.getKubeconfig();
-    const kubeConfig = new KubeConfig();
-    kubeConfig.loadFromFile(file.path);
-    this.#specReader = new SpecReader(kubeConfig);
+    this.#specReader = new SpecReader();
   }
 
   async getCommands(parent?: string): Promise<string[]> {
