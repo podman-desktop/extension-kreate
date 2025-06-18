@@ -22,6 +22,7 @@ const plugin = {
   kubernetes: {
     getKubeconfig: vi.fn(),
     createResources: vi.fn(),
+    onDidUpdateKubeconfig: vi.fn(),
   },
   process: {
     exec: vi.fn(),

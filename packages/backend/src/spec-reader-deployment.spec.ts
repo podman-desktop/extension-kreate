@@ -25,11 +25,13 @@ import appsv1 from '../tests/openapi-dump/openapi/v3/apis/apps/v1.json';
 import fetch, { type Response } from 'node-fetch';
 import * as podmanDesktopApi from '@podman-desktop/api';
 import { SpecCache } from './spec-cache';
+import { existsSync } from 'node:fs';
 
 vi.mock('@kubernetes/client-node');
 vi.mock('node-fetch');
 vi.mock('@podman-desktop/api');
 vi.mock('./spec-cache');
+vi.mock('node:fs');
 
 let specReader: SpecReader;
 
@@ -53,12 +55,7 @@ beforeEach(() => {
   vi.mocked(podmanDesktopApi.kubernetes.getKubeconfig).mockReturnValue({
     path: '/path/to/kube/config',
   } as podmanDesktopApi.Uri);
-  vi.mocked(podmanDesktopApi.fs.createFileSystemWatcher).mockReturnValue({
-    onDidChange: vi.fn(),
-    onDidDelete: vi.fn(),
-    onDidCreate: vi.fn(),
-    dispose: vi.fn(),
-  });
+  vi.mocked(existsSync).mockReturnValue(true);
 });
 
 test('getSpecFromYamlManifest', async () => {

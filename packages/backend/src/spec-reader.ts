@@ -24,6 +24,7 @@ import yaml from 'js-yaml';
 import * as podmanDesktopApi from '@podman-desktop/api';
 import { NO_CONTEXT_EXCEPTION } from '/@shared/src/KreateApi';
 import { SpecCache } from './spec-cache';
+import { existsSync } from 'node:fs';
 
 interface State {
   content: string;
@@ -46,12 +47,15 @@ export class SpecReader implements podmanDesktopApi.Disposable {
   }
 
   init(): void {
+    podmanDesktopApi.kubernetes.onDidUpdateKubeconfig(this.onKubeconfigUpdate.bind(this));
+    // initial state is not sent by watcher, let's get it explicitely
     const kubeconfig = podmanDesktopApi.kubernetes.getKubeconfig();
-    this.#kubeconfigWatcher = podmanDesktopApi.fs.createFileSystemWatcher(kubeconfig.path);
-    this.#kubeconfigWatcher.onDidChange(this.onKubeconfigUpdate.bind(this));
-    this.#kubeconfigWatcher.onDidDelete(this.onKubeconfigUpdate.bind(this));
-    this.#kubeconfigWatcher.onDidCreate(this.onKubeconfigUpdate.bind(this));
-    this.onKubeconfigUpdate();
+    if (existsSync(kubeconfig.path)) {
+      this.onKubeconfigUpdate({
+        location: kubeconfig,
+        type: 'CREATE',
+      });
+    }
   }
 
   public async getSpecFromYamlManifest(content: string): Promise<{
@@ -113,10 +117,15 @@ export class SpecReader implements podmanDesktopApi.Disposable {
     return tags;
   }
 
-  private onKubeconfigUpdate(): void {
-    const file = podmanDesktopApi.kubernetes.getKubeconfig();
+  private onKubeconfigUpdate(event: podmanDesktopApi.KubeconfigUpdateEvent): void {
+    if (event.type === 'DELETE') {
+      this.#kubeconfig = undefined;
+      this.#currentServer = undefined;
+      this.#cache.clear();
+      return;
+    }
     const kubeConfig = new KubeConfig();
-    kubeConfig.loadFromFile(file.path);
+    kubeConfig.loadFromFile(event.location.path);
     const cluster = kubeConfig.getCurrentCluster();
     if (!cluster) {
       return;
