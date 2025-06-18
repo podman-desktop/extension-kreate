@@ -8,11 +8,13 @@ import { onDestroy, onMount, tick } from 'svelte';
 import { router } from 'tinro';
 import { yamlContent } from './stores/yamlContent';
 import type { Unsubscriber } from 'svelte/store';
+import { NO_CONTEXT_EXCEPTION } from '/@shared/src/KreateApi';
 
 let yamlEditor: YamlEditor;
 
 let yamlResult = $state<string>('');
 let spec = $state<SimplifiedSpec>();
+let specError = $state<string>();
 let pathInSpec = $state<string[]>([]);
 
 let cursorLine = $state<number>(0);
@@ -38,6 +40,7 @@ async function updateSpec(
   emptyLineIndentation: number,
 ) {
   try {
+    specError = undefined;
     let path = await kreateApiClient.getPathAtPosition(yamlResult, cursorLine);
     if (cursorLineIsEmpty) {
       path = path.filter(p => !isNumeric(p)).slice(0, emptyLineIndentation);
@@ -49,7 +52,11 @@ async function updateSpec(
     spec = await kreateApiClient.getSpecFromYamlManifest(yamlResult, pathInSpec.slice(0, -1));
     scrollTo(pathInSpec[pathInSpec.length - 1]);
   } catch (err: unknown) {
-    console.error(err);
+    if (err === NO_CONTEXT_EXCEPTION) {
+      specError = 'There is no current context. Help cannot be displayed';
+    } else {
+      console.error(err);
+    }
   }
 }
 
@@ -122,6 +129,8 @@ onDestroy(() => {
         <div class="w-full h-full overflow-y-auto overflow-x-hidden">
           {#if spec}
             <SpecSimple spec={spec} complete={pathInSpec.length < 2} highlight={pathInSpec[pathInSpec.length - 1]} />
+          {:else if specError}
+            <div class="text-red-600">{specError}</div>
           {:else}
             &nbsp;
           {/if}

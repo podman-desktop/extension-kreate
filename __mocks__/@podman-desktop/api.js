@@ -26,5 +26,8 @@ const plugin = {
   process: {
     exec: vi.fn(),
   },
+  fs: {
+    createFileSystemWatcher: vi.fn(),
+  },
 };
 module.exports = plugin;

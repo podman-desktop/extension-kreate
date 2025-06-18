@@ -20,6 +20,9 @@ import type { CommandDetails } from './models/CommandDetails';
 import type * as podmanDesktopApi from '@podman-desktop/api';
 import type { SimplifiedSpec } from './models/SimplifiedSpec';
 
+export const NO_CONTEXT_EXCEPTION = 'No current context';
+export const NO_OPENAPI_EXCEPTION = 'No openapi endpoint';
+
 export abstract class KreateApi {
   abstract getCommands(parent?: string): Promise<string[]>;
   abstract getCommandDetails(command: string[]): Promise<CommandDetails>;
