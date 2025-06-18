@@ -83,7 +83,9 @@ export async function activate(extensionContext: ExtensionContext): Promise<void
   // We now register the 'api' for the webview to communicate to the backend
   const rpcExtension = new RpcExtension(panel.webview);
   const kreateApi = new KreateApiImpl(extensionContext);
+  kreateApi.init();
   rpcExtension.registerInstance<KreateApi>(KreateApiImpl, kreateApi);
+  extensionContext.subscriptions.push(kreateApi);
 }
 
 export async function deactivate(): Promise<void> {

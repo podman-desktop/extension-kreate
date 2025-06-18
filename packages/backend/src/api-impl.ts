@@ -32,11 +32,15 @@ import { getSimplifiedSpec, getSubspec } from './simplified-spec';
  *
  * The below code can be used with the podmanDesktopApi to showcase the usage of the API, as well as any other "backend" code that you may want to run.
  */
-export class KreateApiImpl implements KreateApi {
+export class KreateApiImpl implements KreateApi, podmanDesktopApi.Disposable {
   #specReader: SpecReader;
 
   constructor(private readonly extensionContext: podmanDesktopApi.ExtensionContext) {
     this.#specReader = new SpecReader();
+  }
+
+  init(): void {
+    this.#specReader.init();
   }
 
   async getCommands(parent?: string): Promise<string[]> {
@@ -126,5 +130,9 @@ export class KreateApiImpl implements KreateApi {
       }
     }
     return tags;
+  }
+
+  dispose(): void {
+    this.#specReader?.dispose();
   }
 }

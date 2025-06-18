@@ -17,33 +17,23 @@
  ***********************************************************************/
 
 import { beforeEach, expect, test, vi } from 'vitest';
-import { type Index, SpecReader } from './spec-reader';
+import { SpecReader } from './spec-reader';
 import { KubeConfig } from '@kubernetes/client-node';
 import index from '../tests/openapi-dump/index.json';
 import appsv1 from '../tests/openapi-dump/openapi/v3/apis/apps/v1.json';
 
-import { type OpenAPIV3 } from 'openapi-types';
 import fetch, { type Response } from 'node-fetch';
 import * as podmanDesktopApi from '@podman-desktop/api';
+import { SpecCache } from './spec-cache';
+import { existsSync } from 'node:fs';
 
 vi.mock('@kubernetes/client-node');
 vi.mock('node-fetch');
 vi.mock('@podman-desktop/api');
+vi.mock('./spec-cache');
+vi.mock('node:fs');
 
-let specReader: TestSpecReader;
-
-class TestSpecReader extends SpecReader {
-  public async getIndex(kubeconfig: KubeConfig): Promise<Index> {
-    return super.getIndex(kubeconfig);
-  }
-
-  public async getGroupVersionSpec(
-    apiVersion: string,
-    kind: string,
-  ): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
-    return super.getGroupVersionSpec(apiVersion, kind);
-  }
-}
+let specReader: SpecReader;
 
 beforeEach(() => {
   KubeConfig.prototype.getCurrentCluster = vi.fn();
@@ -55,27 +45,32 @@ beforeEach(() => {
   });
 
   vi.mocked(KubeConfig.prototype.applyToFetchOptions).mockResolvedValue({});
-  specReader = new TestSpecReader();
-  vi.spyOn(specReader, 'getIndex').mockResolvedValue(index);
+
+  SpecCache.prototype.getIndex = vi.fn().mockResolvedValue(index);
+  SpecCache.prototype.getGroupVersionSpec = vi
+    .fn()
+    .mockReturnValue(appsv1.components.schemas['io.k8s.api.apps.v1.Deployment']);
+
+  specReader = new SpecReader();
   vi.mocked(podmanDesktopApi.kubernetes.getKubeconfig).mockReturnValue({
     path: '/path/to/kube/config',
   } as podmanDesktopApi.Uri);
+  vi.mocked(existsSync).mockReturnValue(true);
 });
 
-test('getGroupVersionSpec', async () => {
+test('getSpecFromYamlManifest', async () => {
   const fetchResult = {
     json: vi.fn(),
   } as unknown as Response;
   vi.mocked(fetchResult.json).mockResolvedValue(appsv1);
   vi.mocked(fetch).mockResolvedValue(fetchResult);
-  const res = await specReader.getGroupVersionSpec('apps/v1', 'Deployment');
-  expect(res).toHaveProperty('description', 'Deployment enables declarative updates for Pods and ReplicaSets.');
-});
-
-test('getSpecFromYamlManifest', async () => {
-  vi.spyOn(specReader, 'getGroupVersionSpec');
-  await specReader.getSpecFromYamlManifest('apiVersion: apps/v1\nkind: Deployment\n');
-  expect(specReader.getGroupVersionSpec).toHaveBeenCalledWith('apps/v1', 'Deployment');
+  specReader.init();
+  const res = await specReader.getSpecFromYamlManifest(`
+apiVersion: apps/v1
+kind: Deployment
+`);
+  expect(SpecCache.prototype.getGroupVersionSpec).toHaveBeenCalledWith(expect.anything(), 'apps/v1', 'Deployment');
+  expect(res.spec).toHaveProperty('description', 'Deployment enables declarative updates for Pods and ReplicaSets.');
 });
 
 test('getPathAtPosition', async () => {

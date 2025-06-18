@@ -22,9 +22,13 @@ const plugin = {
   kubernetes: {
     getKubeconfig: vi.fn(),
     createResources: vi.fn(),
+    onDidUpdateKubeconfig: vi.fn(),
   },
   process: {
     exec: vi.fn(),
+  },
+  fs: {
+    createFileSystemWatcher: vi.fn(),
   },
 };
 module.exports = plugin;

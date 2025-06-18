@@ -17,43 +17,54 @@
  ***********************************************************************/
 
 import { KubeConfig, type KubernetesObject } from '@kubernetes/client-node';
-import { validate } from '@scalar/openapi-parser';
-import fetch from 'node-fetch';
 import type { OpenAPIV3 } from 'openapi-types';
 import { parseAllDocuments } from 'yaml';
 import { SourceMap } from './yaml-mapper';
 import yaml from 'js-yaml';
 import * as podmanDesktopApi from '@podman-desktop/api';
-
-export interface Index {
-  paths: IndexPaths;
-}
-
-export interface IndexPaths {
-  [api: string]: IndexApi;
-}
-
-export interface IndexApi {
-  serverRelativeURL: string;
-}
+import { NO_CONTEXT_EXCEPTION } from '/@shared/src/KreateApi';
+import { SpecCache } from './spec-cache';
+import { existsSync } from 'node:fs';
 
 interface State {
   content: string;
   position: number;
 }
 
-export class SpecReader {
-  #index: Index | undefined;
+export class SpecReader implements podmanDesktopApi.Disposable {
+  #kubeconfigWatcher: podmanDesktopApi.FileSystemWatcher | undefined;
+  #kubeconfig: KubeConfig | undefined;
+  #currentServer: string | undefined;
+  #gvSpecs: Map<string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject>;
   #state: State;
 
+  #cache: SpecCache;
+
   constructor() {
+    this.#cache = new SpecCache();
     this.#state = { content: '', position: 0 };
+    this.#gvSpecs = new Map();
+  }
+
+  init(): void {
+    podmanDesktopApi.kubernetes.onDidUpdateKubeconfig(this.onKubeconfigUpdate.bind(this));
+    // initial state is not sent by watcher, let's get it explicitely
+    const kubeconfig = podmanDesktopApi.kubernetes.getKubeconfig();
+    if (existsSync(kubeconfig.path)) {
+      this.onKubeconfigUpdate({
+        location: kubeconfig,
+        type: 'CREATE',
+      });
+    }
   }
 
   public async getSpecFromYamlManifest(content: string): Promise<{
     kind: string;
     spec: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
   }> {
+    if (!this.#kubeconfig) {
+      throw new Error(NO_CONTEXT_EXCEPTION);
+    }
     const manifests = parseAllDocuments(content, { customTags: this.getTags })
       .map(manifest => manifest.toJSON())
       .filter(manifest => !!manifest);
@@ -69,7 +80,7 @@ export class SpecReader {
     }
     return {
       kind: manifest.kind,
-      spec: await this.getGroupVersionSpec(manifest.apiVersion, manifest.kind),
+      spec: await this.#cache.getGroupVersionSpec(this.#kubeconfig, manifest.apiVersion, manifest.kind),
     };
   }
 
@@ -91,99 +102,6 @@ export class SpecReader {
     return this.#state;
   }
 
-  protected async getIndex(kubeconfig: KubeConfig): Promise<Index> {
-    if (this.#index) {
-      return this.#index;
-    }
-
-    const path = '/openapi/v3';
-    const cluster = kubeconfig.getCurrentCluster();
-    if (!cluster) {
-      throw new Error('No currently active cluster');
-    }
-    const requestURL = new URL(cluster.server + path);
-    const requestInit = await kubeconfig.applyToFetchOptions({});
-    requestInit.method = 'GET';
-    const response = await fetch(requestURL.toString(), requestInit);
-    this.#index = await response.json();
-    if (!this.#index) {
-      throw new Error('index is undefined');
-    }
-    return this.#index;
-  }
-
-  protected async getGroupVersionSpec(
-    apiVersion: string,
-    kind: string,
-  ): Promise<OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject> {
-    const kubeconfig = this.getKubeConfig();
-    const groupVersion = this.getGroupVersionFromApiVersion(apiVersion);
-    const index = await this.getIndex(kubeconfig);
-    const path = index.paths[groupVersion].serverRelativeURL;
-    const cluster = kubeconfig.getCurrentCluster();
-    if (!cluster) {
-      throw new Error('No currently active cluster');
-    }
-    const requestURL = new URL(cluster.server + path);
-    const requestInit = await kubeconfig.applyToFetchOptions({});
-    requestInit.method = 'GET';
-    const response = await fetch(requestURL.toString(), requestInit);
-    const spec = await response.json();
-    const result = await validate(spec);
-    if (!result.valid) {
-      throw new Error(`invalid spec for ${groupVersion}`);
-    }
-    const document: OpenAPIV3.Document = result.schema;
-    if (!document.components?.schemas) {
-      throw new Error('no schemas found in spec');
-    }
-    const resource = this.getSchemedResource(document.components.schemas, apiVersion, kind);
-    return document.components.schemas[resource];
-  }
-
-  protected getSchemedResource(
-    schemas: {
-      [key: string]: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject;
-    },
-    apiVersion: string,
-    kind: string,
-  ): string {
-    const [group, version] = this.getGroupAndVersion(apiVersion);
-    for (const [k, v] of Object.entries(schemas)) {
-      if (
-        'x-kubernetes-group-version-kind' in v &&
-        Array.isArray(v['x-kubernetes-group-version-kind']) &&
-        v['x-kubernetes-group-version-kind'].length > 0
-      ) {
-        const gvk = v['x-kubernetes-group-version-kind'][0];
-        if (this.isGroupVersionKind(gvk) && gvk.group === group && gvk.version === version && gvk.kind === kind) {
-          return k;
-        }
-      }
-    }
-    throw new Error(`no resource found for apiVersion ${apiVersion} and kind ${kind}`);
-  }
-
-  protected getGroupAndVersion(apiVersion: string): string[] {
-    if (apiVersion.includes('/')) {
-      return apiVersion.split('/');
-    }
-    return ['', apiVersion];
-  }
-
-  protected isGroupVersionKind(v: unknown): v is { group: string; version: string; kind: string } {
-    return !!v && typeof v === 'object' && 'group' in v && 'version' in v && 'kind' in v;
-  }
-
-  protected getGroupVersionFromApiVersion(apiVersion: string): string {
-    switch (apiVersion) {
-      case 'v1':
-        return 'api/v1';
-      default:
-        return `apis/${apiVersion}`;
-    }
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getTags(tags: any[]): any[] {
     for (const tag of tags) {
@@ -199,10 +117,27 @@ export class SpecReader {
     return tags;
   }
 
-  protected getKubeConfig(): KubeConfig {
-    const file = podmanDesktopApi.kubernetes.getKubeconfig();
+  private onKubeconfigUpdate(event: podmanDesktopApi.KubeconfigUpdateEvent): void {
+    if (event.type === 'DELETE') {
+      this.#kubeconfig = undefined;
+      this.#currentServer = undefined;
+      this.#cache.clear();
+      return;
+    }
     const kubeConfig = new KubeConfig();
-    kubeConfig.loadFromFile(file.path);
-    return kubeConfig;
+    kubeConfig.loadFromFile(event.location.path);
+    const cluster = kubeConfig.getCurrentCluster();
+    if (!cluster) {
+      return;
+    }
+    if (cluster.server !== this.#currentServer) {
+      this.#cache.clear();
+    }
+    this.#currentServer = cluster.server;
+    this.#kubeconfig = kubeConfig;
+  }
+
+  dispose(): void {
+    this.#kubeconfigWatcher?.dispose();
   }
 }
