@@ -61,7 +61,7 @@
     "@kubernetes/client-node": "1.3.0",
     "@scalar/openapi-parser": "^0.18.0",
     "js-yaml": "^4.1.0",
-    "zod": "^3.25.68"
+    "zod": "^3.25.74"
   },
   "pnpm": {
     "overrides": {
