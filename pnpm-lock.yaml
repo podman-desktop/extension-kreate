@@ -23,8 +23,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       zod:
-        specifier: ^4.0.3
-        version: 4.0.3
+        specifier: ^4.0.5
+        version: 4.0.5
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.34.1
@@ -102,8 +102,8 @@ importers:
         specifier: ^2.8.0
         version: 2.8.0
       zod:
-        specifier: ^4.0.3
-        version: 4.0.3
+        specifier: ^4.0.5
+        version: 4.0.5
     devDependencies:
       '@podman-desktop/api':
         specifier: 1.20.0
@@ -3212,8 +3212,8 @@ packages:
   zimmerframe@1.1.2:
     resolution: {integrity: sha512-rAbqEGa8ovJy4pyBxZM70hg4pE6gDgaQ0Sl9M3enG3I0d6H4XSAM3GeNGLKnsBpuijUow064sf7ww1nutC5/3w==}
 
-  zod@4.0.3:
-    resolution: {integrity: sha512-V78FonTAxtGAyF2xR75x0YoW8uKXdQiusoPtzbT07vH3mZiGdTQN6INuivHyYT6M2V2YRFDEKIF4ylTJh54EXg==}
+  zod@4.0.5:
+    resolution: {integrity: sha512-/5UuuRPStvHXu7RS+gmvRf4NXrNxpSllGwDnCBcJZtQsKrviYXm54yDGV2KYNLT5kq0lHGcl7lqWJLgSaG+tgA==}
 
 snapshots:
 
@@ -6358,4 +6358,4 @@ snapshots:
 
   zimmerframe@1.1.2: {}
 
-  zod@4.0.3: {}
+  zod@4.0.5: {}
