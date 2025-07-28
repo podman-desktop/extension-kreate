@@ -149,6 +149,25 @@
       ]
     },
     {
+      "name": "namespace",
+      "args": [
+        {
+          "name": "name",
+          "label": "Name",
+          "description": "Name of the namespace to create",
+          "required": true
+        }
+      ],
+      "cli": [
+        "kubectl",
+        "create",
+        "namespace",
+        "--dry-run=client",
+        "-o",
+        "yaml"
+      ]
+    },
+    {
       "name": "pod",
       "args": [
         {
