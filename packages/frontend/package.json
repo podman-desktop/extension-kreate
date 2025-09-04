@@ -28,7 +28,7 @@
     "@podman-desktop/ui-svelte": "1.21.0",
     "@sveltejs/vite-plugin-svelte": "6.1.4",
     "@tailwindcss/typography": "^0.5.14",
-    "@tailwindcss/vite": "^4.1.11",
+    "@tailwindcss/vite": "^4.1.13",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/svelte": "^5.2.8",
