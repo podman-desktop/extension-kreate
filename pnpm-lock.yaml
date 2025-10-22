@@ -215,8 +215,8 @@ importers:
         specifier: ^6.21.0
         version: 6.21.0(eslint@8.57.1)(typescript@5.9.2)
       filesize:
-        specifier: ^11.0.0
-        version: 11.0.2
+        specifier: ^11.0.13
+        version: 11.0.13
       humanize-duration:
         specifier: ^3.33.1
         version: 3.33.1
@@ -1847,9 +1847,9 @@ packages:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
 
-  filesize@11.0.2:
-    resolution: {integrity: sha512-s/iAeeWLk5BschUIpmdrF8RA8lhFZ/xDZgKw1Tan72oGws1/dFGB06nYEiyyssWUfjKNQTNRlrwMVjO9/hvXDw==}
-    engines: {node: '>= 10.4.0'}
+  filesize@11.0.13:
+    resolution: {integrity: sha512-mYJ/qXKvREuO0uH8LTQJ6v7GsUvVOguqxg2VTwQUkyTPXXRRWPdjuUPVqdBrJQhvci48OHlNGRnux+Slr2Rnvw==}
+    engines: {node: '>= 10.8.0'}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -5034,7 +5034,7 @@ snapshots:
     dependencies:
       flat-cache: 3.2.0
 
-  filesize@11.0.2: {}
+  filesize@11.0.13: {}
 
   fill-range@7.1.1:
     dependencies:
