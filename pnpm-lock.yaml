@@ -218,8 +218,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.2
       humanize-duration:
-        specifier: ^3.33.0
-        version: 3.33.0
+        specifier: ^3.33.1
+        version: 3.33.1
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
@@ -2065,9 +2065,6 @@ packages:
   https-proxy-agent@7.0.6:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
-
-  humanize-duration@3.33.0:
-    resolution: {integrity: sha512-vYJX7BSzn7EQ4SaP2lPYVy+icHDppB6k7myNeI3wrSRfwMS5+BHyGgzpHR0ptqJ2AQ6UuIKrclSg5ve6Ci4IAQ==}
 
   humanize-duration@3.33.1:
     resolution: {integrity: sha512-hwzSCymnRdFx9YdRkQQ0OYequXiVAV6ZGQA2uzocwB0F4309Ke6pO8dg0P8LHhRQJyVjGteRTAA/zNfEcpXn8A==}
@@ -5380,8 +5377,6 @@ snapshots:
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
-
-  humanize-duration@3.33.0: {}
 
   humanize-duration@3.33.1: {}
 
