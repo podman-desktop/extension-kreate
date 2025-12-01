@@ -50,7 +50,7 @@
     "svelte-markdown": "^0.4.1",
     "svelte-preprocess": "^6.0.2",
     "tailwindcss": "^4.1.7",
-    "vite": "^7.2.4",
+    "vite": "^7.2.6",
     "vitest": "^3.1.4"
   }
 }
