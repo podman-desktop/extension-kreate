@@ -48,7 +48,17 @@ describe('', () => {
 
   test('getCommands without parent', async () => {
     const commands = await api.getCommands();
-    expect(commands).toEqual(['configmap', 'deployment', 'ingress', 'namespace', 'pod', 'secret', 'service']);
+    expect(commands).toEqual([
+      'configmap',
+      'cronjob',
+      'deployment',
+      'ingress',
+      'job',
+      'namespace',
+      'pod',
+      'secret',
+      'service',
+    ]);
   });
 
   test('getCommands with parent', async () => {
