@@ -46,6 +46,49 @@
       ]
     },
     {
+      "name": "cronjob",
+      "args": [
+        {
+          "name": "name",
+          "label": "Name",
+          "description": "Name of the cronjob to create",
+          "required": true
+        }
+      ],
+      "options": [
+        {
+          "flag": "--image",
+          "label": "Image",
+          "description": "Image to use for the container",
+          "type": "string",
+          "multiple": false
+        },
+        {
+          "flag": "--schedule",
+          "label": "Schedule",
+          "description": "The schedule in Cron format (minute hour day-of-month month day-of-week), see https://en.wikipedia.org/wiki/Cron",
+          "type": "string",
+          "multiple": false
+        },
+        {
+          "flag": "--",
+          "label": "Command and args",
+          "description": "Command and args for the container",
+          "type": "string",
+          "multiple": true,
+          "repeatFlag": false
+        }
+      ],
+      "cli": [
+        "kubectl",
+        "create",
+        "cronjob",
+        "--dry-run=client",
+        "-o",
+        "yaml"
+      ]
+    },
+    {
       "name": "deployment",
       "args": [
         {
@@ -143,6 +186,42 @@
         "kubectl",
         "create",
         "ingress",
+        "--dry-run=client",
+        "-o",
+        "yaml"
+      ]
+    },
+    {
+      "name": "job",
+      "args": [
+        {
+          "name": "name",
+          "label": "Name",
+          "description": "Name of the job to create",
+          "required": true
+        }
+      ],
+      "options": [
+        {
+          "flag": "--image",
+          "label": "Image",
+          "description": "Image to use for the container",
+          "type": "string",
+          "multiple": false
+        },
+        {
+          "flag": "--",
+          "label": "Command and args",
+          "description": "Command and args for the container",
+          "type": "string",
+          "multiple": true,
+          "repeatFlag": false
+        }
+      ],
+      "cli": [
+        "kubectl",
+        "create",
+        "job",
         "--dry-run=client",
         "-o",
         "yaml"
