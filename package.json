@@ -66,7 +66,8 @@
   "pnpm": {
     "overrides": {
       "@babel/runtime": "^7.26.10",
-      "minimatch>@isaacs/brace-expansion": "^5.0.1"
+      "minimatch>@isaacs/brace-expansion": "^5.0.1",
+      "test-exclude>glob": "^10.5.0"
     },
     "ignoredBuiltDependencies": [
       "@tailwindcss/oxide",
