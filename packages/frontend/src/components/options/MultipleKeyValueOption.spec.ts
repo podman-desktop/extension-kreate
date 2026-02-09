@@ -88,3 +88,46 @@ test('multiple values typed in the input are sent back to caller', async () => {
     expect(onChangeMock).toHaveBeenCalledWith(['aflag', 'key1=value1', 'key2=value2']);
   });
 });
+
+test('value is secret', async () => {
+  const onChangeMock = vi.fn();
+  render(MultipleKeyValueOption, {
+    props: {
+      option: {
+        flag: 'aflag',
+        label: 'a label',
+        description: 'a description',
+        type: 'key-value',
+        multiple: true,
+      },
+      valueIsSecret: true,
+      onChange: onChangeMock,
+    },
+  });
+
+  await vi.waitFor(async () => {
+    const valueInput = screen.getByPlaceholderText('value');
+    expect(valueInput).toHaveAttribute('type', 'password');
+  });
+});
+
+test('value is not secret', async () => {
+  const onChangeMock = vi.fn();
+  render(MultipleKeyValueOption, {
+    props: {
+      option: {
+        flag: 'aflag',
+        label: 'a label',
+        description: 'a description',
+        type: 'key-value',
+        multiple: true,
+      },
+      onChange: onChangeMock,
+    },
+  });
+
+  await vi.waitFor(async () => {
+    const valueInput = screen.getByPlaceholderText('value');
+    expect(valueInput).toHaveAttribute('type', 'text');
+  });
+});

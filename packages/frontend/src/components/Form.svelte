@@ -59,6 +59,15 @@ function onArgChange(event: Event, i: number) {
                 onOptionsChange(options);
               }} />
           {/if}
+          {#if option.type === 'key-secret' && option.multiple}
+            <MultipleKeyValueOption
+              valueIsSecret={true}
+              option={option}
+              onChange={kvs => {
+                options[i] = kvs;
+                onOptionsChange(options);
+              }} />
+          {/if}
           {#if option.type === 'string' && !option.multiple}
             <SingleStringOption
               option={option}
