@@ -412,7 +412,7 @@
               "flag": "--from-literal",
               "label": "Literal values",
               "description": "Specify a key and literal value to insert in secret",
-              "type": "key-value",
+              "type": "key-secret",
               "multiple": true,
               "repeatFlag": true
             },

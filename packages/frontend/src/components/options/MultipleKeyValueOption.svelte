@@ -7,9 +7,10 @@ import type { KeyValue } from '/@shared/src/models/KeyValue';
 interface Props {
   option: CommandOption;
   onChange?: (_value: string[]) => void;
+  valueIsSecret?: boolean;
 }
 
-let { option, onChange = (_value: string[]) => {} }: Props = $props();
+let { option, onChange = (_value: string[]) => {}, valueIsSecret = false }: Props = $props();
 
 let keyValues = $state<KeyValue[]>([{ key: '', value: '' }]);
 
@@ -56,7 +57,11 @@ function getValue(kvs: KeyValue[]): string[] {
   {#each keyValues as value, i}
     <div class="flex flex-row w-full space-x-4">
       <Input placeholder="key" bind:value={value.key} on:input={e => onKeyChange(e, i)} />
-      <Input placeholder="value" bind:value={value.value} on:input={e => onValueChange(e, i)} />
+      <Input
+        placeholder="value"
+        bind:value={value.value}
+        type={valueIsSecret ? 'password' : 'text'}
+        on:input={e => onValueChange(e, i)} />
 
       <Button
         aria-label="delete-btn"
