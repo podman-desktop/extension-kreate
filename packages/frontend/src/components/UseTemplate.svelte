@@ -7,6 +7,7 @@ import type { CommandDetails } from '/@shared/src/models/CommandDetails';
 import { tick } from 'svelte';
 import Form from './Form.svelte';
 import { yamlContent } from '../stores/yamlContent';
+import type { Resource } from '/@shared/src/KreateApi';
 
 let yamlResult = $state<string>('');
 
@@ -60,12 +61,17 @@ function onOptionsChange(updatedOptions: string[][]) {
 function onArgsChange(updatedArgs: string[]) {
   args = updatedArgs;
 }
+
+function onOtherSelected(resource: Resource): void {
+  yamlContent.set(`apiVersion: ${resource.apiVersion}\nkind: ${resource.kind}\n`);
+  router.goto('/');
+}
 </script>
 
 <FormPage title="Use a template" onclose={close}>
   {#snippet content()}
     <div class="p-4 w-full h-full bg-[var(--pd-invert-content-bg)] overflow-y-auto">
-      <ResourceSelector onselected={onResourceSelected}></ResourceSelector>
+      <ResourceSelector onselected={onResourceSelected} onOtherSelected={onOtherSelected}></ResourceSelector>
       {#if details}
         <div class="flex flex-col space-y-4 p-2">
           {#if error}
