@@ -20,9 +20,11 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { KreateApiImpl } from './api-impl';
 import type { ExtensionContext } from '@podman-desktop/api';
 import * as podmanDesktopApi from '@podman-desktop/api';
+import { type ApisApi, type Cluster, KubeConfig } from '@kubernetes/client-node';
+import fetch, { type Response } from 'node-fetch';
 
+vi.mock('node-fetch');
 vi.mock('@podman-desktop/api');
-
 vi.mock('@kubernetes/client-node');
 
 beforeEach(() => {
@@ -131,5 +133,100 @@ metadata:
   name: a
 `;
     await expect(api.create(manifest)).rejects.toThrowError('No valid Kubernetes resources found in content');
+  });
+
+  test('fetchAllResources', async () => {
+    vi.mocked(KubeConfig.prototype.makeApiClient).mockReturnValue({
+      getAPIVersions: vi.fn().mockResolvedValue({
+        groups: [
+          {
+            preferredVersion: {
+              groupVersion: 'batch/v1',
+            },
+          },
+          {
+            preferredVersion: {
+              groupVersion: 'apps/v1',
+            },
+          },
+        ],
+      }),
+    } as unknown as ApisApi);
+    vi.mocked(KubeConfig.prototype.getCurrentCluster).mockReturnValue({
+      server: 'https://localhost:8080',
+    } as Cluster);
+    vi.mocked(KubeConfig.prototype.applyToFetchOptions).mockResolvedValue({});
+
+    const fetchMock = {
+      json: vi.fn(),
+    } as unknown as Response;
+    vi.mocked(fetch).mockResolvedValue(fetchMock);
+    vi.mocked(fetchMock.json).mockResolvedValueOnce({
+      groupVersion: 'v1',
+      resources: [
+        {
+          singularName: 'Pod',
+          kind: 'Pod',
+        },
+        {
+          singularName: 'ConfigMap',
+          kind: 'ConfigMap',
+        },
+      ],
+    });
+    vi.mocked(fetchMock.json).mockResolvedValueOnce({
+      groupVersion: 'apps/v1',
+      resources: [
+        {
+          singularName: 'ReplicaSet',
+          kind: 'ReplicaSet',
+        },
+        {
+          singularName: 'Deployment',
+          kind: 'Deployment',
+        },
+      ],
+    });
+    vi.mocked(fetchMock.json).mockResolvedValueOnce({
+      groupVersion: 'batch/v1',
+      resources: [
+        {
+          singularName: 'Job',
+          kind: 'Job',
+        },
+        {
+          singularName: 'CronJob',
+          kind: 'CronJob',
+        },
+      ],
+    });
+
+    const resources = await api.fetchAllResources();
+    expect(resources).toEqual([
+      {
+        apiVersion: 'v1',
+        kind: 'ConfigMap',
+      },
+      {
+        apiVersion: 'v1',
+        kind: 'Pod',
+      },
+      {
+        apiVersion: 'apps/v1',
+        kind: 'Deployment',
+      },
+      {
+        apiVersion: 'apps/v1',
+        kind: 'ReplicaSet',
+      },
+      {
+        apiVersion: 'batch/v1',
+        kind: 'CronJob',
+      },
+      {
+        apiVersion: 'batch/v1',
+        kind: 'Job',
+      },
+    ]);
   });
 });
