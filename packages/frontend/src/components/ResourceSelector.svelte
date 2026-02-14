@@ -1,17 +1,21 @@
 <script lang="ts">
-import { Button, Dropdown } from '@podman-desktop/ui-svelte';
+import { Dropdown } from '@podman-desktop/ui-svelte';
 import { onMount } from 'svelte';
-import { kreateApiClient } from '../api/client';
+import { kreateApiClient } from '/@/api/client';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
+import SelectOtherModal from '/@/components/SelectOtherModal.svelte';
+import type { Resource } from '/@shared/src/KreateApi';
 
 interface Props {
   onselected: (details: CommandDetails | undefined) => void;
+  onOtherSelected: (resource: Resource) => void;
 }
 
-let { onselected }: Props = $props();
+let { onselected, onOtherSelected }: Props = $props();
 
 let commands = $state<string[]>();
 let subcommands = $state<string[]>([]);
+let selectOtherResourceModalOpen = $state(false);
 
 let selectedCommand: string | undefined = '';
 let selectedSubcommand: string | undefined;
@@ -33,6 +37,10 @@ async function onCommandChange(command: unknown) {
   }
   if (command === '') {
     onselected(undefined);
+  }
+  if (command === 'other...') {
+    openOtherResourceModal();
+    return;
   }
   selectedSubcommand = undefined;
   selectedCommand = command;
@@ -59,6 +67,19 @@ async function onSubcommandChange(subcommand: unknown) {
   const details = await kreateApiClient.getCommandDetails([selectedCommand, selectedSubcommand]);
   onselected(details);
 }
+
+function closeOtherResourceModal(): void {
+  selectOtherResourceModalOpen = false;
+}
+
+function openOtherResourceModal(): void {
+  selectOtherResourceModalOpen = true;
+}
+
+function onResourceSelected(resource: Resource): void {
+  closeOtherResourceModal();
+  onOtherSelected(resource);
+}
 </script>
 
 <div class="flex flex-row items-center w-full space-x-4">
@@ -72,6 +93,7 @@ async function onSubcommandChange(subcommand: unknown) {
           label: c,
           value: c,
         })),
+        { label: 'other...', value: 'other...' },
       ]}
       onChange={onCommandChange} />
     {#if subcommands && subcommands.length}
@@ -88,3 +110,7 @@ async function onSubcommandChange(subcommand: unknown) {
     {/if}
   {/if}
 </div>
+
+{#if selectOtherResourceModalOpen}
+  <SelectOtherModal closeCallback={closeOtherResourceModal} onResourceSelected={onResourceSelected} />
+{/if}
