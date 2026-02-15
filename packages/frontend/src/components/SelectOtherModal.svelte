@@ -13,17 +13,32 @@ let { closeCallback, onResourceSelected }: Props = $props();
 
 let loadingResources = $state(true);
 let allResources = $state<Resource[]>([]);
+let errorMessage = $state<string>('');
 
 onMount(async () => {
-  allResources = await kreateApiClient.fetchAllResources();
-  loadingResources = false;
+  errorMessage = '';
+  try {
+    allResources = await kreateApiClient.fetchAllResources();
+  } catch (error) {
+    errorMessage = 'Error loading resources. Please verify that the current context is accessible.';
+  } finally {
+    loadingResources = false;
+  }
 });
+
+function handleKeydown(event: KeyboardEvent, resource: Resource): void {
+  if (event.key === 'Enter') {
+    onResourceSelected(resource);
+  }
+}
 </script>
 
 <Dialog title="Select a resource" onclose={closeCallback}>
   {#snippet content()}
     {#if loadingResources}
       <div>Loading resources...</div>
+    {:else if errorMessage}
+      <div>{errorMessage}</div>
     {:else}
       <table class="bg-[var(--pd-content-card-bg)] table-auto">
         <thead>
@@ -35,7 +50,10 @@ onMount(async () => {
         <tbody>
           {#each allResources as resource}
             <tr
+              role="button"
+              tabindex={0}
               onclick={onResourceSelected.bind(undefined, resource)}
+              onkeydown={e => handleKeydown(e, resource)}
               class="cursor-pointer text-[var(--pd-table-body-text)] hover:bg-[var(--pd-content-card-hover-bg)]">
               <td class="p-1">{resource.apiVersion}</td>
               <td class="p-1">{resource.kind}</td>
