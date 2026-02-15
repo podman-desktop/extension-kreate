@@ -17,11 +17,12 @@
  ***********************************************************************/
 
 import { render, screen } from '@testing-library/svelte';
-import { expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import ResourceSelector from './ResourceSelector.svelte';
 import * as client from '../api/client';
 import userEvent from '@testing-library/user-event';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
+import SelectResourceModal from '/@/components/SelectResourceModal.svelte';
 
 vi.mock('/@/api/client', () => ({
   kreateApiClient: {
@@ -29,9 +30,15 @@ vi.mock('/@/api/client', () => ({
     getCommandDetails: vi.fn(),
   },
 }));
+vi.mock(import('/@/components/SelectResourceModal.svelte'));
+
+beforeEach(() => {
+  vi.resetAllMocks();
+});
 
 test('ResourceSelector', async () => {
   const onselectedMock = vi.fn();
+  const onOtherSelectedMock = vi.fn();
 
   // cmd1 has subcommands
   // cmd2 is a final command
@@ -53,6 +60,7 @@ test('ResourceSelector', async () => {
 
   render(ResourceSelector, {
     onselected: onselectedMock,
+    onOtherSelected: onOtherSelectedMock,
   });
 
   await vi.waitFor(() => {
@@ -69,4 +77,41 @@ test('ResourceSelector', async () => {
   await userEvent.keyboard('[ArrowDown][Arrowdown][Enter]'); // select cmd1sub1
 
   expect(onselectedMock).toHaveBeenCalledWith(commandDetails);
+});
+
+test('ResourceSelector - other selected', async () => {
+  const onselectedMock = vi.fn();
+  const onOtherSelectedMock = vi.fn();
+
+  // cmd1 is a final command
+  vi.mocked(client.kreateApiClient.getCommands).mockImplementation(async (parent?: string) => {
+    if (!parent) {
+      return ['cmd1'];
+    } else {
+      return [];
+    }
+  });
+
+  render(ResourceSelector, {
+    onselected: onselectedMock,
+    onOtherSelected: onOtherSelectedMock,
+  });
+
+  await vi.waitFor(() => {
+    const commandDropdown = screen.getByRole('button', { name: 'Resource to create:' });
+    commandDropdown.focus();
+  });
+
+  await userEvent.keyboard('[ArrowDown][Arrowdown][Arrowdown][Enter]'); // select other...
+
+  expect(SelectResourceModal).toHaveBeenCalled();
+  const callArgs = vi.mocked(SelectResourceModal).mock.calls[0][1];
+  callArgs.onResourceSelected({
+    apiVersion: 'v1',
+    kind: 'Resource',
+  });
+  expect(onOtherSelectedMock).toHaveBeenCalledWith({
+    apiVersion: 'v1',
+    kind: 'Resource',
+  });
 });
