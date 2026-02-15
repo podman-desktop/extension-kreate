@@ -3,7 +3,7 @@ import { Dropdown } from '@podman-desktop/ui-svelte';
 import { onMount } from 'svelte';
 import { kreateApiClient } from '/@/api/client';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
-import SelectOtherModal from '/@/components/SelectOtherModal.svelte';
+import SelectResourceModal from './SelectResourceModal.svelte';
 import type { Resource } from '/@shared/src/KreateApi';
 
 interface Props {
@@ -15,7 +15,7 @@ let { onselected, onOtherSelected }: Props = $props();
 
 let commands = $state<string[]>();
 let subcommands = $state<string[]>([]);
-let selectOtherResourceModalOpen = $state(false);
+let selectResourceModalOpen = $state(false);
 
 let selectedCommand: string | undefined = '';
 let selectedSubcommand: string | undefined;
@@ -39,7 +39,7 @@ async function onCommandChange(command: unknown) {
     onselected(undefined);
   }
   if (command === 'other...') {
-    openOtherResourceModal();
+    openSelectResourceModal();
     return;
   }
   selectedSubcommand = undefined;
@@ -68,16 +68,16 @@ async function onSubcommandChange(subcommand: unknown) {
   onselected(details);
 }
 
-function closeOtherResourceModal(): void {
-  selectOtherResourceModalOpen = false;
+function closeSelectResourceModal(): void {
+  selectResourceModalOpen = false;
 }
 
-function openOtherResourceModal(): void {
-  selectOtherResourceModalOpen = true;
+function openSelectResourceModal(): void {
+  selectResourceModalOpen = true;
 }
 
 function onResourceSelected(resource: Resource): void {
-  closeOtherResourceModal();
+  closeSelectResourceModal();
   onOtherSelected(resource);
 }
 </script>
@@ -111,6 +111,6 @@ function onResourceSelected(resource: Resource): void {
   {/if}
 </div>
 
-{#if selectOtherResourceModalOpen}
-  <SelectOtherModal closeCallback={closeOtherResourceModal} onResourceSelected={onResourceSelected} />
+{#if selectResourceModalOpen}
+  <SelectResourceModal closeCallback={closeSelectResourceModal} onResourceSelected={onResourceSelected} />
 {/if}
