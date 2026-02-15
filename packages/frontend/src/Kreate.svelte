@@ -126,7 +126,7 @@ onDestroy(() => {
         <YamlEditor bind:this={yamlEditor} bind:value={yamlResult} onCursorUpdated={onCursorUpdated} />
       </div>
       <div class="flex flex-col basis-1/2 space-y-2">
-        <div class="w-full h-full overflow-y-auto overflow-x-hidden">
+        <div class="p-2 w-full h-full overflow-y-auto overflow-x-hidden bg-[var(--pd-invert-content-bg)]">
           {#if spec}
             <SpecSimple spec={spec} complete={pathInSpec.length < 2} highlight={pathInSpec[pathInSpec.length - 1]} />
           {:else if specError}

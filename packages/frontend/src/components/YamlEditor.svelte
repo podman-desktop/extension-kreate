@@ -38,7 +38,7 @@ async function onCursorChange(position: number) {
 
 <textarea
   bind:this={yamlEditor}
-  class="font-mono h-full w-full p-2 outline-hidden text-sm bg-[var(--pd-input-field-focused-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
+  class="font-mono h-full w-full p-2 outline-hidden text-sm bg-[var(--pd-invert-content-bg)] rounded-sm text-[var(--pd-input-field-focused-text)] placeholder-[var(--pd-input-field-placeholder-text)]"
   rows="10"
   onselectionchange={e => onCursorChange((e.target as HTMLTextAreaElement).selectionStart)}
   oninput={onValueChange}
