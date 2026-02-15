@@ -3,11 +3,7 @@ import { onMount } from 'svelte';
 import Dialog from '/@/components/dialog/Dialog.svelte';
 import { kreateApiClient } from '/@/api/client';
 import type { Resource } from '/@shared/src/KreateApi';
-
-interface Props {
-  closeCallback: () => void;
-  onResourceSelected: (resource: Resource) => void;
-}
+import type { Props } from './selectResourceModal';
 
 let { closeCallback, onResourceSelected }: Props = $props();
 
@@ -52,7 +48,7 @@ function handleKeydown(event: KeyboardEvent, resource: Resource): void {
             <tr
               role="button"
               tabindex={0}
-              onclick={onResourceSelected.bind(undefined, resource)}
+              onclick={() => onResourceSelected(resource)}
               onkeydown={e => handleKeydown(e, resource)}
               class="cursor-pointer text-[var(--pd-table-body-text)] hover:bg-[var(--pd-content-card-hover-bg)]">
               <td class="p-1">{resource.apiVersion}</td>
