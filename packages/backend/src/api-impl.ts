@@ -151,17 +151,19 @@ export class KreateApiImpl implements KreateApi, podmanDesktopApi.Disposable {
         .sort((a, b) => a.localeCompare(b)),
     ]) {
       const resources = await this.getApiResources(kubeConfig, group);
-      resourcesResult.push(
-        ...resources.resources
-          .filter(r => r.singularName)
-          .sort((a, b) => a.kind.localeCompare(b.kind))
-          .map(r => {
-            return {
-              apiVersion: resources.groupVersion,
-              kind: r.kind,
-            };
-          }),
-      );
+      if (resources?.resources) {
+        resourcesResult.push(
+          ...resources.resources
+            .filter(r => r.singularName)
+            .sort((a, b) => a.kind.localeCompare(b.kind))
+            .map(r => {
+              return {
+                apiVersion: resources.groupVersion,
+                kind: r.kind,
+              };
+            }),
+        );
+      }
     }
     return resourcesResult;
   }
