@@ -64,7 +64,7 @@ function onArgsChange(updatedArgs: string[]) {
 
 <FormPage title="Use a template" onclose={close}>
   {#snippet content()}
-    <div class="p-4 w-full h-full">
+    <div class="p-4 w-full h-full bg-[var(--pd-invert-content-bg)] overflow-y-auto">
       <ResourceSelector onselected={onResourceSelected}></ResourceSelector>
       {#if details}
         <div class="flex flex-col space-y-4 p-2">
