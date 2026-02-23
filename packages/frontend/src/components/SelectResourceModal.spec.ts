@@ -33,7 +33,6 @@ vi.mock('/@/api/client', () => ({
 }));
 
 beforeEach(() => {
-  vi.useFakeTimers({ shouldAdvanceTime: true });
   vi.resetAllMocks();
 });
 
@@ -42,28 +41,25 @@ test('SelectResourceModal with mouse', async () => {
     closeCallback: vi.fn(),
     onResourceSelected: vi.fn(),
   };
-  vi.mocked(kreateApiClient.fetchAllResources).mockImplementation(async (): Promise<Resource[]> => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve([
-          {
-            apiVersion: 'v1',
-            kind: 'Pod',
-          },
-          {
-            apiVersion: 'v1',
-            kind: 'ConfigMap',
-          },
-        ]);
-      }, 1000);
-    });
-  });
+  const { promise, resolve } = Promise.withResolvers<Resource[]>();
+  vi.mocked(kreateApiClient.fetchAllResources).mockReturnValue(promise);
 
   render(SelectResourceModal, props);
   screen.getByText('Loading resources...');
 
-  await vi.advanceTimersByTimeAsync(1000);
-  expect(screen.queryByText('Loading resources...')).not.toBeInTheDocument();
+  resolve([
+    {
+      apiVersion: 'v1',
+      kind: 'Pod',
+    },
+    {
+      apiVersion: 'v1',
+      kind: 'ConfigMap',
+    },
+  ]);
+  await vi.waitFor(() => {
+    expect(screen.queryByText('Loading resources...')).not.toBeInTheDocument();
+  });
 
   screen.getByText('Pod');
   const configMap = screen.getByRole('button', { name: 'v1 ConfigMap' });
@@ -79,28 +75,27 @@ test('SelectResourceModal with keyboard', async () => {
     closeCallback: vi.fn(),
     onResourceSelected: vi.fn(),
   };
-  vi.mocked(kreateApiClient.fetchAllResources).mockImplementation(async (): Promise<Resource[]> => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve([
-          {
-            apiVersion: 'v1',
-            kind: 'Pod',
-          },
-          {
-            apiVersion: 'v1',
-            kind: 'ConfigMap',
-          },
-        ]);
-      }, 1000);
-    });
-  });
+
+  const { promise, resolve } = Promise.withResolvers<Resource[]>();
+  vi.mocked(kreateApiClient.fetchAllResources).mockReturnValue(promise);
 
   render(SelectResourceModal, props);
   screen.getByText('Loading resources...');
 
-  await vi.advanceTimersByTimeAsync(1000);
-  expect(screen.queryByText('Loading resources...')).not.toBeInTheDocument();
+  resolve([
+    {
+      apiVersion: 'v1',
+      kind: 'Pod',
+    },
+    {
+      apiVersion: 'v1',
+      kind: 'ConfigMap',
+    },
+  ]);
+
+  await vi.waitFor(() => {
+    expect(screen.queryByText('Loading resources...')).not.toBeInTheDocument();
+  });
 
   await userEvent.keyboard('[Tab][Tab][Tab][Enter]'); // select ConfigMap
 
