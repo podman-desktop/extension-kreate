@@ -9,10 +9,10 @@ let { closeCallback, onResourceSelected }: Props = $props();
 
 let loadingResources = $state(true);
 let allResources = $state<Resource[]>([]);
-let errorMessage = $state<string>('');
+let errorMessage = $state<string | undefined>(undefined);
 
 onMount(async () => {
-  errorMessage = '';
+  errorMessage = undefined;
   try {
     allResources = await kreateApiClient.fetchAllResources();
   } catch (error) {
@@ -44,7 +44,7 @@ function handleKeydown(event: KeyboardEvent, resource: Resource): void {
           </tr>
         </thead>
         <tbody>
-          {#each allResources as resource}
+          {#each allResources as resource (resource)}
             <tr
               role="button"
               tabindex={0}
