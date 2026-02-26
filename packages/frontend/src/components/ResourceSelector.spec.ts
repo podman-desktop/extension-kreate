@@ -17,7 +17,7 @@
  ***********************************************************************/
 
 import { render, screen } from '@testing-library/svelte';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { assert, beforeEach, expect, test, vi } from 'vitest';
 import ResourceSelector from './ResourceSelector.svelte';
 import * as client from '../api/client';
 import userEvent from '@testing-library/user-event';
@@ -106,6 +106,7 @@ test('ResourceSelector - other selected', async () => {
 
   expect(SelectResourceModal).toHaveBeenCalled();
   const callArgs = vi.mocked(SelectResourceModal).mock.calls[0][1];
+  assert(callArgs);
   callArgs.onResourceSelected({
     apiVersion: 'v1',
     kind: 'Resource',
