@@ -17,15 +17,16 @@
  ***********************************************************************/
 
 import * as podmanDesktopApi from '@podman-desktop/api';
-import type { KreateApi } from '../../shared/src/KreateApi';
+import type { KreateApi, Resource } from '/@shared/src/KreateApi';
 import commands from './assets/commands.json';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
-import type { KubernetesObject } from '@kubernetes/client-node';
-import { KubeConfig } from '@kubernetes/client-node';
+import type { KubernetesObject, V1APIResourceList } from '@kubernetes/client-node';
+import { ApisApi, KubeConfig } from '@kubernetes/client-node';
 import { parseAllDocuments } from 'yaml';
 import { SpecReader } from './spec-reader';
 import type { SimplifiedSpec } from '/@shared/src/models/SimplifiedSpec';
 import { getSimplifiedSpec, getSubspec } from './simplified-spec';
+import fetch from 'node-fetch';
 
 /**
  * HelloWorldApi is an interface that defines the abstracted class for the HelloWorldApi, it is a requirement to match this interface to your API implementation.
@@ -134,5 +135,55 @@ export class KreateApiImpl implements KreateApi, podmanDesktopApi.Disposable {
 
   dispose(): void {
     this.#specReader?.dispose();
+  }
+
+  public async fetchAllResources(): Promise<Resource[]> {
+    const file = podmanDesktopApi.kubernetes.getKubeconfig();
+    const kubeConfig = new KubeConfig();
+    kubeConfig.loadFromFile(file.path);
+    const result = await kubeConfig.makeApiClient(ApisApi).getAPIVersions();
+    const resourcesResult: Resource[] = [];
+    for (const group of [
+      'v1',
+      ...result.groups
+        .map(g => g.preferredVersion?.groupVersion)
+        .filter(g => g !== undefined)
+        .sort((a, b) => a.localeCompare(b)),
+    ]) {
+      const resources = await this.getApiResources(kubeConfig, group);
+      if (resources?.resources) {
+        resourcesResult.push(
+          ...resources.resources
+            .filter(r => r.singularName)
+            .sort((a, b) => a.kind.localeCompare(b.kind))
+            .map(r => {
+              return {
+                apiVersion: resources.groupVersion,
+                kind: r.kind,
+              };
+            }),
+        );
+      }
+    }
+    return resourcesResult;
+  }
+
+  protected async getApiResources(kc: KubeConfig, groupVersion: string): Promise<V1APIResourceList> {
+    let path: string;
+    if (groupVersion === 'v1') {
+      path = '/api/v1';
+    } else {
+      path = `/apis/${groupVersion}`;
+    }
+    const cluster = kc.getCurrentCluster();
+    if (!cluster) {
+      throw new Error('no current cluster');
+    }
+    const requestURL = new URL(cluster.server + path);
+    const requestInit = await kc.applyToFetchOptions({});
+    requestInit.method = 'GET';
+    const response = await fetch(requestURL.toString(), requestInit);
+    const json = await response.json();
+    return json as V1APIResourceList;
   }
 }

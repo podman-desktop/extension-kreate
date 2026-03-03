@@ -23,6 +23,11 @@ import type { SimplifiedSpec } from './models/SimplifiedSpec';
 export const NO_CONTEXT_EXCEPTION = 'No current context';
 export const NO_OPENAPI_EXCEPTION = 'No openapi endpoint';
 
+export interface Resource {
+  apiVersion: string;
+  kind: string;
+}
+
 export abstract class KreateApi {
   abstract getCommands(parent?: string): Promise<string[]>;
   abstract getCommandDetails(command: string[]): Promise<CommandDetails>;
@@ -35,4 +40,5 @@ export abstract class KreateApi {
   abstract getSpecFromYamlManifest(content: string, pathInSpec: string[]): Promise<SimplifiedSpec>;
   abstract getPathAtPosition(content: string, position: number): Promise<string[]>;
   abstract getState(): Promise<{ content: string; position: number }>;
+  abstract fetchAllResources(): Promise<Resource[]>;
 }
