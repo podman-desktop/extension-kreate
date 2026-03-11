@@ -20,8 +20,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@scalar/openapi-parser':
-        specifier: ^0.25.1
-        version: 0.25.1
+        specifier: ^0.25.2
+        version: 0.25.2
       js-yaml:
         specifier: ^4.1.1
         version: 4.1.1
@@ -90,8 +90,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@scalar/openapi-parser':
-        specifier: ^0.25.1
-        version: 0.25.1
+        specifier: ^0.25.2
+        version: 0.25.2
       '@types/node-fetch':
         specifier: ^2.6.13
         version: 2.6.13
@@ -777,16 +777,16 @@ packages:
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
 
-  '@scalar/helpers@0.3.0':
-    resolution: {integrity: sha512-lhQdehgighJC+PiSTJbbggM/SM3UydcRQil6Cfp/M4l539qklIh35pt4eh1+H+5Esa03gHnJwhTHF3TwglSOJw==}
+  '@scalar/helpers@0.4.0':
+    resolution: {integrity: sha512-1XOdy0jZp0Yu+lOmvDlPfG8+oLJK9MUhx7Q7OFggSS+zKG3n01xJKnTpgm9uhETgJrGy2yxG9y0cz4KPexXHng==}
     engines: {node: '>=22'}
 
-  '@scalar/json-magic@0.12.1':
-    resolution: {integrity: sha512-m11VDEeGzPTT2UGJvV9P2/sXZlb0KrnDiEFSSL3CFG7iwY7uc+R5Mp0BbKVex/DU6JzcEjO7j3KZ/L6B3VgtHg==}
+  '@scalar/json-magic@0.12.2':
+    resolution: {integrity: sha512-rIVDiXK+SeB/SgXVk5EelPmRTdDzN7nfezw6yq+TeHnEuJWXqP2xo24J6/pqIcZV1HDR0q/x4JKWGXsm8+pozg==}
     engines: {node: '>=22'}
 
-  '@scalar/openapi-parser@0.25.1':
-    resolution: {integrity: sha512-oSMuWYeomCgVYDua+8BT4oAsFz6fZI2Wn1YoImW4QC0EoaJTBnojYeEs8ORdhuHr6otTmz3RHJJWnfWlzKpoRQ==}
+  '@scalar/openapi-parser@0.25.2':
+    resolution: {integrity: sha512-odJVaK44OL4DhvyjDDbDKadKOyCBjUfowW2pq/yrRtkS2JhuKiKDmlq7f1TErrpc5s23VGgDgbQY9Lad7fFCgg==}
     engines: {node: '>=22'}
 
   '@scalar/openapi-types@0.6.0':
@@ -3647,18 +3647,18 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@scalar/helpers@0.3.0': {}
+  '@scalar/helpers@0.4.0': {}
 
-  '@scalar/json-magic@0.12.1':
+  '@scalar/json-magic@0.12.2':
     dependencies:
-      '@scalar/helpers': 0.3.0
+      '@scalar/helpers': 0.4.0
       pathe: 2.0.3
       yaml: 2.8.2
 
-  '@scalar/openapi-parser@0.25.1':
+  '@scalar/openapi-parser@0.25.2':
     dependencies:
-      '@scalar/helpers': 0.3.0
-      '@scalar/json-magic': 0.12.1
+      '@scalar/helpers': 0.4.0
+      '@scalar/json-magic': 0.12.2
       '@scalar/openapi-types': 0.6.0
       '@scalar/openapi-upgrader': 0.2.0
       ajv: 8.18.0
