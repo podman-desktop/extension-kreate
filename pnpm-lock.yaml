@@ -20,8 +20,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@scalar/openapi-parser':
-        specifier: ^0.25.3
-        version: 0.25.3
+        specifier: ^0.25.4
+        version: 0.25.4
       js-yaml:
         specifier: ^4.1.1
         version: 4.1.1
@@ -90,8 +90,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       '@scalar/openapi-parser':
-        specifier: ^0.25.3
-        version: 0.25.3
+        specifier: ^0.25.4
+        version: 0.25.4
       '@types/node-fetch':
         specifier: ^2.6.13
         version: 2.6.13
@@ -900,8 +900,8 @@ packages:
     resolution: {integrity: sha512-SX4LbdCk/0JLP4t4oz1nzqfMzHsG9gY1jSgKB7Q2BsQHJ4V1zapQ+aFrMmbjaCrz8hueGG/3UCtgyWBNuGmT9g==}
     engines: {node: '>=22'}
 
-  '@scalar/openapi-parser@0.25.3':
-    resolution: {integrity: sha512-uiqUxWMYYDrAdwK7qOgbrYW2RsULog1Bv47ehACwCzTJecP1Z/Uez4+UH/Ltqn0hNXPQ56yCzYwaIVcc3td+Jw==}
+  '@scalar/openapi-parser@0.25.4':
+    resolution: {integrity: sha512-6gxv/wsMtFoy7RpSiIwjv5VL5pvJXzu1fJvMdtq5WXVnKIHPIPrk7XILZjQpv0eb3iR0CZcKkvGbq96dkzai5Q==}
     engines: {node: '>=22'}
 
   '@scalar/openapi-types@0.6.0':
@@ -3955,7 +3955,7 @@ snapshots:
       pathe: 2.0.3
       yaml: 2.8.2
 
-  '@scalar/openapi-parser@0.25.3':
+  '@scalar/openapi-parser@0.25.4':
     dependencies:
       '@scalar/helpers': 0.4.1
       '@scalar/json-magic': 0.12.3
