@@ -179,8 +179,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0
       '@podman-desktop/ui-svelte':
-        specifier: 1.26.1
-        version: 1.26.1(svelte-fa@4.0.4(svelte@5.53.2))(svelte@5.53.2)
+        specifier: 1.26.2
+        version: 1.26.2(svelte-fa@4.0.4(svelte@5.53.2))(svelte@5.53.2)
       '@sveltejs/vite-plugin-svelte':
         specifier: 7.0.0
         version: 7.0.0(svelte@5.53.2)(vite@8.0.8(@types/node@24.10.3)(esbuild@0.27.2)(jiti@2.6.1)(yaml@2.8.3))
@@ -656,8 +656,8 @@ packages:
   '@podman-desktop/api@1.26.1':
     resolution: {integrity: sha512-mp6+UgOY/lzAy6ieeyWL9xPEdYiYEig5a5vLbmDFZu7/y/uihvxUQQ75VGZQeq37I2xpDztll95fY/NdypoZ1w==}
 
-  '@podman-desktop/ui-svelte@1.26.1':
-    resolution: {integrity: sha512-8oYg+5mc0ReMeeCSfXX2TmqOqln+A69UoRPw3XQ8qmtWOkV+cnATRfNGztE9Dqs9OS9srngoCZ210t6U5IhdjA==}
+  '@podman-desktop/ui-svelte@1.26.2':
+    resolution: {integrity: sha512-ITjH4NsEDcHRJhRNxQN1y1KU0ST9hWHFu5F2W4ZZrzBtCc6UjJcT8Gbua/FwWdczWB/8qAjQ9GoTKg59UYh1bw==}
     peerDependencies:
       svelte: ^4.0.0 || ^5.0.0
       svelte-fa: ^4.0.0
@@ -3720,7 +3720,7 @@ snapshots:
 
   '@podman-desktop/api@1.26.1': {}
 
-  '@podman-desktop/ui-svelte@1.26.1(svelte-fa@4.0.4(svelte@5.53.2))(svelte@5.53.2)':
+  '@podman-desktop/ui-svelte@1.26.2(svelte-fa@4.0.4(svelte@5.53.2))(svelte@5.53.2)':
     dependencies:
       '@floating-ui/dom': 1.7.6
       '@fortawesome/fontawesome-free': 7.2.0
