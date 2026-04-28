@@ -68,7 +68,9 @@
       "minimatch>@isaacs/brace-expansion": "^5.0.1",
       "test-exclude>glob": "^10.5.0",
       "concurrently>lodash": "^4.17.23",
-      "minimatch>brace-expansion": "^2.0.2"
+      "minimatch>brace-expansion": "^2.0.2",
+      "minimatch@^3.0.0": "^3.1.4",
+      "minimatch@~9.0.0": "^9.0.7"
     },
     "ignoredBuiltDependencies": [
       "@tailwindcss/oxide",
