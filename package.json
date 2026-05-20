@@ -2,6 +2,8 @@
   "name": "kreate-monorepo",
   "displayName": "Kreate",
   "description": "Provide templates and documentation to create Kubernetes resources",
+  "repository": "https://github.com/podman-desktop/extension-kreate",
+  "homepage": "https://github.com/podman-desktop/extension-kreate#readme",
   "version": "0.4.0-next",
   "icon": "icon.png",
   "publisher": "podman-desktop",
