@@ -75,7 +75,8 @@
       "minimatch@~9.0.0": "^9.0.7",
       "flatted": ">=3.4.0",
       "picomatch@>=4.0.0": ">=4.0.4",
-      "ajv@<6.14.0": "^6.14.0"
+      "ajv@<6.14.0": "^6.14.0",
+      "esbuild@>=0.17.0 <0.28.1": ">=0.28.1"
     },
     "ignoredBuiltDependencies": [
       "@tailwindcss/oxide",
