@@ -35,6 +35,7 @@ const config = {
       '/@gen/': join(PACKAGE_ROOT, 'src-generated') + '/',
       '/@shared/': join(PACKAGE_ROOT, '../shared') + '/',
     },
+    mainFields: ['module', 'jsnext:main', 'jsnext'],
   },
   build: {
     sourcemap: 'inline',
