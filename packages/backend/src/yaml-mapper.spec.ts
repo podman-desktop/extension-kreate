@@ -18,7 +18,7 @@
 
 import { expect, test } from 'vitest';
 import { SourceMap } from './yaml-mapper';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 
 test('getAtPos', () => {
   const content = `apiVersion: v1

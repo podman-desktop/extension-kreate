@@ -20,7 +20,7 @@ import { KubeConfig, type KubernetesObject } from '@kubernetes/client-node';
 import type { OpenAPIV3 } from 'openapi-types';
 import { parseAllDocuments } from 'yaml';
 import { SourceMap } from './yaml-mapper';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import * as podmanDesktopApi from '@podman-desktop/api';
 import { NO_CONTEXT_EXCEPTION } from '/@shared/src/KreateApi';
 import { SpecCache } from './spec-cache';
