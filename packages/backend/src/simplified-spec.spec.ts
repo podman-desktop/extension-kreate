@@ -24,7 +24,7 @@ import type { OpenAPIV3 } from 'openapi-types';
 import { getSimplifiedSpec, getSubspec } from './simplified-spec';
 
 function isOpenAPIV3Document(doc: unknown): doc is OpenAPIV3.Document {
-  return typeof doc === 'object' && doc !== null && 'openapi' in doc;
+  return typeof doc === 'object' && !!doc && 'openapi' in doc;
 }
 
 test('deployment', async () => {

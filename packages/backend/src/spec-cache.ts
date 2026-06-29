@@ -179,5 +179,5 @@ export class SpecCache {
 }
 
 function isOpenAPIV3Document(doc: unknown): doc is OpenAPIV3.Document {
-  return typeof doc === 'object' && doc !== null && 'openapi' in doc;
+  return typeof doc === 'object' && !!doc && 'openapi' in doc;
 }
