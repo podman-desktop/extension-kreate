@@ -72,14 +72,14 @@ describe('getIdnex', () => {
   test('getIndex raises exception if no cluster', async () => {
     // eslint-disable-next-line no-null/no-null
     vi.mocked(kubeconfig.getCurrentCluster).mockReturnValue(null);
-    await expect(() => cache.getIndex(kubeconfig)).rejects.toThrowError(NO_CONTEXT_EXCEPTION);
+    await expect(() => cache.getIndex(kubeconfig)).rejects.toThrow(NO_CONTEXT_EXCEPTION);
   });
 
   test('getIndex raises exception if cluster is not accessible', async () => {
     const err: Error & { code?: string } = new Error('an error message');
     err.code = 'ECONNREFUSED';
     vi.mocked(fetch).mockClear().mockRejectedValue(err);
-    await expect(() => cache.getIndex(kubeconfig)).rejects.toThrowError(NO_CONTEXT_EXCEPTION);
+    await expect(() => cache.getIndex(kubeconfig)).rejects.toThrow(NO_CONTEXT_EXCEPTION);
   });
 });
 
@@ -100,13 +100,13 @@ describe('getGroupVersionSpec', () => {
   test('getGroupVersionSpec raises exception if no cluster', async () => {
     // eslint-disable-next-line no-null/no-null
     vi.mocked(kubeconfig.getCurrentCluster).mockReturnValue(null);
-    await expect(() => cache.getGroupVersionSpec(kubeconfig, 'v1', 'Pod')).rejects.toThrowError(NO_CONTEXT_EXCEPTION);
+    await expect(() => cache.getGroupVersionSpec(kubeconfig, 'v1', 'Pod')).rejects.toThrow(NO_CONTEXT_EXCEPTION);
   });
 
   test('getGroupVersionSpec raises exception if cluster is not accessible', async () => {
     const err: Error & { code?: string } = new Error('an error message');
     err.code = 'ECONNREFUSED';
     vi.mocked(fetch).mockClear().mockRejectedValue(err);
-    await expect(() => cache.getGroupVersionSpec(kubeconfig, 'v1', 'Pod')).rejects.toThrowError(NO_CONTEXT_EXCEPTION);
+    await expect(() => cache.getGroupVersionSpec(kubeconfig, 'v1', 'Pod')).rejects.toThrow(NO_CONTEXT_EXCEPTION);
   });
 });
