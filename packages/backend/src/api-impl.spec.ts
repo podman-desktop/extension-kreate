@@ -69,7 +69,7 @@ describe('', () => {
   });
 
   test('getCommands with unknown parent', async () => {
-    await expect(api.getCommands('unknown')).rejects.toThrowError('parent command unknown not found');
+    await expect(api.getCommands('unknown')).rejects.toThrow('parent command unknown not found');
   });
 
   test('getCommandDetails with top-level command', async () => {
@@ -87,7 +87,7 @@ describe('', () => {
   });
 
   test('getCommandDetails top-level not found', async () => {
-    await expect(api.getCommandDetails(['unknown'])).rejects.toThrowError('command not found');
+    await expect(api.getCommandDetails(['unknown'])).rejects.toThrow('command not found');
   });
 
   test('executeCommand with passing command', async () => {
@@ -107,7 +107,7 @@ describe('', () => {
       stderr: 'an error',
       command: '',
     });
-    await expect(api.executeCommand(['cmd', 'arg1', 'arg2'])).rejects.toThrowError('an error');
+    await expect(api.executeCommand(['cmd', 'arg1', 'arg2'])).rejects.toThrow('an error');
   });
 
   test('create with valid manifest', async () => {
@@ -132,7 +132,7 @@ metadata:
     const manifest = `metadata:
   name: a
 `;
-    await expect(api.create(manifest)).rejects.toThrowError('No valid Kubernetes resources found in content');
+    await expect(api.create(manifest)).rejects.toThrow('No valid Kubernetes resources found in content');
   });
 
   test('fetchAllResources', async () => {
