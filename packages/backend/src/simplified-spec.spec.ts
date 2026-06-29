@@ -23,12 +23,16 @@ import { validate } from '@scalar/openapi-parser';
 import type { OpenAPIV3 } from 'openapi-types';
 import { getSimplifiedSpec, getSubspec } from './simplified-spec';
 
+function isOpenAPIV3Document(doc: unknown): doc is OpenAPIV3.Document {
+  return typeof doc === 'object' && doc !== null && 'openapi' in doc;
+}
+
 test('deployment', async () => {
   const result = await validate(appsv1);
-  if (!result.valid) {
+  if (!result.valid || !isOpenAPIV3Document(result.schema)) {
     throw new Error(`invalid spec`);
   }
-  const document: OpenAPIV3.Document = result.schema;
+  const document = result.schema;
   const spec = document.components?.schemas?.['io.k8s.api.apps.v1.Deployment'];
   if (!spec) {
     throw new Error('Deployment spec not found');
@@ -79,10 +83,10 @@ test('deployment', async () => {
 
 test('deployment with pathInSpec kind', async () => {
   const result = await validate(appsv1);
-  if (!result.valid) {
+  if (!result.valid || !isOpenAPIV3Document(result.schema)) {
     throw new Error(`invalid spec`);
   }
-  const document: OpenAPIV3.Document = result.schema;
+  const document = result.schema;
   const spec = document.components?.schemas?.['io.k8s.api.apps.v1.Deployment'];
   if (!spec) {
     throw new Error('Deployment spec not found');
@@ -98,10 +102,10 @@ test('deployment with pathInSpec kind', async () => {
 
 test('deployment with pathInSpec metadata', async () => {
   const result = await validate(appsv1);
-  if (!result.valid) {
+  if (!result.valid || !isOpenAPIV3Document(result.schema)) {
     throw new Error(`invalid spec`);
   }
-  const document: OpenAPIV3.Document = result.schema;
+  const document = result.schema;
   const spec = document.components?.schemas?.['io.k8s.api.apps.v1.Deployment'];
   if (!spec) {
     throw new Error('Deployment spec not found');
@@ -137,10 +141,10 @@ test('deployment with pathInSpec metadata', async () => {
 
 test('deployment with pathInSpec metadata.name', async () => {
   const result = await validate(appsv1);
-  if (!result.valid) {
+  if (!result.valid || !isOpenAPIV3Document(result.schema)) {
     throw new Error(`invalid spec`);
   }
-  const document: OpenAPIV3.Document = result.schema;
+  const document = result.schema;
   const spec = document.components?.schemas?.['io.k8s.api.apps.v1.Deployment'];
   if (!spec) {
     throw new Error('Deployment spec not found');
@@ -156,10 +160,10 @@ test('deployment with pathInSpec metadata.name', async () => {
 
 test('deployment with pathInSpec metadata.ownerReferences', async () => {
   const result = await validate(appsv1);
-  if (!result.valid) {
+  if (!result.valid || !isOpenAPIV3Document(result.schema)) {
     throw new Error(`invalid spec`);
   }
-  const document: OpenAPIV3.Document = result.schema;
+  const document = result.schema;
   const spec = document.components?.schemas?.['io.k8s.api.apps.v1.Deployment'];
   if (!spec) {
     throw new Error('Deployment spec not found');
@@ -186,10 +190,10 @@ test('deployment with pathInSpec metadata.ownerReferences', async () => {
 
 test('deployment with pathInSpec metadata.ownerReferences.apiVersion', async () => {
   const result = await validate(appsv1);
-  if (!result.valid) {
+  if (!result.valid || !isOpenAPIV3Document(result.schema)) {
     throw new Error(`invalid spec`);
   }
-  const document: OpenAPIV3.Document = result.schema;
+  const document = result.schema;
   const spec = document.components?.schemas?.['io.k8s.api.apps.v1.Deployment'];
   if (!spec) {
     throw new Error('Deployment spec not found');

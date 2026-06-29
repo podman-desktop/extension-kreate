@@ -117,10 +117,10 @@ export class SpecCache {
     }
     const spec = await response.json();
     const result = await validate(spec);
-    if (!result.valid) {
+    if (!result.valid || !isOpenAPIV3Document(result.schema)) {
       throw new Error(NO_OPENAPI_EXCEPTION);
     }
-    const document: OpenAPIV3.Document = result.schema;
+    const document = result.schema;
     if (!document.components?.schemas) {
       throw new Error(NO_OPENAPI_EXCEPTION);
     }
@@ -176,4 +176,8 @@ export class SpecCache {
   private isConnectionRefusedException(err: unknown): boolean {
     return err instanceof Error && 'code' in err && err.code === 'ECONNREFUSED';
   }
+}
+
+function isOpenAPIV3Document(doc: unknown): doc is OpenAPIV3.Document {
+  return typeof doc === 'object' && doc !== null && 'openapi' in doc;
 }
