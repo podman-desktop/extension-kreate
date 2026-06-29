@@ -32,8 +32,8 @@ importers:
         specifier: ^0.26.1
         version: 0.26.1
       js-yaml:
-        specifier: ^4.2.0
-        version: 4.2.0
+        specifier: ^4.3.0
+        version: 4.3.0
       zod:
         specifier: ^4.4.3
         version: 4.4.3
@@ -105,8 +105,8 @@ importers:
         specifier: ^2.6.13
         version: 2.6.13
       js-yaml:
-        specifier: ^4.2.0
-        version: 4.2.0
+        specifier: ^4.3.0
+        version: 4.3.0
       semver:
         specifier: ^7.8.5
         version: 7.8.5
@@ -188,8 +188,8 @@ importers:
         specifier: ^7.3.0
         version: 7.3.0
       '@podman-desktop/ui-svelte':
-        specifier: 1.27.2
-        version: 1.27.2(svelte-fa@4.0.4(svelte@5.56.3(@typescript-eslint/types@8.61.1)))(svelte@5.56.3(@typescript-eslint/types@8.61.1))
+        specifier: 1.28.2
+        version: 1.28.2(svelte-fa@4.0.4(svelte@5.56.3(@typescript-eslint/types@8.61.1)))(svelte@5.56.3(@typescript-eslint/types@8.61.1))
       '@sveltejs/vite-plugin-svelte':
         specifier: 7.1.2
         version: 7.1.2(svelte@5.56.3(@typescript-eslint/types@8.61.1))(vite@8.1.0(@types/node@24.10.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
@@ -248,8 +248,8 @@ importers:
         specifier: 5.56.3
         version: 5.56.3(@typescript-eslint/types@8.61.1)
       svelte-check:
-        specifier: ^4.6.0
-        version: 4.6.0(picomatch@4.0.4)(svelte@5.56.3(@typescript-eslint/types@8.61.1))(typescript@5.9.3)
+        specifier: ^4.7.1
+        version: 4.7.1(picomatch@4.0.4)(svelte@5.56.3(@typescript-eslint/types@8.61.1))(typescript@5.9.3)
       svelte-fa:
         specifier: ^4.0.4
         version: 4.0.4(svelte@5.56.3(@typescript-eslint/types@8.61.1))
@@ -681,8 +681,8 @@ packages:
   '@podman-desktop/api@1.28.2':
     resolution: {integrity: sha512-kSBVWUSyuijS5a9HvqFAlihmy6D26nwTPZ0Yw9K/2W11grWeI/AvaS+THTmxHvXk8EbB9y8ydWpXhA8el67NKQ==}
 
-  '@podman-desktop/ui-svelte@1.27.2':
-    resolution: {integrity: sha512-WUAL7vVzFkgzXPxqa/wsz/vZ9fflXYuMACnCBd0Qqh+p0q8Vph/OI3mE79dGUAQRMLflHcvXlQV1CFMV43qgqw==}
+  '@podman-desktop/ui-svelte@1.28.2':
+    resolution: {integrity: sha512-BONAC07WOpeD0nB5JoFNHTOWOQX298g8/6uvCImW+rs5013tdyAK3ymeOhCcUXdvz7bX8qbuAdhqY94G9msJxg==}
     peerDependencies:
       svelte: ^4.0.0 || ^5.0.0
       svelte-fa: ^4.0.0
@@ -935,8 +935,8 @@ packages:
     peerDependencies:
       acorn: ^8.9.0
 
-  '@sveltejs/load-config@0.1.1':
-    resolution: {integrity: sha512-BXXm+VOH/9X4N7Dd1iZ2MqA1h7M+9i2noI8QYuLDY8QcN2WHYn7D/VK/+IJNfcAmRw7ACNJ538UT9GXIhnBTiA==}
+  '@sveltejs/load-config@0.2.0':
+    resolution: {integrity: sha512-1LgZ/qUqSoq+QorD83lk2hka79Px0wXNW2q5V1nZlxGhQgw1jrsIbVz5YiCeucVLo4XvFLjXukUaQjIiqowkcg==}
     engines: {node: '>= 18.0.0'}
 
   '@sveltejs/vite-plugin-svelte@7.1.2':
@@ -2395,8 +2395,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@4.2.0:
-    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
+  js-yaml@4.3.0:
+    resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
   jsdom@29.1.1:
@@ -3009,8 +3009,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  svelte-check@4.6.0:
-    resolution: {integrity: sha512-KhVnDFDSid57mmZtHz8gfW8AAGylOZ0vPnOIzVmAL+urzwK8sBYXRss953gD8T0OdgAQ11mdWhE6uadmtOz8TQ==}
+  svelte-check@4.7.1:
+    resolution: {integrity: sha512-FGUOmAqxXdN/H9Zm8slrqO7SLtFisXRB7rfOsHNJ3MLTD2po/+Stg8XyErkpumPHbuUiYTcqrEIzxpVWKTLqtg==}
     engines: {node: '>= 18.0.0'}
     hasBin: true
     peerDependencies:
@@ -3671,7 +3671,7 @@ snapshots:
       globals: 13.24.0
       ignore: 5.3.2
       import-fresh: 3.3.1
-      js-yaml: 4.2.0
+      js-yaml: 4.3.0
       minimatch: 3.1.5
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -3756,7 +3756,7 @@ snapshots:
       form-data: 4.0.6
       hpagent: 1.2.0
       isomorphic-ws: 5.0.0(ws@8.21.0)
-      js-yaml: 4.2.0
+      js-yaml: 4.3.0
       jsonpath-plus: 10.3.0
       node-fetch: 2.7.0
       openid-client: 6.8.1
@@ -3809,7 +3809,7 @@ snapshots:
 
   '@podman-desktop/api@1.28.2': {}
 
-  '@podman-desktop/ui-svelte@1.27.2(svelte-fa@4.0.4(svelte@5.56.3(@typescript-eslint/types@8.61.1)))(svelte@5.56.3(@typescript-eslint/types@8.61.1))':
+  '@podman-desktop/ui-svelte@1.28.2(svelte-fa@4.0.4(svelte@5.56.3(@typescript-eslint/types@8.61.1)))(svelte@5.56.3(@typescript-eslint/types@8.61.1))':
     dependencies:
       '@floating-ui/dom': 1.7.6
       '@fortawesome/fontawesome-free': 7.3.0
@@ -3982,7 +3982,7 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
-  '@sveltejs/load-config@0.1.1': {}
+  '@sveltejs/load-config@0.2.0': {}
 
   '@sveltejs/vite-plugin-svelte@7.1.2(svelte@5.56.3(@typescript-eslint/types@8.61.1))(vite@8.1.0(@types/node@24.10.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))':
     dependencies:
@@ -5232,7 +5232,7 @@ snapshots:
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       is-path-inside: 3.0.3
-      js-yaml: 4.2.0
+      js-yaml: 4.3.0
       json-stable-stringify-without-jsonify: 1.0.1
       levn: 0.4.1
       lodash.merge: 4.6.2
@@ -5654,7 +5654,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@4.2.0:
+  js-yaml@4.3.0:
     dependencies:
       argparse: 2.0.1
 
@@ -6292,10 +6292,10 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.6.0(picomatch@4.0.4)(svelte@5.56.3(@typescript-eslint/types@8.61.1))(typescript@5.9.3):
+  svelte-check@4.7.1(picomatch@4.0.4)(svelte@5.56.3(@typescript-eslint/types@8.61.1))(typescript@5.9.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
-      '@sveltejs/load-config': 0.1.1
+      '@sveltejs/load-config': 0.2.0
       chokidar: 4.0.3
       fdir: 6.5.0(picomatch@4.0.4)
       picocolors: 1.1.1
