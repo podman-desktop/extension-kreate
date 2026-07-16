@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@kubernetes/client-node": "1.4.0",
-    "@scalar/openapi-parser": "^0.28.8",
+    "@scalar/openapi-parser": "^0.28.9",
     "@types/node-fetch": "^2.6.13",
     "js-yaml": "^4.3.0",
     "semver": "^7.8.5",
