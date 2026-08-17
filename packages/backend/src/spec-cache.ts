@@ -17,10 +17,11 @@
  ***********************************************************************/
 
 import type { KubeConfig } from '@kubernetes/client-node';
+import { HttpMethod, RequestContext } from '@kubernetes/client-node';
 import { validate } from '@scalar/openapi-parser';
 import type { OpenAPIV3 } from 'openapi-types';
 import { NO_CONTEXT_EXCEPTION, NO_OPENAPI_EXCEPTION } from '/@shared/src/KreateApi';
-import fetch from 'node-fetch';
+import { fetch, type Response } from 'undici';
 import { z } from 'zod/v4';
 
 export interface Index {
@@ -63,12 +64,16 @@ export class SpecCache {
     if (!cluster) {
       throw new Error(NO_CONTEXT_EXCEPTION);
     }
-    const requestURL = new URL(cluster.server + path);
-    const requestInit = await kubeconfig.applyToFetchOptions({});
-    requestInit.method = 'GET';
-    let response: fetch.Response;
+    const requestURL = cluster.server + path;
+    const ctx = new RequestContext(requestURL, HttpMethod.GET);
+    await kubeconfig.applySecurityAuthentication(ctx);
+    let response: Response;
     try {
-      response = await fetch(requestURL.toString(), requestInit);
+      response = await fetch(requestURL, {
+        method: 'GET',
+        headers: ctx.getHeaders(),
+        dispatcher: ctx.getDispatcher(),
+      });
     } catch (err: unknown) {
       if (this.isConnectionRefusedException(err)) {
         throw new Error(NO_CONTEXT_EXCEPTION);
@@ -109,12 +114,16 @@ export class SpecCache {
     if (!cluster) {
       throw new Error(NO_CONTEXT_EXCEPTION);
     }
-    const requestURL = new URL(cluster.server + path);
-    const requestInit = await kubeconfig.applyToFetchOptions({});
-    requestInit.method = 'GET';
-    let response: fetch.Response;
+    const requestURL = cluster.server + path;
+    const ctx = new RequestContext(requestURL, HttpMethod.GET);
+    await kubeconfig.applySecurityAuthentication(ctx);
+    let response: Response;
     try {
-      response = await fetch(requestURL.toString(), requestInit);
+      response = await fetch(requestURL, {
+        method: 'GET',
+        headers: ctx.getHeaders(),
+        dispatcher: ctx.getDispatcher(),
+      });
     } catch (err: unknown) {
       if (this.isConnectionRefusedException(err)) {
         throw new Error(NO_CONTEXT_EXCEPTION);
@@ -125,7 +134,7 @@ export class SpecCache {
     if (!response.ok) {
       throw new Error(`fetch ${requestURL}: HTTP ${response.status} ${response.statusText}`);
     }
-    const spec = await response.json();
+    const spec = (await response.json()) as Record<string, unknown>;
     const result = await validate(spec);
     if (!result.valid || !isOpenAPIV3Document(result.schema)) {
       throw new Error(NO_OPENAPI_EXCEPTION);
