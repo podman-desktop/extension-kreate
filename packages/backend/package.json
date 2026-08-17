@@ -40,7 +40,7 @@
     "vitest": "^4"
   },
   "dependencies": {
-    "@kubernetes/client-node": "1.4.0",
+    "@kubernetes/client-node": "2.0.0",
     "@scalar/openapi-parser": "^0.28.14",
     "@types/node-fetch": "^2.6.13",
     "js-yaml": "^5.2.0",
