@@ -21,12 +21,12 @@ import type { KreateApi, Resource } from '/@shared/src/KreateApi';
 import commands from './assets/commands.json';
 import type { CommandDetails } from '/@shared/src/models/CommandDetails';
 import type { KubernetesObject, V1APIResourceList } from '@kubernetes/client-node';
-import { ApisApi, KubeConfig } from '@kubernetes/client-node';
+import { ApisApi, HttpMethod, KubeConfig, RequestContext } from '@kubernetes/client-node';
+import { fetch } from 'undici';
 import { parseAllDocuments } from 'yaml';
 import { SpecReader } from './spec-reader';
 import type { SimplifiedSpec } from '/@shared/src/models/SimplifiedSpec';
 import { getSimplifiedSpec, getSubspec } from './simplified-spec';
-import fetch from 'node-fetch';
 
 /**
  * HelloWorldApi is an interface that defines the abstracted class for the HelloWorldApi, it is a requirement to match this interface to your API implementation.
@@ -179,10 +179,14 @@ export class KreateApiImpl implements KreateApi, podmanDesktopApi.Disposable {
     if (!cluster) {
       throw new Error('no current cluster');
     }
-    const requestURL = new URL(cluster.server + path);
-    const requestInit = await kc.applyToFetchOptions({});
-    requestInit.method = 'GET';
-    const response = await fetch(requestURL.toString(), requestInit);
+    const requestURL = cluster.server + path;
+    const ctx = new RequestContext(requestURL, HttpMethod.GET);
+    await kc.applySecurityAuthentication(ctx);
+    const response = await fetch(requestURL, {
+      method: 'GET',
+      headers: ctx.getHeaders(),
+      dispatcher: ctx.getDispatcher(),
+    });
     const json = await response.json();
     return json as V1APIResourceList;
   }

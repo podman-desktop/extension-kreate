@@ -21,11 +21,14 @@ import { KreateApiImpl } from './api-impl';
 import type { ExtensionContext } from '@podman-desktop/api';
 import * as podmanDesktopApi from '@podman-desktop/api';
 import { type ApisApi, type Cluster, KubeConfig } from '@kubernetes/client-node';
-import fetch, { type Response } from 'node-fetch';
+import { fetch } from 'undici';
+import type { Response } from 'undici';
 
-vi.mock('node-fetch');
 vi.mock('@podman-desktop/api');
 vi.mock('@kubernetes/client-node');
+vi.mock('undici', () => ({
+  fetch: vi.fn(),
+}));
 
 beforeEach(() => {
   vi.resetAllMocks();
@@ -157,7 +160,7 @@ metadata:
     vi.mocked(KubeConfig.prototype.getCurrentCluster).mockReturnValue({
       server: 'https://localhost:8080',
     } as Cluster);
-    vi.mocked(KubeConfig.prototype.applyToFetchOptions).mockResolvedValue({});
+    vi.mocked(KubeConfig.prototype.applySecurityAuthentication).mockResolvedValue();
 
     const fetchMock = {
       json: vi.fn(),
