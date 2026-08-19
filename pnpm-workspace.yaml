@@ -16,6 +16,7 @@ overrides:
   undici@>=7.23.0 <7.28.0: ^7.28.0
   shell-quote: '>=1.9.0'
   fast-uri@>=3.0.0 <3.1.4: 3.1.4
+  ip-address: '>=10.2.2'
 nodeLinker: hoisted
 allowBuilds:
   '@tailwindcss/oxide': false
