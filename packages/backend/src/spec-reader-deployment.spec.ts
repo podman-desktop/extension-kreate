@@ -22,13 +22,16 @@ import { KubeConfig } from '@kubernetes/client-node';
 import index from '../tests/openapi-dump/index.json';
 import appsv1 from '../tests/openapi-dump/openapi/v3/apis/apps/v1.json';
 
-import fetch, { type Response } from 'node-fetch';
+import { fetch } from 'undici';
+import type { Response } from 'undici';
 import * as podmanDesktopApi from '@podman-desktop/api';
 import { SpecCache } from './spec-cache';
 import { existsSync } from 'node:fs';
 
 vi.mock('@kubernetes/client-node');
-vi.mock('node-fetch');
+vi.mock('undici', () => ({
+  fetch: vi.fn(),
+}));
 vi.mock('@podman-desktop/api');
 vi.mock('./spec-cache');
 vi.mock('node:fs');
@@ -37,14 +40,14 @@ let specReader: SpecReader;
 
 beforeEach(() => {
   KubeConfig.prototype.getCurrentCluster = vi.fn();
-  KubeConfig.prototype.applyToFetchOptions = vi.fn();
+  KubeConfig.prototype.applySecurityAuthentication = vi.fn();
   vi.mocked(KubeConfig.prototype.getCurrentCluster).mockReturnValue({
     name: 'mycluster',
     server: 'https://localhost:10001',
     skipTLSVerify: false,
   });
 
-  vi.mocked(KubeConfig.prototype.applyToFetchOptions).mockResolvedValue({});
+  vi.mocked(KubeConfig.prototype.applySecurityAuthentication).mockResolvedValue();
 
   SpecCache.prototype.getIndex = vi.fn().mockResolvedValue(index);
   SpecCache.prototype.getGroupVersionSpec = vi
