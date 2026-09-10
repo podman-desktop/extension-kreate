@@ -37,7 +37,7 @@ jobs:
 
   tag:
     name: Tagging
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
       pull-requests: write
@@ -124,7 +124,7 @@ jobs:
   extension-build:
     name: build oci image
     needs: tag
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     outputs:
@@ -140,7 +140,7 @@ jobs:
   extension-publish:
     name: publish oci image
     needs: [extension-build, tag]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       id-token: write
@@ -163,7 +163,7 @@ jobs:
   release:
     needs: [tag, extension-publish]
     name: Release
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     steps:
