@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2025 Red Hat, Inc.
+# Copyright (C) 2025 - 2026 Red Hat, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 name: release
+
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
@@ -34,7 +37,10 @@ jobs:
 
   tag:
     name: Tagging
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       githubTag: ${{ steps.TAG_UTIL.outputs.githubTag}}
       extVersion: ${{ steps.TAG_UTIL.outputs.extVersion}}
@@ -44,6 +50,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.inputs.branch }}
+          persist-credentials: false
+
       - name: Generate tag utilities
         id: TAG_UTIL
         run: |
@@ -52,8 +60,12 @@ jobs:
             echo "extVersion=$TAG_PATTERN" >> ${GITHUB_OUTPUT}
 
       - name: tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.name ${{ github.actor }}
+          git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
           # Add the new version in package.json file
           sed -i  "s#version\":\ \"\(.*\)\",#version\":\ \"${{ steps.TAG_UTIL.outputs.extVersion }}\",#g" package.json
@@ -83,6 +95,7 @@ jobs:
         if: ${{ github.event.inputs.branch == 'main' }}
         run: |
           git config --local user.name ${{ github.actor }}
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           CURRENT_VERSION=$(echo "${{ steps.TAG_UTIL.outputs.extVersion }}")
           tmp=${CURRENT_VERSION%.*}
           minor=${tmp#*.}
@@ -108,45 +121,51 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PODMAN_DESKTOP_BOT_TOKEN }}
 
-  build:
-    needs: [tag]
-    runs-on: ubuntu-22.04
+  extension-build:
+    name: build oci image
+    needs: tag
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    outputs:
+      artifact-id: ${{ steps.build.outputs.artifact-id }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build OCI
+        id: build
+        uses: podman-desktop/gh-extensions-actions/.github/actions/oci-build@2e7a02e8c8e9256a2fa466fb166e215175130dd7 # v0.1.2
         with:
           ref: ${{ needs.tag.outputs.githubTag }}
+          containerfile: Containerfile
 
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        name: Install pnpm
+  extension-publish:
+    name: publish oci image
+    needs: [extension-build, tag]
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      actions: read
+      packages: write
+      checks: write
+    steps:
+      - name: Publish OCI
+        uses: podman-desktop/gh-extensions-actions/.github/actions/oci-publish@2e7a02e8c8e9256a2fa466fb166e215175130dd7 # v0.1.2
         with:
-          run_install: false
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
-          cache: 'pnpm'
-
-      - name: Execute yarn
-        run: pnpm install
-
-      - name: Run Build
-        run: pnpm build
-
-      - name: Login to ghcr.io
-        run: podman login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
-
-      - name: Build Image
-        id: build-image
-        run: |
-          podman build -t ghcr.io/${{ github.repository_owner }}/extension-kreate:${{ needs.tag.outputs.extVersion }} .
-          podman push ghcr.io/${{ github.repository_owner }}/extension-kreate:${{ needs.tag.outputs.extVersion }}
-          podman tag ghcr.io/${{ github.repository_owner }}/extension-kreate:${{ needs.tag.outputs.extVersion }} ghcr.io/${{ github.repository_owner }}/extension-kreate:latest
-          podman push ghcr.io/${{ github.repository_owner }}/extension-kreate:latest
+          run-id: ${{ github.run_id }}
+          artifact-id: ${{ needs.extension-build.outputs.artifact-id }}
+          github-token: ${{ github.token }}
+          registry-username: ${{ github.repository_owner }}
+          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          image-name: ${{ github.repository_owner }}/extension-kreate
+          tags: ${{ needs.tag.outputs.extVersion }} latest
 
   release:
-    needs: [tag, build]
+    needs: [tag, extension-publish]
     name: Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write
     steps:
       - name: id
         run: echo the release id is ${{ needs.tag.outputs.releaseId}}

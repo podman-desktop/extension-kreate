@@ -1,4 +1,5 @@
-# Copyright (C) 2025 Red Hat, Inc.
+#
+# Copyright (C) 2025 - 2026 Red Hat, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +17,9 @@
 
 name: pr-check
 
+permissions:
+  contents: read
+
 on: [pull_request]
 
 jobs:
@@ -26,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2022, ubuntu-22.04, macos-14]
+        os: [windows-2025, ubuntu-26.04, macos-26]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -60,9 +64,20 @@ jobs:
 
       # Check we don't have changes in git
       - name: Check no changes in git
-        if: ${{ matrix.os=='ubuntu-22.04'}}
+        if: ${{ matrix.os=='ubuntu-26.04'}}
         run: |
           if ! git diff --exit-code; then
             echo "Found changes in git"
             exit 1
           fi
+
+  build-oci:
+    name: build oci image
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Build OCI
+        id: build
+        uses: podman-desktop/gh-extensions-actions/.github/actions/oci-build@2e7a02e8c8e9256a2fa466fb166e215175130dd7 # v0.1.2
+        with:
+          ref: ${{ github.ref }}
+          containerfile: Containerfile
