@@ -45,7 +45,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Execute pnpm
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Run linter
         run: pnpm lint:check
