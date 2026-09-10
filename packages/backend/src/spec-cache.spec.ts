@@ -19,21 +19,23 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { SpecCache } from './spec-cache';
 import type { Cluster, KubeConfig } from '@kubernetes/client-node';
-import fetch from 'node-fetch';
 import { NO_CONTEXT_EXCEPTION } from '/@shared/src/KreateApi';
 import index from '../tests/openapi-dump/index.json';
 import appsv1 from '../tests/openapi-dump/openapi/v3/apis/apps/v1.json';
-
-vi.mock('node-fetch');
-
-let cache: SpecCache;
+import { fetch } from 'undici';
+import type { Response } from 'undici';
 
 vi.mock('@kubernetes/client-node');
+vi.mock('undici', () => ({
+  fetch: vi.fn(),
+}));
+
+let cache: SpecCache;
 
 const jsonMock = vi.fn();
 const kubeconfig = {
   getCurrentCluster: vi.fn(),
-  applyToFetchOptions: vi.fn(),
+  applySecurityAuthentication: vi.fn(),
 } as unknown as KubeConfig;
 
 beforeEach(() => {
@@ -41,14 +43,12 @@ beforeEach(() => {
   vi.mocked(fetch).mockResolvedValue({
     ok: true,
     json: jsonMock,
-  } as unknown as fetch.Response);
+  } as unknown as Response);
 
   vi.mocked(kubeconfig.getCurrentCluster).mockReturnValue({
     server: 'http://localhost:4000',
   } as Cluster);
-  vi.mocked(kubeconfig.applyToFetchOptions).mockResolvedValue({
-    method: 'GET',
-  });
+  vi.mocked(kubeconfig.applySecurityAuthentication).mockResolvedValue();
 
   cache = new SpecCache();
 });
@@ -93,7 +93,7 @@ describe('getIdnex', () => {
       ok: false,
       status: 404,
       statusText: 'Not Found',
-    } as unknown as fetch.Response);
+    } as unknown as Response);
     await expect(() => cache.getIndex(kubeconfig)).rejects.toThrow('HTTP 404 Not Found');
   });
 });
@@ -142,7 +142,7 @@ describe('getGroupVersionSpec', () => {
       ok: false,
       status: 403,
       statusText: 'Forbidden',
-    } as unknown as fetch.Response);
+    } as unknown as Response);
     await expect(() => cache.getGroupVersionSpec(kubeconfig, 'apps/v1', 'Deployment')).rejects.toThrow(
       'HTTP 403 Forbidden',
     );
