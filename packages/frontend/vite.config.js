@@ -29,12 +29,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     alias: [{ find: '@testing-library/svelte', replacement: '@testing-library/svelte/svelte5' }],
-    deps: {
-      inline: [
-
-      ],
-    },
-  },
+},
   base: '',
   server: {
     fs: {
