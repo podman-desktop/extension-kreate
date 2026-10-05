@@ -40,7 +40,7 @@
     "node_modules/**",
     "**/dist/**"
   ],
-  "plugins": ["@typescript-eslint", "sonarjs", "etc", "redundant-undefined", "no-null"],
+  "plugins": ["@typescript-eslint", "sonarjs", "etc", "no-null"],
   "rules": {
     "eqeqeq": "error",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
@@ -86,7 +86,6 @@
     "sonarjs/no-small-switch": "off",
     "etc/no-commented-out-code": "error",
     "etc/no-deprecated": "off",
-    "redundant-undefined/redundant-undefined": "error",
     "import/no-extraneous-dependencies": "error"
   }
 }
