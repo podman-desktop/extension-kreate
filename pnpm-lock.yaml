@@ -43,8 +43,8 @@ importers:
         specifier: ^5.4.2
         version: 5.4.2
       zod:
-        specifier: ^4.6.5
-        version: 4.6.5
+        specifier: ^4.6.6
+        version: 4.6.6
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.71.1
@@ -116,8 +116,8 @@ importers:
         specifier: ^2.9.1
         version: 2.9.1
       zod:
-        specifier: ^4.6.5
-        version: 4.6.5
+        specifier: ^4.6.6
+        version: 4.6.6
     devDependencies:
       '@podman-desktop/api':
         specifier: 1.29.1
@@ -3123,8 +3123,8 @@ packages:
   zimmerframe@1.1.4:
     resolution: {integrity: sha512-B58NGBEoc8Y9MWWCQGl/gq9xBCe4IiKM0a2x7GZdQKOW5Exr8S1W24J6OgM1njK8xCRGvAJIL/MxXHf6SkmQKQ==}
 
-  zod@4.6.5:
-    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
+  zod@4.6.6:
+    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
 
 snapshots:
 
@@ -3545,7 +3545,7 @@ snapshots:
       '@scalar/helpers': 0.16.2
       nanoid: 5.1.16
       type-fest: 5.10.0
-      zod: 4.6.5
+      zod: 4.6.6
 
   '@sonarsource/analyzer-commons-configurations@2.31.0-5284': {}
 
@@ -5952,4 +5952,4 @@ snapshots:
 
   zimmerframe@1.1.4: {}
 
-  zod@4.6.5: {}
+  zod@4.6.6: {}
