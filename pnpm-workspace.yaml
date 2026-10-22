@@ -24,6 +24,7 @@ overrides:
   js-yaml@>=5.0.0: '^5.4.2'
   source-map-js@^1: ^1.2.2
   postcss-selector-parser@^6: ^7.1.6
+  '@vitest/mocker@^5': ^5.0.5
 nodeLinker: hoisted
 allowBuilds:
   '@tailwindcss/oxide': false
