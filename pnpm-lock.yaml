@@ -193,8 +193,8 @@ importers:
   .:
     dependencies:
       '@kubernetes/client-node':
-        specifier: 2.0.0
-        version: 2.0.0(supports-color@10.2.2)
+        specifier: 2.0.1
+        version: 2.0.1(supports-color@10.2.2)
       '@scalar/openapi-parser':
         specifier: ^0.29.14
         version: 0.29.14
@@ -257,8 +257,8 @@ importers:
   packages/backend:
     dependencies:
       '@kubernetes/client-node':
-        specifier: 2.0.0
-        version: 2.0.0(supports-color@10.2.2)
+        specifier: 2.0.1
+        version: 2.0.1(supports-color@10.2.2)
       '@scalar/openapi-parser':
         specifier: ^0.29.14
         version: 0.29.14
@@ -778,8 +778,8 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@kubernetes/client-node@2.0.0':
-    resolution: {integrity: sha512-Jx2cRxEVb4XkDNiR/cg8SX9dH6ZHdMhKmZdQcfhn2vdBWHdb2ldwM0P3I0dK4msYhFmC6TCODsNHH144IpA06w==}
+  '@kubernetes/client-node@2.0.1':
+    resolution: {integrity: sha512-evJgmEtgArEYlj6DNkMGjK41IrFK/hEwb5lWVxx0VRBWybQpnvi+2TtA19mLgVfRHfqX5yjHObX6e9W7LEZBjw==}
 
   '@napi-rs/wasm-runtime@1.1.5':
     resolution: {integrity: sha512-AWPoBRJ9tsnVhor4sjO7rkni+7p+2IAEFj6cx06UgP10jkQHqay/36uRV/bFkgrh18D9vb4cr8Q0Pthskgzy+Q==}
@@ -3545,7 +3545,7 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@kubernetes/client-node@2.0.0(supports-color@10.2.2)':
+  '@kubernetes/client-node@2.0.1(supports-color@10.2.2)':
     dependencies:
       '@types/js-yaml': 4.0.9
       '@types/node': 26.4.0
