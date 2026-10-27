@@ -76,9 +76,9 @@ export class SpecCache {
       });
     } catch (err: unknown) {
       if (this.isConnectionRefusedException(err)) {
-        throw new Error(NO_CONTEXT_EXCEPTION);
+        throw new Error(NO_CONTEXT_EXCEPTION, { cause: err });
       } else {
-        throw new Error(`fetch ${requestURL}: ${this.fetchErrorMessage(err)}`);
+        throw new Error(`fetch ${requestURL}: ${this.fetchErrorMessage(err)}`, { cause: err });
       }
     }
     if (!response.ok) {
@@ -126,9 +126,9 @@ export class SpecCache {
       });
     } catch (err: unknown) {
       if (this.isConnectionRefusedException(err)) {
-        throw new Error(NO_CONTEXT_EXCEPTION);
+        throw new Error(NO_CONTEXT_EXCEPTION, { cause: err });
       } else {
-        throw new Error(`fetch ${requestURL}: ${this.fetchErrorMessage(err)}`);
+        throw new Error(`fetch ${requestURL}: ${this.fetchErrorMessage(err)}`, { cause: err });
       }
     }
     if (!response.ok) {

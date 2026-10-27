@@ -34,7 +34,6 @@ export class SpecReader implements podmanDesktopApi.Disposable {
   #kubeconfigWatcher: podmanDesktopApi.FileSystemWatcher | undefined;
   #kubeconfig: KubeConfig | undefined;
   #currentServer: string | undefined;
-  #gvSpecs: Map<string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject>;
   #state: State;
 
   #cache: SpecCache;
@@ -42,7 +41,6 @@ export class SpecReader implements podmanDesktopApi.Disposable {
   constructor() {
     this.#cache = new SpecCache();
     this.#state = { content: '', position: 0 };
-    this.#gvSpecs = new Map();
   }
 
   init(): void {

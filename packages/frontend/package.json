@@ -13,8 +13,8 @@
     "test:watch": "vitest watch --coverage",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "format:fix": "prettier --write \"src/**/*.{ts,svelte}\"",
-    "lint:check": "eslint . --ext js,ts,tsx",
-    "lint:fix": "eslint . --fix --ext js,ts,tsx",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix",
     "watch": "vite --mode development build -w",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
