@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "@kubernetes/client-node": "2.0.2",
-    "@scalar/openapi-parser": "^0.29.19",
+    "@scalar/openapi-parser": "^0.29.20",
     "js-yaml": "^5.2.0",
     "zod": "^4.6.7"
   },
