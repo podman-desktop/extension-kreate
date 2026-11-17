@@ -15,19 +15,20 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM registry.access.redhat.com/ubi10/nodejs-24@sha256:5a3cea874f0555bcde27d979bbc8a067f1d75b4b324ef3274112c8270e951f5b AS builder
-USER root
-RUN npm i -g corepack && corepack enable
-USER default
+FROM registry.access.redhat.com/ubi10/nodejs-24-minimal:1791463197@sha256:498ccfc43f6fe349a4d87db6af6d83ab420e9450f3800140cdc90c290dcd462f AS builder
 
-ENV HOME=/opt/app-root
+WORKDIR /opt/app-root/src
 
-WORKDIR /opt/app-root/extension-source
-COPY --chown=1001:root . .
+# pnpm runs an implicit dependency check before `run` scripts, which spawns a
+# nested `pnpm install`. Setting CI here rather than per-RUN makes every pnpm
+# invocation non-interactive, otherwise that nested install blocks on a prompt.
+ENV CI=true
 
-RUN corepack enable && corepack install && \
-    CI=true pnpm install
+COPY --chown=1001:1001 . .
 
+RUN npm i -g corepack@0.36.0 && corepack enable
+
+RUN pnpm install
 RUN pnpm build
 
 RUN mkdir /opt/app-root/extension && \
